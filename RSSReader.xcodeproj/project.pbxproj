@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D46CB1ED1A8287B4003CDEC2 /* XMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D46CB1EC1A8287B4003CDEC2 /* XMLParser.m */; };
 		D4CEC7181A827A5300D0A87A /* GDataXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CEC7171A827A5300D0A87A /* GDataXMLNode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4CEC7191A827AB300D0A87A /* libxml2.dylib */; };
 		D4FA67341A8133A900265869 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4FA67331A8133A900265869 /* AppDelegate.m */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D46CB1EB1A8287B4003CDEC2 /* XMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLParser.h; path = "RSSReader/xml-parser-function/XMLParser.h"; sourceTree = SOURCE_ROOT; };
+		D46CB1EC1A8287B4003CDEC2 /* XMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLParser.m; path = "RSSReader/xml-parser-function/XMLParser.m"; sourceTree = SOURCE_ROOT; };
 		D4CEC7161A827A5300D0A87A /* GDataXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataXMLNode.h; sourceTree = "<group>"; };
 		D4CEC7171A827A5300D0A87A /* GDataXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDataXMLNode.m; sourceTree = "<group>"; };
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
@@ -46,6 +49,8 @@
 		D4CEC7141A827A5300D0A87A /* xml-parser-function */ = {
 			isa = PBXGroup;
 			children = (
+				D46CB1EB1A8287B4003CDEC2 /* XMLParser.h */,
+				D46CB1EC1A8287B4003CDEC2 /* XMLParser.m */,
 				D4CEC7151A827A5300D0A87A /* GDataXML */,
 			);
 			path = "xml-parser-function";
@@ -174,6 +179,7 @@
 				D4CEC7181A827A5300D0A87A /* GDataXMLNode.m in Sources */,
 				D4FA67361A8133A900265869 /* main.m in Sources */,
 				D4FA67341A8133A900265869 /* AppDelegate.m in Sources */,
+				D46CB1ED1A8287B4003CDEC2 /* XMLParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "XMLParser.h"
 
 @interface ViewController : NSViewController
 @property (nonatomic, assign, readonly) NSData *data;
@@ -16,6 +17,7 @@
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)startParserButtonPressed:(NSButton *)sender;
+- (void) startParseData:(NSData *)data;
 
 - (NSString *)getFilePathFromDialog;
 - (NSData *)loadDataFromFile:(NSString *)path;

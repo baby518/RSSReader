@@ -36,6 +36,13 @@
 }
 
 - (IBAction)startParserButtonPressed:(NSButton *)sender {
+    [self startParseData:_data];
+}
+
+- (void) startParseData:(NSData *)data {
+    if (data != nil) {
+        XMLParser *xmlParser = [[XMLParser alloc]initWithData:data];
+    }
 }
 
 - (NSData *)loadDataFromFile:(NSString *)path {
