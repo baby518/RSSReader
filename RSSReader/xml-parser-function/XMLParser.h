@@ -20,5 +20,7 @@
 - (id)initWithData:(NSData *)data;
 
 - (void)startParser;
+- (void)parserChannelElements:(GDataXMLElement *)rootElement;
+- (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;
 @end
