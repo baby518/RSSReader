@@ -26,6 +26,7 @@
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		D4CFD0381A83B0C8008E699E /* XMLSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLSchema.h; sourceTree = "<group>"; };
 		D4CFD0391A83B0C8008E699E /* XMLSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLSchema.m; sourceTree = "<group>"; };
+		D4CFD03B1A83C287008E699E /* XMLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLLog.h; sourceTree = "<group>"; };
 		D4FA672D1A8133A900265869 /* RSSReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RSSReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4FA67311A8133A900265869 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D4FA67321A8133A900265869 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -52,11 +53,12 @@
 		D4CEC7141A827A5300D0A87A /* xml-parser-function */ = {
 			isa = PBXGroup;
 			children = (
+				D4CEC7151A827A5300D0A87A /* GDataXML */,
+				D4CFD03B1A83C287008E699E /* XMLLog.h */,
 				D4CFD0381A83B0C8008E699E /* XMLSchema.h */,
 				D4CFD0391A83B0C8008E699E /* XMLSchema.m */,
 				D46CB1EB1A8287B4003CDEC2 /* XMLParser.h */,
 				D46CB1EC1A8287B4003CDEC2 /* XMLParser.m */,
-				D4CEC7151A827A5300D0A87A /* GDataXML */,
 			);
 			path = "xml-parser-function";
 			sourceTree = "<group>";

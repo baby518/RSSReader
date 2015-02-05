@@ -42,6 +42,7 @@
 - (void) startParseData:(NSData *)data {
     if (data != nil) {
         XMLParser *xmlParser = [[XMLParser alloc]initWithData:data];
+        [xmlParser startParser];
     }
 }
 
@@ -65,35 +66,16 @@
     // Can't select a directory
     [openPanel setCanChooseDirectories:NO];
     // set file type.
-    [openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"gpx", @"xml", nil]];
+    [openPanel setAllowedFileTypes:@[@"xml"]];
     
     NSURL *result = nil;
     
     // single selection
     if ([openPanel runModal] == NSModalResponseOK) {
-        result = [[openPanel URLs] objectAtIndex:0];
+        result = [openPanel URLs][0];
     }
     
     NSLog(@"getFilePathFromDialog Url: %@", result);
-    
-    NSDictionary *properties = [[NSFileManager defaultManager]
-                                attributesOfItemAtPath:result.path
-                                error:nil];
-    NSDate *modDate = properties[NSFileModificationDate];
-    NSDate *createDate = properties[NSFileCreationDate];
-    
-    
-    NSLog(@"NSURL modDate: %@", modDate);
-    NSLog(@"NSURL createDate: %@", createDate);
-    
-    NSLog(@"NSURL : %@", result);
-    NSLog(@"NSURL path: %@", result.path);
-    NSLog(@"NSURL lastPathComponent: %@", result.lastPathComponent);
-    NSLog(@"NSURL pathExtension: %@", result.pathExtension);
-    NSLog(@"NSURL relativePath: %@", result.relativePath);
-    NSLog(@"NSURL relativeString: %@", result.relativeString);
-    NSLog(@"NSURL absoluteString: %@", result.absoluteString);
-    NSLog(@"NSURL parameterString: %@", result.parameterString);
     return result.path;
 }
 

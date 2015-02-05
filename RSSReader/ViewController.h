@@ -10,7 +10,7 @@
 #import "XMLParser.h"
 
 @interface ViewController : NSViewController
-@property (nonatomic, assign, readonly) NSData *data;
+@property (nonatomic, strong, readonly) NSData *data;
 
 @property (weak) IBOutlet NSTextField *filePathTextField;
 @property (weak) IBOutlet NSButton *startParseButton;

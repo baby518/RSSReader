@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "GDataXMLNode.h"
+#import "XMLSchema.h"
+#import "XMLLog.h"
 
 @interface XMLParser : NSObject
 
@@ -16,4 +18,7 @@
 @property (nonatomic, strong, readonly) GDataXMLElement *rootElement;
 
 - (id)initWithData:(NSData *)data;
+
+- (void)startParser;
+- (void)stopParser;
 @end

@@ -22,4 +22,20 @@
     return self;
 }
 
+- (void)startParser {
+    if (_rootElement == nil) {
+        LOGE(@"Root Element is not found !!!");
+        return;
+    } else if (![[_rootElement name] isEqualToString:ROOT_NAME]) {
+        LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [_rootElement name]);
+        return;
+    }
+    NSString *version = [[_rootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
+    LOGD(@"This xml file's VERSION is %@", version);
+}
+
+- (void)stopParser {
+
+}
+
 @end
