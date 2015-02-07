@@ -31,7 +31,7 @@
         return;
     }
     NSString *version = [[_rootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
-    LOGD(@"This xml file's VERSION is %@", version);
+    LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:_rootElement];
 }
 
@@ -45,10 +45,16 @@
         if (channel != nil) {
             NSString *channelTitle = [[channel elementsForName:ELEMENT_CHANNEL_TITLE][0] stringValue];
             LOGD(@"This channel's title is %@", channelTitle);
-            NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
-            LOGD(@"This channel's description is %@", channelDescription);
+            [self titleOfChannelDidParsed:channelTitle];
             NSString *channelLink = [[channel elementsForName:ELEMENT_CHANNEL_LINK][0] stringValue];
             LOGD(@"This channel's link is %@", channelLink);
+            [self linkOfChannelDidParsed:channelLink];
+            NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
+            LOGD(@"This channel's description is %@", channelDescription);
+            [self descriptionOfChannelDidParsed:channelDescription];
+            NSString *channelPubDate = [[channel elementsForName:ELEMENT_CHANNEL_PUBDATE][0] stringValue];
+            LOGD(@"This channel's pub date is %@", channelPubDate);
+            [self pubDateOfChannelDidParsed:channelPubDate];
 
             [self parserItemElements:channel];
         }
@@ -69,6 +75,29 @@
             LOGD(@"This item's pubDate is %@", itemPubDate);
         }
     }
+}
 
+- (void)titleOfChannelDidParsed:(NSString *)title {
+    [self postElementDidParsed:ELEMENT_CHANNEL_TITLE value:title];
+}
+
+- (void)linkOfChannelDidParsed:(NSString *)link {
+    [self postElementDidParsed:ELEMENT_CHANNEL_LINK value:link];
+}
+
+- (void)descriptionOfChannelDidParsed:(NSString *)description {
+    [self postElementDidParsed:ELEMENT_CHANNEL_DESCRIPTION value:description];
+}
+
+- (void)pubDateOfChannelDidParsed:(NSString *)date {
+    [self postElementDidParsed:ELEMENT_CHANNEL_PUBDATE value:date];
+}
+
+- (void)postElementDidParsed:(NSString *)key value:(NSString *)value {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (_delegate != nil && value != nil) {
+            [_delegate elementDidParsed:key value:value];
+        }
+    });
 }
 @end

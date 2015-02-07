@@ -9,10 +9,15 @@
 #import <Cocoa/Cocoa.h>
 #import "XMLParser.h"
 
-@interface ViewController : NSViewController
+@interface ViewController : NSViewController <XMLParserDelegate>
 @property (nonatomic, strong, readonly) NSData *data;
+@property (nonatomic, strong, readonly) XMLParser *xmlParser;
 
 @property (weak) IBOutlet NSTextField *filePathTextField;
+@property (weak) IBOutlet NSTextField *channelTitleTextField;
+@property (weak) IBOutlet NSTextField *channelLinkTextField;
+@property (weak) IBOutlet NSTextField *channelDescriptionTextField;
+@property (weak) IBOutlet NSTextField *channelPubDateTextField;
 @property (weak) IBOutlet NSButton *startParseButton;
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;

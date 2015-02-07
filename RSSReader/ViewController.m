@@ -41,8 +41,13 @@
 
 - (void) startParseData:(NSData *)data {
     if (data != nil) {
-        XMLParser *xmlParser = [[XMLParser alloc]initWithData:data];
-        [xmlParser startParser];
+        if (_xmlParser != nil) {
+            [_xmlParser stopParser];
+            _xmlParser = nil;
+        }
+        _xmlParser = [[XMLParser alloc]initWithData:data];
+        _xmlParser.delegate = self;
+        [_xmlParser startParser];
     }
 }
 
@@ -81,15 +86,25 @@
 
 - (void)clearUIContents {
 //    [self removeAllObjectsOfTable];
-//    
-//    [_mParseStateInfoLabel setStringValue:@""];
-//    [_mParserProgress setDoubleValue:0];
-//    [_mParserCircleProgress setDoubleValue:0];
-//    
-//    [_mCreatorTextField setStringValue:@""];
-//    [_mVersionTextField setStringValue:@""];
-//    [_mLengthTextField setStringValue:@""];
-//    [_mTotalTimeTextField setStringValue:@""];
-//    [_mElevationGainTextField setStringValue:@""];
+    [_channelTitleTextField setStringValue:@""];
+    [_channelLinkTextField setStringValue:@""];
+    [_channelDescriptionTextField setStringValue:@""];
+    [_channelPubDateTextField setStringValue:@""];
 }
+
+#pragma mark - XMLParserDelegate
+- (void)elementDidParsed:(NSString *)key value:(NSString *)value {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
+            [_channelTitleTextField setStringValue:value];
+        } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
+            [_channelLinkTextField setStringValue:value];
+        } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
+            [_channelDescriptionTextField setStringValue:value];
+        } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
+            [_channelPubDateTextField setStringValue:value];
+        }
+    });
+}
+
 @end

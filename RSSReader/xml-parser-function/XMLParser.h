@@ -11,7 +11,13 @@
 #import "XMLSchema.h"
 #import "XMLLog.h"
 
+@protocol XMLParserDelegate <NSObject>
+- (void)elementDidParsed:(NSString *)key value:(NSString *)value;
+@end
+
 @interface XMLParser : NSObject
+
+@property (nonatomic, assign) id <XMLParserDelegate> delegate;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;
 @property (nonatomic, strong, readonly) GDataXMLDocument *xmlDoc;
@@ -23,4 +29,10 @@
 - (void)parserChannelElements:(GDataXMLElement *)rootElement;
 - (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;
+
+- (void)postElementDidParsed:(NSString *)key value:(NSString *)value;
+- (void)titleOfChannelDidParsed:(NSString *)title;
+- (void)linkOfChannelDidParsed:(NSString *)link;
+- (void)descriptionOfChannelDidParsed:(NSString *)description;
+- (void)pubDateOfChannelDidParsed:(NSString *)date;
 @end
