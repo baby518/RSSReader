@@ -39,6 +39,18 @@
     [self startParseData:_data];
 }
 
+- (IBAction)didChannelLinkClicked:(NSButton *)sender {
+    NSString *urlString = [_channelLinkButton accessibilityValueDescription];
+    [self openURL:urlString];
+}
+
+- (void)openURL:(NSString *)urlString {
+    if (urlString != nil && [urlString hasPrefix:@"http://"]) {
+        NSURL *url = [[NSURL alloc] initWithString:urlString];
+        [[NSWorkspace sharedWorkspace] openURL:url];
+    }
+}
+
 - (void) startParseData:(NSData *)data {
     if (data != nil) {
         if (_xmlParser != nil) {
@@ -88,6 +100,7 @@
 //    [self removeAllObjectsOfTable];
     [_channelTitleTextField setStringValue:@""];
     [_channelLinkTextField setStringValue:@""];
+    [_channelLinkButton setAccessibilityValueDescription:@""];
     [_channelDescriptionTextField setStringValue:@""];
     [_channelPubDateTextField setStringValue:@""];
 }
@@ -99,6 +112,7 @@
             [_channelTitleTextField setStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
             [_channelLinkTextField setStringValue:value];
+            [_channelLinkButton setAccessibilityValueDescription:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
             [_channelDescriptionTextField setStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
@@ -113,6 +127,7 @@
             [_channelTitleTextField setAttributedStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
             [_channelLinkTextField setAttributedStringValue:value];
+            [_channelLinkButton setAccessibilityValueDescription:value.string];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
             [_channelDescriptionTextField setAttributedStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {

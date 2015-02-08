@@ -18,14 +18,17 @@
 @property (weak) IBOutlet NSTextField *channelLinkTextField;
 @property (weak) IBOutlet NSTextField *channelDescriptionTextField;
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
+@property (weak) IBOutlet NSButton *channelLinkButton;
 @property (weak) IBOutlet NSButton *startParseButton;
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)startParserButtonPressed:(NSButton *)sender;
+- (IBAction)didChannelLinkClicked:(NSButton *)sender;
 - (void) startParseData:(NSData *)data;
 
 - (NSString *)getFilePathFromDialog;
 - (NSData *)loadDataFromFile:(NSString *)path;
+- (void)openURL:(NSString *)urlString;
 
 //- (void)removeAllObjectsOfTable;
 - (void)clearUIContents;
