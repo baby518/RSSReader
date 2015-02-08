@@ -47,7 +47,7 @@
         }
         _xmlParser = [[XMLParser alloc]initWithData:data];
         _xmlParser.delegate = self;
-        [_xmlParser startParser];
+        [_xmlParser startParserWithMode:XMLParseModeFilterHtmlLabel];
     }
 }
 
@@ -103,6 +103,20 @@
             [_channelDescriptionTextField setStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
             [_channelPubDateTextField setStringValue:value];
+        }
+    });
+}
+
+- (void)elementDidParsed:(NSString *)key attributedValue:(NSAttributedString *)value {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
+            [_channelTitleTextField setAttributedStringValue:value];
+        } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
+            [_channelLinkTextField setAttributedStringValue:value];
+        } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
+            [_channelDescriptionTextField setAttributedStringValue:value];
+        } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
+            [_channelPubDateTextField setAttributedStringValue:value];
         }
     });
 }

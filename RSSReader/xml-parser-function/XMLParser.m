@@ -23,6 +23,10 @@
 }
 
 - (void)startParser {
+    [self startParserWithMode:XMLParseModeJustString];
+}
+
+- (void)startParserWithMode:(XMLParseMode)parseMode {
     if (_rootElement == nil) {
         LOGE(@"Root Element is not found !!!");
         return;
@@ -30,6 +34,7 @@
         LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [_rootElement name]);
         return;
     }
+    _xmlParseMode = parseMode;
     NSString *version = [[_rootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
     LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:_rootElement];
@@ -96,7 +101,23 @@
 - (void)postElementDidParsed:(NSString *)key value:(NSString *)value {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (_delegate != nil && value != nil) {
-            [_delegate elementDidParsed:key value:value];
+            if (_xmlParseMode == XMLParseModeUseHtmlLabel) {
+                NSAttributedString *attributedString = [[NSAttributedString alloc]
+                        initWithData:[value dataUsingEncoding:NSUnicodeStringEncoding]
+                             options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+                  documentAttributes:nil
+                               error:nil];
+                [_delegate elementDidParsed:key attributedValue:attributedString];
+            } else if (_xmlParseMode == XMLParseModeFilterHtmlLabel) {
+                NSAttributedString *attributedString = [[NSAttributedString alloc]
+                        initWithData:[value dataUsingEncoding:NSUnicodeStringEncoding]
+                             options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+                  documentAttributes:nil
+                               error:nil];
+                [_delegate elementDidParsed:key value:attributedString.string];
+            } else {
+                [_delegate elementDidParsed:key value:value];
+            }
         }
     });
 }

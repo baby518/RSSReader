@@ -7,17 +7,29 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AppKit/NSAttributedString.h>
 #import "GDataXMLNode.h"
 #import "XMLSchema.h"
 #import "XMLLog.h"
 
+typedef NS_ENUM(NSInteger, XMLParseMode) {
+    /** return all result ues NSString*/
+    XMLParseModeJustString          = 0,
+    /** return result use NSAttributedString converted with HTML label.*/
+    XMLParseModeUseHtmlLabel        = 1,
+    /** return result filtered HTML label.*/
+    XMLParseModeFilterHtmlLabel     = 2,
+};
+
 @protocol XMLParserDelegate <NSObject>
 - (void)elementDidParsed:(NSString *)key value:(NSString *)value;
+- (void)elementDidParsed:(NSString *)key attributedValue:(NSAttributedString *)value;
 @end
 
 @interface XMLParser : NSObject
 
 @property (nonatomic, assign) id <XMLParserDelegate> delegate;
+@property (nonatomic, assign, readonly) XMLParseMode xmlParseMode;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;
 @property (nonatomic, strong, readonly) GDataXMLDocument *xmlDoc;
@@ -26,6 +38,7 @@
 - (id)initWithData:(NSData *)data;
 
 - (void)startParser;
+- (void)startParserWithMode:(XMLParseMode)parseMode;
 - (void)parserChannelElements:(GDataXMLElement *)rootElement;
 - (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;
