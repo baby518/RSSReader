@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, XMLParseMode) {
     /** return result filtered HTML label.*/
     XMLParseModeFilterHtmlLabel     = 2,
 };
+#define XMLParseModeArrays @[@"Normal", @"UseHtmlLabel", @"FilterHtmlLabel"]
 
 @protocol XMLParserDelegate <NSObject>
 - (void)elementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value;

@@ -14,6 +14,7 @@
     [super viewDidLoad];
     
     [_startParseButton setEnabled:false];
+    [_parseModePopUp addItemsWithTitles:XMLParseModeArrays];
     // Do any additional setup after loading the view.
 }
 
@@ -59,7 +60,15 @@
         }
         _xmlParser = [[XMLParser alloc]initWithData:data];
         _xmlParser.delegate = self;
-        [_xmlParser startParserWithMode:XMLParseModeFilterHtmlLabel];
+        if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeNormal) {
+            [_xmlParser startParserWithMode:XMLParseModeNormal];
+        } else if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeFilterHtmlLabel) {
+            [_xmlParser startParserWithMode:XMLParseModeFilterHtmlLabel];
+        } else if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeUseHtmlLabel) {
+            [_xmlParser startParserWithMode:XMLParseModeUseHtmlLabel];
+        } else {
+            [_xmlParser startParserWithMode:XMLParseModeNormal];
+        }
     }
 }
 

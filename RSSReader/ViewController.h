@@ -20,6 +20,7 @@
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
 @property (weak) IBOutlet NSButton *channelLinkButton;
 @property (weak) IBOutlet NSButton *startParseButton;
+@property (weak) IBOutlet NSPopUpButton *parseModePopUp;
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)startParserButtonPressed:(NSButton *)sender;

@@ -780,6 +780,22 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cD8-9M-07B">
+                                <rect key="frame" x="9" y="325" width="69" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="解析方式：" id="4F5-t1-1rq">
+                                    <font key="font" size="13" name="HiraginoSansGB-W3"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OWD-Ry-Ojj" userLabel="ParseMode">
+                                <rect key="frame" x="78" y="320" width="181" height="26"/>
+                                <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="f0T-x6-QRj" userLabel="Default">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="T5I-CL-lfP"/>
+                                </popUpButtonCell>
+                            </popUpButton>
                         </subviews>
                     </view>
                     <connections>
@@ -789,6 +805,7 @@
                         <outlet property="channelPubDateTextField" destination="EXl-sm-Lt3" id="pTi-9g-Vf5"/>
                         <outlet property="channelTitleTextField" destination="E7g-sg-Quw" id="3Ew-67-qTz"/>
                         <outlet property="filePathTextField" destination="6Eg-EN-TRt" id="2sV-sf-6WH"/>
+                        <outlet property="parseModePopUp" destination="OWD-Ry-Ojj" id="H5z-ka-e6a"/>
                         <outlet property="startParseButton" destination="wnF-ct-4dn" id="fDT-RR-bzq"/>
                     </connections>
                 </viewController>
