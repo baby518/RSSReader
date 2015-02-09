@@ -33,5 +33,26 @@ NSString *const ELEMENT_ITEM_DC_CREATOR         = @"dc:creator";
 int const MAX_ELEMENT_COUNTS_OF_TRACK           = 100;
 
 @implementation XMLSchema
++ (NSDate *)convertString2Date:(NSString *)string {
+    if (string == nil) return nil;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    //Tue, 03 Feb 2015 15:57:37 GMT
+    //Thu, 05 Feb 2015 09:00:00 -0500
+    //@"EEE, dd MMM yyyy HH:mm:ss Z"
+    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss Z"];
 
+    NSDate *result = [dateFormatter dateFromString:string];
+    return result;
+}
+
++ (NSString *)convertDate2String:(NSDate *)time {
+    if (time == nil) return @"null";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:[[NSLocale currentLocale] localeIdentifier]];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateString = [dateFormatter stringFromDate:time];
+    return dateString;
+}
 @end

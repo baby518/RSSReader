@@ -116,7 +116,7 @@
         } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
             [_channelDescriptionTextField setStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
-            [_channelPubDateTextField setStringValue:value];
+            [_channelPubDateTextField setStringValue:[XMLSchema convertDate2String:[XMLSchema convertString2Date:value]]];
         }
     });
 }
@@ -131,7 +131,7 @@
         } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
             [_channelDescriptionTextField setAttributedStringValue:value];
         } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
-            [_channelPubDateTextField setAttributedStringValue:value];
+            [_channelPubDateTextField setStringValue:[XMLSchema convertDate2String:[XMLSchema convertString2Date:value.string]]];
         }
     });
 }

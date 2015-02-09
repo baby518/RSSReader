@@ -4,6 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "XMLLog.h"
 
 extern NSString *const XML_NAMESPACE;
 extern NSString *const XML_NAMESPACE_STRING;
@@ -34,5 +35,8 @@ extern int const MAX_ELEMENT_COUNTS_OF_TRACK;
 
 @interface XMLSchema : NSObject {
 }
-
+/** convert pubDate String to NSDate. */
++ (NSDate *)convertString2Date:(NSString *)string;
+/** convert NSDate to pubDate String. */
++ (NSString *)convertDate2String:(NSDate *)time;
 @end
