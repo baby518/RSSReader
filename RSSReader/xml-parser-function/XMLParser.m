@@ -16,14 +16,14 @@
         unsigned long size = [data length];
         NSLog(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
         _xmlData = data;
-        _xmlDoc = [[GDataXMLDocument alloc] initWithData:data options:0 error:nil];
+        _xmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
         _rootElement = [_xmlDoc rootElement];
     }
     return self;
 }
 
 - (void)startParser {
-    [self startParserWithMode:XMLParseModeJustString];
+    [self startParserWithMode:XMLParseModeNormal];
 }
 
 - (void)startParserWithMode:(XMLParseMode)parseMode {
@@ -49,16 +49,12 @@
     for (GDataXMLElement *channel in channels) {
         if (channel != nil) {
             NSString *channelTitle = [[channel elementsForName:ELEMENT_CHANNEL_TITLE][0] stringValue];
-            LOGD(@"This channel's title is %@", channelTitle);
             [self titleOfChannelDidParsed:channelTitle];
             NSString *channelLink = [[channel elementsForName:ELEMENT_CHANNEL_LINK][0] stringValue];
-            LOGD(@"This channel's link is %@", channelLink);
             [self linkOfChannelDidParsed:channelLink];
             NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
-            LOGD(@"This channel's description is %@", channelDescription);
             [self descriptionOfChannelDidParsed:channelDescription];
             NSString *channelPubDate = [[channel elementsForName:ELEMENT_CHANNEL_PUBDATE][0] stringValue];
-            LOGD(@"This channel's pub date is %@", channelPubDate);
             [self pubDateOfChannelDidParsed:channelPubDate];
 
             [self parserItemElements:channel];
@@ -71,34 +67,30 @@
     for (GDataXMLElement *item in items) {
         if (item != nil) {
             NSString *itemTitle = [[item elementsForName:ELEMENT_ITEM_TITLE][0] stringValue];
-            LOGD(@"This item's title is %@", itemTitle);
             NSString *itemDescription = [[item elementsForName:ELEMENT_ITEM_DESCRIPTION][0] stringValue];
-            LOGD(@"This item's description is %@", itemDescription);
             NSString *itemLink = [[item elementsForName:ELEMENT_ITEM_LINK][0] stringValue];
-            LOGD(@"This item's link is %@", itemLink);
             NSString *itemPubDate = [[item elementsForName:ELEMENT_ITEM_PUBDATE][0] stringValue];
-            LOGD(@"This item's pubDate is %@", itemPubDate);
         }
     }
 }
 
 - (void)titleOfChannelDidParsed:(NSString *)title {
-    [self postElementDidParsed:ELEMENT_CHANNEL_TITLE value:title];
+    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_TITLE value:title];
 }
 
 - (void)linkOfChannelDidParsed:(NSString *)link {
-    [self postElementDidParsed:ELEMENT_CHANNEL_LINK value:link];
+    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_LINK value:link];
 }
 
 - (void)descriptionOfChannelDidParsed:(NSString *)description {
-    [self postElementDidParsed:ELEMENT_CHANNEL_DESCRIPTION value:description];
+    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_DESCRIPTION value:description];
 }
 
 - (void)pubDateOfChannelDidParsed:(NSString *)date {
-    [self postElementDidParsed:ELEMENT_CHANNEL_PUBDATE value:date];
+    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_PUBDATE value:date];
 }
 
-- (void)postElementDidParsed:(NSString *)key value:(NSString *)value {
+- (void)postElementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (_delegate != nil && value != nil) {
             if (_xmlParseMode == XMLParseModeUseHtmlLabel) {
@@ -107,16 +99,21 @@
                              options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
                   documentAttributes:nil
                                error:nil];
-                [_delegate elementDidParsed:key attributedValue:attributedString];
+                [_delegate elementDidParsed:parent key:key attributedValue:attributedString];
+                LOGD(@"UseHtmlLabel elementDidParsed parent : %@, key : %@, attributedValue : %@",
+                        parent, key, attributedString);
             } else if (_xmlParseMode == XMLParseModeFilterHtmlLabel) {
                 NSAttributedString *attributedString = [[NSAttributedString alloc]
                         initWithData:[value dataUsingEncoding:NSUnicodeStringEncoding]
                              options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
                   documentAttributes:nil
                                error:nil];
-                [_delegate elementDidParsed:key value:attributedString.string];
+                [_delegate elementDidParsed:parent key:key value:attributedString.string];
+                LOGD(@"FilterHtmlLabel elementDidParsed parent : %@, key : %@, attributedValue : %@",
+                        parent, key, attributedString.string);
             } else {
-                [_delegate elementDidParsed:key value:value];
+                [_delegate elementDidParsed:parent key:key value:value];
+                LOGD(@"elementDidParsed parent : %@, key : %@, value : %@", parent, key, value);
             }
         }
     });

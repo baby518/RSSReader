@@ -106,32 +106,39 @@
 }
 
 #pragma mark - XMLParserDelegate
-- (void)elementDidParsed:(NSString *)key value:(NSString *)value {
+
+- (void)elementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
-            [_channelTitleTextField setStringValue:value];
-        } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
-            [_channelLinkTextField setStringValue:value];
-            [_channelLinkButton setAccessibilityValueDescription:value];
-        } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
-            [_channelDescriptionTextField setStringValue:value];
-        } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
-            [_channelPubDateTextField setStringValue:[XMLSchema convertDate2String:[XMLSchema convertString2Date:value]]];
+        if ([parent isEqualToString:ELEMENT_CHANNEL]) {
+            if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
+                [_channelTitleTextField setStringValue:value];
+            } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
+                [_channelLinkTextField setStringValue:value];
+                [_channelLinkButton setAccessibilityValueDescription:value];
+            } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
+                [_channelDescriptionTextField setStringValue:value];
+            } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
+                [_channelPubDateTextField setStringValue:
+                        [XMLSchema convertDate2String:[XMLSchema convertString2Date:value]]];
+            }
         }
     });
 }
 
-- (void)elementDidParsed:(NSString *)key attributedValue:(NSAttributedString *)value {
+- (void)elementDidParsed:(NSString *)parent key:(NSString *)key attributedValue:(NSAttributedString *)value {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
-            [_channelTitleTextField setAttributedStringValue:value];
-        } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
-            [_channelLinkTextField setAttributedStringValue:value];
-            [_channelLinkButton setAccessibilityValueDescription:value.string];
-        } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
-            [_channelDescriptionTextField setAttributedStringValue:value];
-        } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
-            [_channelPubDateTextField setStringValue:[XMLSchema convertDate2String:[XMLSchema convertString2Date:value.string]]];
+        if ([parent isEqualToString:ELEMENT_CHANNEL]) {
+            if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
+                [_channelTitleTextField setAttributedStringValue:value];
+            } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
+                [_channelLinkTextField setAttributedStringValue:value];
+                [_channelLinkButton setAccessibilityValueDescription:value.string];
+            } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
+                [_channelDescriptionTextField setAttributedStringValue:value];
+            } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
+                [_channelPubDateTextField setStringValue:
+                        [XMLSchema convertDate2String:[XMLSchema convertString2Date:value.string]]];
+            }
         }
     });
 }

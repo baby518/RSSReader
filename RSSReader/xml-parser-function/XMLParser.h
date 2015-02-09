@@ -14,7 +14,7 @@
 
 typedef NS_ENUM(NSInteger, XMLParseMode) {
     /** return all result ues NSString*/
-    XMLParseModeJustString          = 0,
+    XMLParseModeNormal              = 0,
     /** return result use NSAttributedString converted with HTML label.*/
     XMLParseModeUseHtmlLabel        = 1,
     /** return result filtered HTML label.*/
@@ -22,8 +22,8 @@ typedef NS_ENUM(NSInteger, XMLParseMode) {
 };
 
 @protocol XMLParserDelegate <NSObject>
-- (void)elementDidParsed:(NSString *)key value:(NSString *)value;
-- (void)elementDidParsed:(NSString *)key attributedValue:(NSAttributedString *)value;
+- (void)elementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value;
+- (void)elementDidParsed:(NSString *)parent key:(NSString *)key attributedValue:(NSAttributedString *)value;
 @end
 
 @interface XMLParser : NSObject
@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, XMLParseMode) {
 - (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;
 
-- (void)postElementDidParsed:(NSString *)key value:(NSString *)value;
+- (void)postElementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value;
 - (void)titleOfChannelDidParsed:(NSString *)title;
 - (void)linkOfChannelDidParsed:(NSString *)link;
 - (void)descriptionOfChannelDidParsed:(NSString *)description;
