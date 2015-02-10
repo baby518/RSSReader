@@ -49,13 +49,20 @@
     for (GDataXMLElement *channel in channels) {
         if (channel != nil) {
             NSString *channelTitle = [[channel elementsForName:ELEMENT_CHANNEL_TITLE][0] stringValue];
-            [self titleOfChannelDidParsed:channelTitle];
             NSString *channelLink = [[channel elementsForName:ELEMENT_CHANNEL_LINK][0] stringValue];
-            [self linkOfChannelDidParsed:channelLink];
             NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
-            [self descriptionOfChannelDidParsed:channelDescription];
             NSString *channelPubDate = [[channel elementsForName:ELEMENT_CHANNEL_PUBDATE][0] stringValue];
-            [self pubDateOfChannelDidParsed:channelPubDate];
+
+            if (_xmlParseMode == XMLParseModeFilterHtmlLabel) {
+                channelTitle = [RSSParser filterHtmlLabelInString:channelTitle];
+                channelDescription = [RSSParser filterHtmlLabelInString:channelDescription];
+            }
+            RSSChannelElement *channelElement = [[RSSChannelElement alloc] initWithTitle:channelTitle];
+            channelElement.linkOfElement = channelLink;
+            channelElement.descriptionOfElement = channelDescription;
+            channelElement.pubDateStringOfElement = channelPubDate;
+//            NSLog(@"%@",channelElement.description);
+            [self postElementDidParsed:channelElement];
 
             [self parserItemElements:channel];
         }
@@ -74,48 +81,20 @@
     }
 }
 
-- (void)titleOfChannelDidParsed:(NSString *)title {
-    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_TITLE value:title];
-}
-
-- (void)linkOfChannelDidParsed:(NSString *)link {
-    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_LINK value:link];
-}
-
-- (void)descriptionOfChannelDidParsed:(NSString *)description {
-    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_DESCRIPTION value:description];
-}
-
-- (void)pubDateOfChannelDidParsed:(NSString *)date {
-    [self postElementDidParsed:ELEMENT_CHANNEL key:ELEMENT_CHANNEL_PUBDATE value:date];
-}
-
-- (void)postElementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value {
+- (void)postElementDidParsed:(RSSBaseElement *)element {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (_delegate != nil && value != nil) {
-            if (_xmlParseMode == XMLParseModeUseHtmlLabel) {
-                NSAttributedString *attributedString = [[NSAttributedString alloc]
-                        initWithData:[value dataUsingEncoding:NSUnicodeStringEncoding]
-                             options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-                  documentAttributes:nil
-                               error:nil];
-                [_delegate elementDidParsed:parent key:key attributedValue:attributedString];
-                LOGD(@"UseHtmlLabel elementDidParsed parent : %@, key : %@, attributedValue : %@",
-                        parent, key, attributedString);
-            } else if (_xmlParseMode == XMLParseModeFilterHtmlLabel) {
-                NSAttributedString *attributedString = [[NSAttributedString alloc]
-                        initWithData:[value dataUsingEncoding:NSUnicodeStringEncoding]
-                             options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-                  documentAttributes:nil
-                               error:nil];
-                [_delegate elementDidParsed:parent key:key value:attributedString.string];
-                LOGD(@"FilterHtmlLabel elementDidParsed parent : %@, key : %@, attributedValue : %@",
-                        parent, key, attributedString.string);
-            } else {
-                [_delegate elementDidParsed:parent key:key value:value];
-                LOGD(@"elementDidParsed parent : %@, key : %@, value : %@", parent, key, value);
-            }
+        if (_delegate != nil) {
+            [_delegate elementDidParsed:element];
         }
     });
+}
+
++ (NSString *)filterHtmlLabelInString:(NSString *)srcString {
+    NSAttributedString *attributedString = [[NSAttributedString alloc]
+            initWithData:[srcString dataUsingEncoding:NSUnicodeStringEncoding]
+                 options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+      documentAttributes:nil
+                   error:nil];
+    return attributedString.string;
 }
 @end

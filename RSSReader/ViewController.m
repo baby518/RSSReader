@@ -60,15 +60,7 @@
         }
         _rssParser = [[RSSParser alloc]initWithData:data];
         _rssParser.delegate = self;
-        if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeNormal) {
-            [_rssParser startParserWithMode:XMLParseModeNormal];
-        } else if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeFilterHtmlLabel) {
-            [_rssParser startParserWithMode:XMLParseModeFilterHtmlLabel];
-        } else if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeUseHtmlLabel) {
-            [_rssParser startParserWithMode:XMLParseModeUseHtmlLabel];
-        } else {
-            [_rssParser startParserWithMode:XMLParseModeNormal];
-        }
+        [_rssParser startParserWithMode:(XMLParseMode)[_parseModePopUp indexOfSelectedItem]];
     }
 }
 
@@ -122,40 +114,20 @@
 
 #pragma mark - XMLParserDelegate
 
-- (void)elementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([parent isEqualToString:ELEMENT_CHANNEL]) {
-            if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
-                [_channelTitleTextField setStringValue:value];
-            } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
-                [_channelLinkTextField setStringValue:value];
-                [_channelLinkButton setAccessibilityValueDescription:value];
-            } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
-                [_channelDescriptionTextField setStringValue:value];
-            } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
-                [_channelPubDateTextField setStringValue:
-                        [RSSSchema convertDate2String:[RSSSchema convertString2Date:value]]];
-            }
-        }
-    });
-}
+- (void)elementDidParsed:(RSSBaseElement *)element {
+    if (element == nil) {
+        NSLog(@"elementDidParsed receive a nil value.");
+        return;
+    }
+    if ([element isKindOfClass:[RSSChannelElement class]]) {
+        [_channelTitleTextField setStringValue:element.titleOfElement];
+        [_channelLinkTextField setStringValue:element.linkOfElement];
+        [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
+        [_channelDescriptionTextField setStringValue:element.descriptionOfElement];
+        [_channelPubDateTextField setStringValue:[RSSSchema convertDate2String:element.pubDateOfElement]];
+    } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
-- (void)elementDidParsed:(NSString *)parent key:(NSString *)key attributedValue:(NSAttributedString *)value {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([parent isEqualToString:ELEMENT_CHANNEL]) {
-            if ([key isEqualToString:ELEMENT_CHANNEL_TITLE]) {
-                [_channelTitleTextField setAttributedStringValue:value];
-            } else if ([key isEqualToString:ELEMENT_CHANNEL_LINK]) {
-                [_channelLinkTextField setAttributedStringValue:value];
-                [_channelLinkButton setAccessibilityValueDescription:value.string];
-            } else if ([key isEqualToString:ELEMENT_CHANNEL_DESCRIPTION]) {
-                [_channelDescriptionTextField setAttributedStringValue:value];
-            } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
-                [_channelPubDateTextField setStringValue:
-                        [RSSSchema convertDate2String:[RSSSchema convertString2Date:value.string]]];
-            }
-        }
-    });
+    }
 }
 
 //#pragma mark - NSTableViewDelegate

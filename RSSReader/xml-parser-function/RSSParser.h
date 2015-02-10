@@ -10,21 +10,20 @@
 #import <AppKit/NSAttributedString.h>
 #import "GDataXMLNode.h"
 #import "RSSSchema.h"
+#import "RSSChannelElement.h"
+#import "RSSItemElement.h"
 #import "XMLLog.h"
 
 typedef NS_ENUM(NSInteger, XMLParseMode) {
     /** return all result ues NSString*/
     XMLParseModeNormal              = 0,
-    /** return result use NSAttributedString converted with HTML label.*/
-    XMLParseModeUseHtmlLabel        = 1,
     /** return result filtered HTML label.*/
-    XMLParseModeFilterHtmlLabel     = 2,
+    XMLParseModeFilterHtmlLabel     = 1,
 };
-#define XMLParseModeArrays @[@"Normal", @"UseHtmlLabel", @"FilterHtmlLabel"]
+#define XMLParseModeArrays @[@"Normal", @"FilterHtmlLabel"]
 
 @protocol RSSParserDelegate <NSObject>
-- (void)elementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value;
-- (void)elementDidParsed:(NSString *)parent key:(NSString *)key attributedValue:(NSAttributedString *)value;
+- (void)elementDidParsed:(RSSBaseElement *)element;
 @end
 
 @interface RSSParser : NSObject
@@ -44,9 +43,7 @@ typedef NS_ENUM(NSInteger, XMLParseMode) {
 - (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;
 
-- (void)postElementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value;
-- (void)titleOfChannelDidParsed:(NSString *)title;
-- (void)linkOfChannelDidParsed:(NSString *)link;
-- (void)descriptionOfChannelDidParsed:(NSString *)description;
-- (void)pubDateOfChannelDidParsed:(NSString *)date;
+- (void)postElementDidParsed:(RSSBaseElement *)element;
+
++ (NSString *)filterHtmlLabelInString:(NSString *)srcString;
 @end
