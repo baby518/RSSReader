@@ -33,7 +33,7 @@ extern NSString *const ELEMENT_ITEM_DC_CREATOR;
 
 extern int const MAX_ELEMENT_COUNTS_OF_TRACK;
 
-@interface XMLSchema : NSObject {
+@interface RSSSchema : NSObject {
 }
 /** convert pubDate String to NSDate. */
 + (NSDate *)convertString2Date:(NSString *)string;

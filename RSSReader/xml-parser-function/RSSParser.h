@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/NSAttributedString.h>
 #import "GDataXMLNode.h"
-#import "XMLSchema.h"
+#import "RSSSchema.h"
 #import "XMLLog.h"
 
 typedef NS_ENUM(NSInteger, XMLParseMode) {
@@ -22,14 +22,14 @@ typedef NS_ENUM(NSInteger, XMLParseMode) {
 };
 #define XMLParseModeArrays @[@"Normal", @"UseHtmlLabel", @"FilterHtmlLabel"]
 
-@protocol XMLParserDelegate <NSObject>
+@protocol RSSParserDelegate <NSObject>
 - (void)elementDidParsed:(NSString *)parent key:(NSString *)key value:(NSString *)value;
 - (void)elementDidParsed:(NSString *)parent key:(NSString *)key attributedValue:(NSAttributedString *)value;
 @end
 
-@interface XMLParser : NSObject
+@interface RSSParser : NSObject
 
-@property (nonatomic, assign) id <XMLParserDelegate> delegate;
+@property (nonatomic, assign) id <RSSParserDelegate> delegate;
 @property (nonatomic, assign, readonly) XMLParseMode xmlParseMode;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;

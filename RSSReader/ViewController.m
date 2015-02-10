@@ -54,20 +54,20 @@
 
 - (void) startParseData:(NSData *)data {
     if (data != nil) {
-        if (_xmlParser != nil) {
-            [_xmlParser stopParser];
-            _xmlParser = nil;
+        if (_rssParser != nil) {
+            [_rssParser stopParser];
+            _rssParser = nil;
         }
-        _xmlParser = [[XMLParser alloc]initWithData:data];
-        _xmlParser.delegate = self;
+        _rssParser = [[RSSParser alloc]initWithData:data];
+        _rssParser.delegate = self;
         if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeNormal) {
-            [_xmlParser startParserWithMode:XMLParseModeNormal];
+            [_rssParser startParserWithMode:XMLParseModeNormal];
         } else if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeFilterHtmlLabel) {
-            [_xmlParser startParserWithMode:XMLParseModeFilterHtmlLabel];
+            [_rssParser startParserWithMode:XMLParseModeFilterHtmlLabel];
         } else if ([_parseModePopUp indexOfSelectedItem] == XMLParseModeUseHtmlLabel) {
-            [_xmlParser startParserWithMode:XMLParseModeUseHtmlLabel];
+            [_rssParser startParserWithMode:XMLParseModeUseHtmlLabel];
         } else {
-            [_xmlParser startParserWithMode:XMLParseModeNormal];
+            [_rssParser startParserWithMode:XMLParseModeNormal];
         }
     }
 }
@@ -105,8 +105,14 @@
     return result.path;
 }
 
+- (void)removeAllObjectsOfTable {
+//    [_currentTrackPoints removeAllObjects];
+//    _numberOfRows = 0;
+//    [_itemsTableView reloadData];
+}
+
 - (void)clearUIContents {
-//    [self removeAllObjectsOfTable];
+    [self removeAllObjectsOfTable];
     [_channelTitleTextField setStringValue:@""];
     [_channelLinkTextField setStringValue:@""];
     [_channelLinkButton setAccessibilityValueDescription:@""];
@@ -128,7 +134,7 @@
                 [_channelDescriptionTextField setStringValue:value];
             } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
                 [_channelPubDateTextField setStringValue:
-                        [XMLSchema convertDate2String:[XMLSchema convertString2Date:value]]];
+                        [RSSSchema convertDate2String:[RSSSchema convertString2Date:value]]];
             }
         }
     });
@@ -146,10 +152,20 @@
                 [_channelDescriptionTextField setAttributedStringValue:value];
             } else if ([key isEqualToString:ELEMENT_CHANNEL_PUBDATE]) {
                 [_channelPubDateTextField setStringValue:
-                        [XMLSchema convertDate2String:[XMLSchema convertString2Date:value.string]]];
+                        [RSSSchema convertDate2String:[RSSSchema convertString2Date:value.string]]];
             }
         }
     });
 }
 
+//#pragma mark - NSTableViewDelegate
+//- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+//    // Get a new ViewCell
+//    NSTableCellView *cellView = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
+//    return cellView;
+//}
+//
+//- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+//    return _numberOfRows;
+//}
 @end

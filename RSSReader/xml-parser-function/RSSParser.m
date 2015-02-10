@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 zhangchao. All rights reserved.
 //
 
-#import "XMLParser.h"
+#import "RSSParser.h"
 
-@implementation XMLParser
+@implementation RSSParser
 
 - (id)initWithData:(NSData *)data {
     self = [super self];

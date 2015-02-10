@@ -3,7 +3,7 @@
 // Copyright (c) 2014 zhangchao. All rights reserved.
 //
 
-#import "XMLSchema.h"
+#import "RSSSchema.h"
 
 NSString *const XML_NAMESPACE                   = @"xmlns";
 NSString *const XML_NAMESPACE_STRING            = @"http://www.topografix.com/GPX/1/1";
@@ -32,7 +32,7 @@ NSString *const ELEMENT_ITEM_DC_CREATOR         = @"dc:creator";
 
 int const MAX_ELEMENT_COUNTS_OF_TRACK           = 100;
 
-@implementation XMLSchema
+@implementation RSSSchema
 + (NSDate *)convertString2Date:(NSString *)string {
     if (string == nil) return nil;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

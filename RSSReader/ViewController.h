@@ -7,11 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "XMLParser.h"
+#import "RSSParser.h"
 
-@interface ViewController : NSViewController <XMLParserDelegate>
+@interface ViewController : NSViewController <RSSParserDelegate, NSTableViewDataSource, NSTableViewDelegate>
 @property (nonatomic, strong, readonly) NSData *data;
-@property (nonatomic, strong, readonly) XMLParser *xmlParser;
+@property (nonatomic, strong, readonly) RSSParser *rssParser;
 
 @property (weak) IBOutlet NSTextField *filePathTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
@@ -31,7 +31,7 @@
 - (NSData *)loadDataFromFile:(NSString *)path;
 - (void)openURL:(NSString *)urlString;
 
-//- (void)removeAllObjectsOfTable;
+- (void)removeAllObjectsOfTable;
 - (void)clearUIContents;
 
 @end
