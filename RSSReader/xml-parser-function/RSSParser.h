@@ -34,26 +34,20 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 - (void)elementDidParsed:(RSSBaseElement *)element;
 @end
 
-@interface RSSParser : NSObject
+@interface RSSParser : NSObject <NSXMLParserDelegate>
 
 @property (nonatomic, assign) id <RSSParserDelegate> delegate;
 @property (nonatomic, assign, readonly) XMLElementStringStyle xmlElementStringStyle;
 @property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;
-@property (nonatomic, strong, readonly) GDataXMLDocument *xmlDoc;
-@property (nonatomic, strong, readonly) GDataXMLElement *rootElement;
 
 - (id)initWithData:(NSData *)data;
 - (id)initWithParseEngine:(XMLParseEngine)engine data:(NSData *)data;
 
 - (void)startParser;
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;
-- (void)parserChannelElements:(GDataXMLElement *)rootElement;
-- (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;
-
-- (void)postElementDidParsed:(RSSBaseElement *)element;
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString;
 @end

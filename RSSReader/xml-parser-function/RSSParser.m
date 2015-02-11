@@ -8,6 +8,27 @@
 
 #import "RSSParser.h"
 
+#pragma mark RSSParser (private)
+@interface RSSParser ()
+
+// properties used for GDataXML
+@property (nonatomic, strong, readonly) GDataXMLDocument *gDataXmlDoc;
+// properties used for NSXMLParser
+@property (nonatomic, strong, readonly) NSXMLParser *nsXmlParser;
+
+// methods used for GDataXML
+- (void)parserRootElements:(GDataXMLDocument *)xmlDocument;
+- (void)parserChannelElements:(GDataXMLElement *)rootElement;
+- (void)parserItemElements:(GDataXMLElement *)rootElement;
+
+// methods used for NSXMLParser
+
+// post result
+- (void)postElementDidParsed:(RSSBaseElement *)element;
+
+@end
+
+#pragma mark RSSParser
 @implementation RSSParser
 
 - (id)initWithData:(NSData *)data {
@@ -21,8 +42,15 @@
         NSLog(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
         _xmlParseEngine = engine;
         _xmlData = data;
-        _xmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
-        _rootElement = [_xmlDoc rootElement];
+        if (_xmlParseEngine == NSXMLParseEngine) {
+            _nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
+            _nsXmlParser.delegate = self;
+            [_nsXmlParser setShouldProcessNamespaces:YES];
+            [_nsXmlParser setShouldReportNamespacePrefixes:YES];
+            [_nsXmlParser setShouldResolveExternalEntities:YES];
+        } else if (_xmlParseEngine == GDataXMLParseEngine) {
+            _gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
+        }
     }
     return self;
 }
@@ -32,21 +60,30 @@
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
-    if (_rootElement == nil) {
-        LOGE(@"Root Element is not found !!!");
-        return;
-    } else if (![[_rootElement name] isEqualToString:ROOT_NAME]) {
-        LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [_rootElement name]);
-        return;
-    }
     _xmlElementStringStyle = elementStringStyle;
-    NSString *version = [[_rootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
-    LOGD(@"This rss file's VERSION is %@", version);
-    [self parserChannelElements:_rootElement];
+    if (_xmlParseEngine == NSXMLParseEngine) {
+        [_nsXmlParser parse];
+    } else if (_xmlParseEngine == GDataXMLParseEngine) {
+        [self parserRootElements:_gDataXmlDoc];
+    }
 }
 
 - (void)stopParser {
+}
 
+#pragma mark GDataXMLParseEngine
+- (void)parserRootElements:(GDataXMLDocument *)xmlDocument {
+    GDataXMLElement *gDataRootElement = [xmlDocument rootElement];
+    if (gDataRootElement == nil) {
+        LOGE(@"Root Element is not found !!!");
+        return;
+    } else if (![[gDataRootElement name] isEqualToString:ROOT_NAME]) {
+        LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [gDataRootElement name]);
+        return;
+    }
+    NSString *version = [[gDataRootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
+    LOGD(@"This rss file's VERSION is %@", version);
+    [self parserChannelElements:gDataRootElement];
 }
 
 - (void)parserChannelElements:(GDataXMLElement *)rootElement {
@@ -68,7 +105,6 @@
             channelElement.descriptionOfElement = channelDescription;
             channelElement.pubDateStringOfElement = channelPubDate;
             channelElement.languageOfChannel = channelLanguage;
-//            NSLog(@"%@",channelElement.description);
             [self postElementDidParsed:channelElement];
 
             [self parserItemElements:channel];
@@ -88,6 +124,35 @@
     }
 }
 
+#pragma mark - NSXMLParseEngine & NSXMLParserDelegate
+- (void)parserDidStartDocument:(NSXMLParser *)parser {
+    LOGD(@"parserDidStartDocument");
+}
+
+- (void)parserDidEndDocument:(NSXMLParser *)parser {
+    LOGD(@"parserDidEndDocument");
+}
+
+-(void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
+    LOGD(@"parseErrorOccurred %@", parseError);
+//    [_delegate onErrorWhenParser:parseError.code];
+}
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
+ qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+    LOGD(@"didStartElement elementName : %@", elementName);
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
+ qualifiedName:(NSString *)qName {
+    LOGD(@"didEndElement elementName : %@", elementName);
+}
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+    LOGD(@"foundCharacters : %@", string);
+}
+
+#pragma mark PostElementDidParsed
 - (void)postElementDidParsed:(RSSBaseElement *)element {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (_delegate != nil) {

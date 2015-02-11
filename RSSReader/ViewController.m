@@ -59,7 +59,7 @@
             [_rssParser stopParser];
             _rssParser = nil;
         }
-        _rssParser = [[RSSParser alloc]initWithData:data];
+        _rssParser = [[RSSParser alloc] initWithParseEngine:(XMLParseEngine)[_parseEnginePopup indexOfSelectedItem] data:data];
         _rssParser.delegate = self;
         [_rssParser startParserWithStyle:(XMLElementStringStyle)[_elementStringStylePopUp indexOfSelectedItem]];
     }
