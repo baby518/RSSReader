@@ -717,7 +717,7 @@
                                 </connections>
                             </button>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E7g-sg-Quw">
-                                <rect key="frame" x="80" y="280" width="176" height="22"/>
+                                <rect key="frame" x="80" y="280" width="166" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="bSF-kW-q8k">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -789,13 +789,20 @@
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OWD-Ry-Ojj" userLabel="ParseMode">
-                                <rect key="frame" x="78" y="320" width="181" height="26"/>
+                                <rect key="frame" x="78" y="320" width="171" height="26"/>
                                 <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="f0T-x6-QRj" userLabel="Default">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
                                     <menu key="menu" id="T5I-CL-lfP"/>
                                 </popUpButtonCell>
                             </popUpButton>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xjg-ku-c8x">
+                                <rect key="frame" x="262" y="321" width="116" height="25"/>
+                                <buttonCell key="cell" type="check" title="使用HTML标签" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="SR3-Y3-7cW">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -807,6 +814,7 @@
                         <outlet property="filePathTextField" destination="6Eg-EN-TRt" id="2sV-sf-6WH"/>
                         <outlet property="parseModePopUp" destination="OWD-Ry-Ojj" id="H5z-ka-e6a"/>
                         <outlet property="startParseButton" destination="wnF-ct-4dn" id="fDT-RR-bzq"/>
+                        <outlet property="useHTMLLabelCheckBox" destination="xjg-ku-c8x" id="0tV-RE-Ac2"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

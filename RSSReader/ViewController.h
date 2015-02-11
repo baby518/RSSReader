@@ -21,6 +21,7 @@
 @property (weak) IBOutlet NSButton *channelLinkButton;
 @property (weak) IBOutlet NSButton *startParseButton;
 @property (weak) IBOutlet NSPopUpButton *parseModePopUp;
+@property (weak) IBOutlet NSButton *useHTMLLabelCheckBox;
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)startParserButtonPressed:(NSButton *)sender;
