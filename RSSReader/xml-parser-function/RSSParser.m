@@ -11,10 +11,15 @@
 @implementation RSSParser
 
 - (id)initWithData:(NSData *)data {
+    return [self initWithParseEngine:GDataXMLParseEngine data:data];
+}
+
+- (id)initWithParseEngine:(XMLParseEngine)engine data:(NSData *)data {
     self = [super self];
     if (self) {
         unsigned long size = [data length];
         NSLog(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
+        _xmlParseEngine = engine;
         _xmlData = data;
         _xmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
         _rootElement = [_xmlDoc rootElement];
@@ -23,10 +28,10 @@
 }
 
 - (void)startParser {
-    [self startParserWithMode:XMLParseModeNormal];
+    [self startParserWithStyle:XMLElementStringNormal];
 }
 
-- (void)startParserWithMode:(XMLParseMode)parseMode {
+- (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
     if (_rootElement == nil) {
         LOGE(@"Root Element is not found !!!");
         return;
@@ -34,7 +39,7 @@
         LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [_rootElement name]);
         return;
     }
-    _xmlParseMode = parseMode;
+    _xmlElementStringStyle = elementStringStyle;
     NSString *version = [[_rootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
     LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:_rootElement];
@@ -52,8 +57,9 @@
             NSString *channelLink = [[channel elementsForName:ELEMENT_CHANNEL_LINK][0] stringValue];
             NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
             NSString *channelPubDate = [[channel elementsForName:ELEMENT_CHANNEL_PUBDATE][0] stringValue];
+            NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
 
-            if (_xmlParseMode == XMLParseModeFilterHtmlLabel) {
+            if (_xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 channelTitle = [RSSParser filterHtmlLabelInString:channelTitle];
                 channelDescription = [RSSParser filterHtmlLabelInString:channelDescription];
             }
@@ -61,6 +67,7 @@
             channelElement.linkOfElement = channelLink;
             channelElement.descriptionOfElement = channelDescription;
             channelElement.pubDateStringOfElement = channelPubDate;
+            channelElement.languageOfChannel = channelLanguage;
 //            NSLog(@"%@",channelElement.description);
             [self postElementDidParsed:channelElement];
 

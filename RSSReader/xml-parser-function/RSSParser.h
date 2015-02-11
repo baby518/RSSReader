@@ -14,13 +14,21 @@
 #import "RSSItemElement.h"
 #import "XMLLog.h"
 
-typedef NS_ENUM(NSInteger, XMLParseMode) {
+typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
     /** return all result ues NSString*/
-    XMLParseModeNormal              = 0,
+    XMLElementStringNormal           = 0,
     /** return result filtered HTML label.*/
-    XMLParseModeFilterHtmlLabel     = 1,
+    XMLElementStringFilterHtmlLabel  = 1,
 };
-#define XMLParseModeArrays @[@"Normal", @"FilterHtmlLabel"]
+#define XMLElementStringStyleArrays @[@"Normal", @"FilterHtmlLabel"]
+
+typedef NS_ENUM(NSInteger, XMLParseEngine) {
+    /** Use GDataXMLParser.*/
+    GDataXMLParseEngine  = 0,
+    /** Use NSXMLParser*/
+    NSXMLParseEngine     = 1,
+};
+#define XMLParseEngineArrays @[@"GDataXMLParser", @"NSXMLParser"]
 
 @protocol RSSParserDelegate <NSObject>
 - (void)elementDidParsed:(RSSBaseElement *)element;
@@ -29,16 +37,18 @@ typedef NS_ENUM(NSInteger, XMLParseMode) {
 @interface RSSParser : NSObject
 
 @property (nonatomic, assign) id <RSSParserDelegate> delegate;
-@property (nonatomic, assign, readonly) XMLParseMode xmlParseMode;
+@property (nonatomic, assign, readonly) XMLElementStringStyle xmlElementStringStyle;
+@property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;
 @property (nonatomic, strong, readonly) GDataXMLDocument *xmlDoc;
 @property (nonatomic, strong, readonly) GDataXMLElement *rootElement;
 
 - (id)initWithData:(NSData *)data;
+- (id)initWithParseEngine:(XMLParseEngine)engine data:(NSData *)data;
 
 - (void)startParser;
-- (void)startParserWithMode:(XMLParseMode)parseMode;
+- (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;
 - (void)parserChannelElements:(GDataXMLElement *)rootElement;
 - (void)parserItemElements:(GDataXMLElement *)rootElement;
 - (void)stopParser;

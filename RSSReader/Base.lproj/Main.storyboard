@@ -673,7 +673,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vu5-Kl-8dv">
-                                <rect key="frame" x="378" y="361" width="98" height="32"/>
+                                <rect key="frame" x="363" y="361" width="113" height="32"/>
                                 <buttonCell key="cell" type="push" title="打开" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="HSr-Ff-gUx">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -691,7 +691,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="stU-Us-gHA">
-                                <rect key="frame" x="9" y="283" width="73" height="17"/>
+                                <rect key="frame" x="9" y="284" width="73" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="标题：" id="4fS-RR-bA1">
                                     <font key="font" size="13" name="HiraginoSansGB-W3"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -699,7 +699,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Eg-EN-TRt">
-                                <rect key="frame" x="80" y="368" width="296" height="21"/>
+                                <rect key="frame" x="80" y="368" width="264" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="LJQ-j7-y3w">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -707,33 +707,25 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wnF-ct-4dn">
-                                <rect key="frame" x="378" y="316" width="98" height="32"/>
-                                <buttonCell key="cell" type="push" title="开始解析" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YMG-V6-Lah">
+                                <rect key="frame" x="369" y="251" width="101" height="52"/>
+                                <buttonCell key="cell" type="square" title="开始解析" bezelStyle="shadowlessSquare" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YMG-V6-Lah">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" size="13" name="HiraginoSansGB-W3"/>
+                                    <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="startParserButtonPressed:" target="XfG-lQ-9wD" id="VWF-hD-XK7"/>
                                 </connections>
                             </button>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E7g-sg-Quw">
-                                <rect key="frame" x="80" y="280" width="166" height="22"/>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E7g-sg-Quw" userLabel="Title">
+                                <rect key="frame" x="56" y="281" width="288" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="bSF-kW-q8k">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eSr-R5-21U">
-                                <rect key="frame" x="262" y="283" width="73" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="更新日期：" id="NjC-md-bsG">
-                                    <font key="font" size="13" name="HiraginoSansGB-W3"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EXl-sm-Lt3">
-                                <rect key="frame" x="333" y="280" width="137" height="22"/>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EXl-sm-Lt3" userLabel="pubDate">
+                                <rect key="frame" x="190" y="251" width="154" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="D7p-d5-fXW">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -741,15 +733,15 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VzD-vn-bNZ">
-                                <rect key="frame" x="9" y="253" width="73" height="17"/>
+                                <rect key="frame" x="9" y="224" width="73" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="描述：" id="SJx-yo-fOG">
                                     <font key="font" size="13" name="HiraginoSansGB-W3"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="719-IL-Clp">
-                                <rect key="frame" x="80" y="250" width="296" height="22"/>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="719-IL-Clp" userLabel="Description">
+                                <rect key="frame" x="56" y="221" width="320" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="yYz-eT-Tuh">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -757,7 +749,7 @@
                                 </textFieldCell>
                             </textField>
                             <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1wV-bt-U3U" userLabel="LinkButton">
-                                <rect key="frame" x="415" y="248" width="25" height="25"/>
+                                <rect key="frame" x="415" y="219" width="25" height="25"/>
                                 <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2tA-fB-ZBD">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -782,37 +774,79 @@
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cD8-9M-07B">
                                 <rect key="frame" x="9" y="325" width="69" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="解析方式：" id="4F5-t1-1rq">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="返回类型：" id="4F5-t1-1rq">
                                     <font key="font" size="13" name="HiraginoSansGB-W3"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OWD-Ry-Ojj" userLabel="ParseMode">
-                                <rect key="frame" x="78" y="320" width="171" height="26"/>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OWD-Ry-Ojj" userLabel="Style">
+                                <rect key="frame" x="78" y="320" width="107" height="26"/>
                                 <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="f0T-x6-QRj" userLabel="Default">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
                                     <menu key="menu" id="T5I-CL-lfP"/>
                                 </popUpButtonCell>
                             </popUpButton>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bYL-fc-J8p">
+                                <rect key="frame" x="188" y="325" width="56" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="解析器：" id="kGX-ck-swh">
+                                    <font key="font" size="13" name="HiraginoSansGB-W3"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5mt-Ed-fbH" userLabel="Engine">
+                                <rect key="frame" x="246" y="320" width="101" height="26"/>
+                                <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="qr2-lp-7D1" userLabel="Default">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="GPP-ft-r2a"/>
+                                </popUpButtonCell>
+                            </popUpButton>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xjg-ku-c8x">
-                                <rect key="frame" x="262" y="321" width="116" height="25"/>
+                                <rect key="frame" x="356" y="321" width="116" height="25"/>
                                 <buttonCell key="cell" type="check" title="使用HTML标签" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="SR3-Y3-7cW">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qgi-f7-c4I">
+                                <rect key="frame" x="9" y="253" width="73" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="语言：" id="rg0-ti-Mdp">
+                                    <font key="font" size="13" name="HiraginoSansGB-W3"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QW4-UW-5Ew" userLabel="Language">
+                                <rect key="frame" x="56" y="251" width="56" height="22"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="eR0-V4-dq9">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eSr-R5-21U">
+                                <rect key="frame" x="118" y="253" width="69" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="更新日期：" id="NjC-md-bsG">
+                                    <font key="font" size="13" name="HiraginoSansGB-W3"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="channelDescriptionTextField" destination="719-IL-Clp" id="FWK-AV-G3X"/>
+                        <outlet property="channelLanguageTextField" destination="QW4-UW-5Ew" id="HcD-3F-l6Z"/>
                         <outlet property="channelLinkButton" destination="1wV-bt-U3U" id="7At-xF-7oV"/>
                         <outlet property="channelLinkTextField" destination="Evw-lt-MwI" id="QAV-Jz-nBi"/>
                         <outlet property="channelPubDateTextField" destination="EXl-sm-Lt3" id="pTi-9g-Vf5"/>
                         <outlet property="channelTitleTextField" destination="E7g-sg-Quw" id="3Ew-67-qTz"/>
+                        <outlet property="elementStringStylePopUp" destination="OWD-Ry-Ojj" id="H5z-ka-e6a"/>
                         <outlet property="filePathTextField" destination="6Eg-EN-TRt" id="2sV-sf-6WH"/>
-                        <outlet property="parseModePopUp" destination="OWD-Ry-Ojj" id="H5z-ka-e6a"/>
+                        <outlet property="parseEnginePopup" destination="5mt-Ed-fbH" id="59R-8i-tQ6"/>
                         <outlet property="startParseButton" destination="wnF-ct-4dn" id="fDT-RR-bzq"/>
                         <outlet property="useHTMLLabelCheckBox" destination="xjg-ku-c8x" id="0tV-RE-Ac2"/>
                     </connections>

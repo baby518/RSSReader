@@ -14,7 +14,8 @@
     [super viewDidLoad];
     
     [_startParseButton setEnabled:false];
-    [_parseModePopUp addItemsWithTitles:XMLParseModeArrays];
+    [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
+    [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
     // Do any additional setup after loading the view.
 }
 
@@ -60,7 +61,7 @@
         }
         _rssParser = [[RSSParser alloc]initWithData:data];
         _rssParser.delegate = self;
-        [_rssParser startParserWithMode:(XMLParseMode)[_parseModePopUp indexOfSelectedItem]];
+        [_rssParser startParserWithStyle:(XMLElementStringStyle)[_elementStringStylePopUp indexOfSelectedItem]];
     }
 }
 
@@ -110,6 +111,7 @@
     [_channelLinkButton setAccessibilityValueDescription:@""];
     [_channelDescriptionTextField setStringValue:@""];
     [_channelPubDateTextField setStringValue:@""];
+    [_channelLanguageTextField setStringValue:@""];
 }
 
 #pragma mark - XMLParserDelegate
@@ -124,6 +126,7 @@
             [_channelTitleTextField setStringValue:element.titleOfElement];
             [_channelLinkTextField setStringValue:element.linkOfElement];
             [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
+            [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
 
             if (_useHTMLLabelCheckBox.state == 0) {
                 [_channelDescriptionTextField setStringValue:element.descriptionOfElement];

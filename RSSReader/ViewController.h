@@ -17,10 +17,12 @@
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
 @property (weak) IBOutlet NSTextField *channelLinkTextField;
 @property (weak) IBOutlet NSTextField *channelDescriptionTextField;
+@property (weak) IBOutlet NSTextField *channelLanguageTextField;
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
 @property (weak) IBOutlet NSButton *channelLinkButton;
 @property (weak) IBOutlet NSButton *startParseButton;
-@property (weak) IBOutlet NSPopUpButton *parseModePopUp;
+@property (weak) IBOutlet NSPopUpButton *elementStringStylePopUp;
+@property (weak) IBOutlet NSPopUpButton *parseEnginePopup;
 @property (weak) IBOutlet NSButton *useHTMLLabelCheckBox;
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
