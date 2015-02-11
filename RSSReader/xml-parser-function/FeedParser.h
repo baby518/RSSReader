@@ -30,13 +30,13 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 };
 #define XMLParseEngineArrays @[@"GDataXMLParser", @"NSXMLParser"]
 
-@protocol RSSParserDelegate <NSObject>
+@protocol FeedParserDelegate <NSObject>
 - (void)elementDidParsed:(RSSBaseElement *)element;
 @end
 
-@interface RSSParser : NSObject <NSXMLParserDelegate>
+@interface FeedParser : NSObject <NSXMLParserDelegate>
 
-@property (nonatomic, assign) id <RSSParserDelegate> delegate;
+@property (nonatomic, assign) id <FeedParserDelegate> delegate;
 @property (nonatomic, assign, readonly) XMLElementStringStyle xmlElementStringStyle;
 @property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 

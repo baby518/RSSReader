@@ -6,10 +6,10 @@
 //  Copyright (c) 2015年 zhangchao. All rights reserved.
 //
 
-#import "RSSParser.h"
+#import "FeedParser.h"
 
-#pragma mark RSSParser (private)
-@interface RSSParser ()
+#pragma mark FeedParser (private)
+@interface FeedParser ()
 
 // properties used for GDataXML
 @property (nonatomic, strong, readonly) GDataXMLDocument *gDataXmlDoc;
@@ -28,8 +28,8 @@
 
 @end
 
-#pragma mark RSSParser
-@implementation RSSParser
+#pragma mark FeedParser
+@implementation FeedParser
 
 - (id)initWithData:(NSData *)data {
     return [self initWithParseEngine:GDataXMLParseEngine data:data];
@@ -97,8 +97,8 @@
             NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
 
             if (_xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                channelTitle = [RSSParser filterHtmlLabelInString:channelTitle];
-                channelDescription = [RSSParser filterHtmlLabelInString:channelDescription];
+                channelTitle = [FeedParser filterHtmlLabelInString:channelTitle];
+                channelDescription = [FeedParser filterHtmlLabelInString:channelDescription];
             }
             RSSChannelElement *channelElement = [[RSSChannelElement alloc] initWithTitle:channelTitle];
             channelElement.linkOfElement = channelLink;

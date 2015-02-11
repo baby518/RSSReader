@@ -55,13 +55,13 @@
 
 - (void) startParseData:(NSData *)data {
     if (data != nil) {
-        if (_rssParser != nil) {
-            [_rssParser stopParser];
-            _rssParser = nil;
+        if (_feedParser != nil) {
+            [_feedParser stopParser];
+            _feedParser = nil;
         }
-        _rssParser = [[RSSParser alloc] initWithParseEngine:(XMLParseEngine)[_parseEnginePopup indexOfSelectedItem] data:data];
-        _rssParser.delegate = self;
-        [_rssParser startParserWithStyle:(XMLElementStringStyle)[_elementStringStylePopUp indexOfSelectedItem]];
+        _feedParser = [[FeedParser alloc] initWithParseEngine:(XMLParseEngine)[_parseEnginePopup indexOfSelectedItem] data:data];
+        _feedParser.delegate = self;
+        [_feedParser startParserWithStyle:(XMLElementStringStyle) [_elementStringStylePopUp indexOfSelectedItem]];
     }
 }
 

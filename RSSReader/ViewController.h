@@ -7,11 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "RSSParser.h"
+#import "FeedParser.h"
 
-@interface ViewController : NSViewController <RSSParserDelegate, NSTableViewDataSource, NSTableViewDelegate>
+@interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDataSource, NSTableViewDelegate>
 @property (nonatomic, strong, readonly) NSData *data;
-@property (nonatomic, strong, readonly) RSSParser *rssParser;
+@property (nonatomic, strong, readonly) FeedParser *feedParser;
 
 @property (weak) IBOutlet NSTextField *filePathTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
