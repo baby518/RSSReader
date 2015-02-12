@@ -12,7 +12,7 @@
 #import "RSSSchema.h"
 #import "RSSChannelElement.h"
 #import "RSSItemElement.h"
-#import "XMLLog.h"
+#import "LogHelper.h"
 
 typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
     /** return all result ues NSString*/

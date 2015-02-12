@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "XMLLog.h"
+#import "LogHelper.h"
 
 extern NSString *const ROOT_NAME;
 extern NSString *const ATTRIBUTE_ROOT_VERSION;

@@ -37,6 +37,6 @@
 #  define LOG_TRACE(x)
 #endif
 
-@interface XMLLog : NSObject
+@interface LogHelper : NSObject
 
 @end

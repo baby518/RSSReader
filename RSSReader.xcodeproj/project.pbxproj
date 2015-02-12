@@ -27,7 +27,7 @@
 		D4CEC7161A827A5300D0A87A /* GDataXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataXMLNode.h; sourceTree = "<group>"; };
 		D4CEC7171A827A5300D0A87A /* GDataXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDataXMLNode.m; sourceTree = "<group>"; };
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		D4CFD03B1A83C287008E699E /* XMLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLLog.h; sourceTree = "<group>"; };
+		D4CFD03B1A83C287008E699E /* LogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogHelper.h; sourceTree = "<group>"; };
 		D4D00DB91A8BC86300B7E02B /* FeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedParser.h; sourceTree = "<group>"; };
 		D4D00DBA1A8BC86300B7E02B /* FeedParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedParser.m; sourceTree = "<group>"; };
 		D4D82CFE1A8A4A6700B7BF98 /* RSSBaseElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSBaseElement.h; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 				D4D00DBA1A8BC86300B7E02B /* FeedParser.m */,
 				D4D82CFD1A8A4A6700B7BF98 /* RSSElements */,
 				D4CEC7151A827A5300D0A87A /* GDataXML */,
-				D4CFD03B1A83C287008E699E /* XMLLog.h */,
+				D4CFD03B1A83C287008E699E /* LogHelper.h */,
 			);
 			path = FeedParserFunction;
 			sourceTree = "<group>";
