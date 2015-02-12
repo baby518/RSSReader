@@ -60,12 +60,14 @@
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
-    _xmlElementStringStyle = elementStringStyle;
-    if (_xmlParseEngine == NSXMLParseEngine) {
-        [_nsXmlParser parse];
-    } else if (_xmlParseEngine == GDataXMLParseEngine) {
-        [self parserRootElements:_gDataXmlDoc];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        _xmlElementStringStyle = elementStringStyle;
+        if (_xmlParseEngine == NSXMLParseEngine) {
+            [_nsXmlParser parse];
+        } else if (_xmlParseEngine == GDataXMLParseEngine) {
+            [self parserRootElements:_gDataXmlDoc];
+        }
+    });
 }
 
 - (void)stopParser {

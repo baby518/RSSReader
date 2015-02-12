@@ -117,32 +117,30 @@
 #pragma mark - XMLParserDelegate
 
 - (void)elementDidParsed:(RSSBaseElement *)element {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (element == nil) {
-            NSLog(@"elementDidParsed receive a nil value.");
-            return;
-        }
-        if ([element isKindOfClass:[RSSChannelElement class]]) {
-            [_channelTitleTextField setStringValue:element.titleOfElement];
-            [_channelLinkTextField setStringValue:element.linkOfElement];
-            [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
-            [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
+    if (element == nil) {
+        NSLog(@"elementDidParsed receive a nil value.");
+        return;
+    }
+    if ([element isKindOfClass:[RSSChannelElement class]]) {
+        [_channelTitleTextField setStringValue:element.titleOfElement];
+        [_channelLinkTextField setStringValue:element.linkOfElement];
+        [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
+        [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
 
-            if (_useHTMLLabelCheckBox.state == 0) {
-                [_channelDescriptionTextField setStringValue:element.descriptionOfElement];
-            } else {
-                NSAttributedString *attributedString = [[NSAttributedString alloc]
-                        initWithData:[element.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
-                             options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-                  documentAttributes:nil
-                               error:nil];
-                [_channelDescriptionTextField setAttributedStringValue:attributedString];
-            }
-            [_channelPubDateTextField setStringValue:[RSSSchema convertDate2String:element.pubDateOfElement]];
-        } else if ([element isKindOfClass:[RSSItemElement class]]) {
-
+        if (_useHTMLLabelCheckBox.state == 0) {
+            [_channelDescriptionTextField setStringValue:element.descriptionOfElement];
+        } else {
+            NSAttributedString *attributedString = [[NSAttributedString alloc]
+                    initWithData:[element.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
+                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+              documentAttributes:nil
+                           error:nil];
+            [_channelDescriptionTextField setAttributedStringValue:attributedString];
         }
-    });
+        [_channelPubDateTextField setStringValue:[RSSSchema convertDate2String:element.pubDateOfElement]];
+    } else if ([element isKindOfClass:[RSSItemElement class]]) {
+
+    }
 }
 
 //#pragma mark - NSTableViewDelegate
