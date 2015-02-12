@@ -59,7 +59,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D4CEC7141A827A5300D0A87A /* xml-parser-function */ = {
+		D4CEC7141A827A5300D0A87A /* FeedParserFunction */ = {
 			isa = PBXGroup;
 			children = (
 				D4D00DB91A8BC86300B7E02B /* FeedParser.h */,
@@ -68,7 +68,7 @@
 				D4CEC7151A827A5300D0A87A /* GDataXML */,
 				D4CFD03B1A83C287008E699E /* XMLLog.h */,
 			);
-			path = "xml-parser-function";
+			path = FeedParserFunction;
 			sourceTree = "<group>";
 		};
 		D4CEC7151A827A5300D0A87A /* GDataXML */ = {
@@ -115,7 +115,7 @@
 		D4FA672F1A8133A900265869 /* RSSReader */ = {
 			isa = PBXGroup;
 			children = (
-				D4CEC7141A827A5300D0A87A /* xml-parser-function */,
+				D4CEC7141A827A5300D0A87A /* FeedParserFunction */,
 				D4FA67321A8133A900265869 /* AppDelegate.h */,
 				D4FA67331A8133A900265869 /* AppDelegate.m */,
 				D4FA67371A8133A900265869 /* ViewController.h */,
