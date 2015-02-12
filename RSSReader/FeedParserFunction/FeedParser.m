@@ -11,10 +11,23 @@
 #pragma mark FeedParser (private)
 @interface FeedParser ()
 
+typedef NS_ENUM(NSInteger, FeedType) {
+    FeedTypeUnknown = 0,
+    FeedTypeRSS     = 1,
+};
+
+@property (nonatomic, assign) FeedType feedType;
+
 // properties used for GDataXML
-@property (nonatomic, strong, readonly) GDataXMLDocument *gDataXmlDoc;
+@property (nonatomic, strong) GDataXMLDocument *gDataXmlDoc;
 // properties used for NSXMLParser
-@property (nonatomic, strong, readonly) NSXMLParser *nsXmlParser;
+@property (nonatomic, strong) NSXMLParser *nsXmlParser;
+@property (nonatomic, strong) NSString *currentPath;
+@property (nonatomic, strong) NSMutableString *currentText;
+@property (nonatomic, strong) NSDictionary *currentElementAttributes;
+
+- (void)resetParserData;
+- (void)parseErrorOccurred;
 
 // methods used for GDataXML
 - (void)parserRootElements:(GDataXMLDocument *)xmlDocument;
@@ -43,13 +56,13 @@
         _xmlParseEngine = engine;
         _xmlData = data;
         if (_xmlParseEngine == NSXMLParseEngine) {
-            _nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
-            _nsXmlParser.delegate = self;
-            [_nsXmlParser setShouldProcessNamespaces:YES];
-            [_nsXmlParser setShouldReportNamespacePrefixes:YES];
-            [_nsXmlParser setShouldResolveExternalEntities:YES];
+            self.nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
+            self.nsXmlParser.delegate = self;
+            [self.nsXmlParser setShouldProcessNamespaces:YES];
+            [self.nsXmlParser setShouldReportNamespacePrefixes:YES];
+            [self.nsXmlParser setShouldResolveExternalEntities:YES];
         } else if (_xmlParseEngine == GDataXMLParseEngine) {
-            _gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
+            self.gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
         }
     }
     return self;
@@ -62,15 +75,33 @@
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         _xmlElementStringStyle = elementStringStyle;
+        [self resetParserData];
         if (_xmlParseEngine == NSXMLParseEngine) {
-            [_nsXmlParser parse];
+            [self.nsXmlParser parse];
         } else if (_xmlParseEngine == GDataXMLParseEngine) {
-            [self parserRootElements:_gDataXmlDoc];
+            [self parserRootElements:self.gDataXmlDoc];
         }
     });
 }
 
 - (void)stopParser {
+    if (_xmlParseEngine == NSXMLParseEngine) {
+        [self.nsXmlParser abortParsing];
+    }
+}
+
+- (void)resetParserData {
+    self.feedType = FeedTypeUnknown;
+    if (_xmlParseEngine == NSXMLParseEngine) {
+        self.currentPath = @"/";
+        self.currentText = [[NSMutableString alloc] init];
+        self.currentElementAttributes = nil;
+    }
+}
+
+- (void)parseErrorOccurred {
+    [self resetParserData];
+    [self stopParser];
 }
 
 #pragma mark GDataXMLParseEngine
@@ -78,11 +109,14 @@
     GDataXMLElement *gDataRootElement = [xmlDocument rootElement];
     if (gDataRootElement == nil) {
         LOGE(@"Root Element is not found !!!");
+        [self parseErrorOccurred];
         return;
     } else if (![[gDataRootElement name] isEqualToString:ROOT_NAME]) {
         LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [gDataRootElement name]);
+        [self parseErrorOccurred];
         return;
     }
+    self.feedType = FeedTypeRSS;
     NSString *version = [[gDataRootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
     LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:gDataRootElement];
@@ -137,17 +171,35 @@
 
 -(void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
     LOGD(@"parseErrorOccurred %@", parseError);
-//    [_delegate onErrorWhenParser:parseError.code];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-    LOGD(@"didStartElement elementName : %@", elementName);
+//    LOGD(@"didStartElement elementName : %@", elementName);
+//    LOGD(@"didStartElement qualifiedName : %@", qName);
+    // Adjust path
+    self.currentPath = [self.currentPath stringByAppendingPathComponent:qName];
+    self.currentElementAttributes = attributeDict;
+    LOGD(@"didStartElement currentPath : %@", self.currentPath);
+    // Reset
+    [self.currentText setString:@""];
+
+    // Determine feed type
+    if (self.feedType == FeedTypeUnknown) {
+        if ([qName isEqualToString:ROOT_NAME]) {
+            self.feedType = FeedTypeRSS;
+        } else {
+            LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", qName);
+            [self parseErrorOccurred];
+        }
+        return;
+    }
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qName {
-    LOGD(@"didEndElement elementName : %@", elementName);
+//    LOGD(@"didEndElement elementName : %@", elementName);
+//    LOGD(@"didEndElement qualifiedName : %@", qName);
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
