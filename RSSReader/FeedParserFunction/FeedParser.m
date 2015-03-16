@@ -24,7 +24,8 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @property (nonatomic, strong) NSXMLParser *nsXmlParser;
 @property (nonatomic, strong) NSString *currentPath;
 @property (nonatomic, strong) NSMutableString *currentText;
-@property (nonatomic, strong) RSSBaseElement *currentElement;
+@property (nonatomic, strong) RSSBaseElement *currentChannel;
+@property (nonatomic, strong) RSSBaseElement *currentChannelItem;
 @property (nonatomic, strong) NSDictionary *currentElementAttributes;
 
 - (void)resetParserData;
@@ -199,13 +200,13 @@ typedef NS_ENUM(NSInteger, FeedType) {
     // Entering new feed element
     if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_CHANNEL_PATH]) {
         RSSBaseElement *element = [[RSSChannelElement alloc] initWithTitle:@""];
-        self.currentElement = element;
+        self.currentChannel = element;
         return;
     }
 
     if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH]) {
         RSSBaseElement *element = [[RSSItemElement alloc] initWithTitle:@""];
-        self.currentElement = element;
+        self.currentChannelItem = element;
         return;
     }
 }
@@ -222,25 +223,25 @@ typedef NS_ENUM(NSInteger, FeedType) {
         switch (self.feedType) {
             case FeedTypeRSS: {
                 if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
-                    self.currentElement.titleOfElement = processedText;
+                    self.currentChannel.titleOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_LINK_PATH]) {
-                    self.currentElement.linkOfElement = processedText;
+                    self.currentChannel.linkOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_DESCRIPTION_PATH]) {
-                    self.currentElement.descriptionOfElement = processedText;
+                    self.currentChannel.descriptionOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_PUBDATE_PATH]) {
-                    self.currentElement.pubDateStringOfElement = processedText;
+                    self.currentChannel.pubDateStringOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_LANGUAGE_PATH]) {
-                    if ([self.currentElement isKindOfClass:[RSSChannelElement class]]) {
-                        ((RSSChannelElement *) self.currentElement).languageOfChannel = processedText;
+                    if ([self.currentChannel isKindOfClass:[RSSChannelElement class]]) {
+                        ((RSSChannelElement *) self.currentChannel).languageOfChannel = processedText;
                         processed = YES;
                     }
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_COPYRIGHT_PATH]) {
-                    if ([self.currentElement isKindOfClass:[RSSChannelElement class]]) {
-                        ((RSSChannelElement *) self.currentElement).copyrightOfChannel = processedText;
+                    if ([self.currentChannel isKindOfClass:[RSSChannelElement class]]) {
+                        ((RSSChannelElement *) self.currentChannel).copyrightOfChannel = processedText;
                         processed = YES;
                     }
                 }
@@ -257,8 +258,8 @@ typedef NS_ENUM(NSInteger, FeedType) {
     if (!processed) {
         if (self.feedType == FeedTypeRSS && [qName isEqualToString:ROOT_NAME]) {
             // post channel's info
-            LOGD(@"postElementDidParsed channel's info : %@", self.currentElement.description);
-            [self postElementDidParsed:self.currentElement];
+            LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
+            [self postElementDidParsed:self.currentChannel];
         }
         // post channel's children item
     }
