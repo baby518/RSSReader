@@ -281,8 +281,8 @@ typedef NS_ENUM(NSInteger, FeedType) {
 #pragma mark PostElementDidParsed
 - (void)postElementDidParsed:(RSSBaseElement *)element {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (_delegate != nil) {
-            [_delegate elementDidParsed:element];
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
+            [self.delegate elementDidParsed:element];
         }
     });
 }
