@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @property (nonatomic, strong) NSXMLParser *nsXmlParser;
 @property (nonatomic, strong) NSString *currentPath;
 @property (nonatomic, strong) NSMutableString *currentText;
+@property (nonatomic, strong) RSSBaseElement *currentElement;
 @property (nonatomic, strong) NSDictionary *currentElementAttributes;
 
 - (void)resetParserData;
@@ -131,6 +132,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
             NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
             NSString *channelPubDate = [[channel elementsForName:ELEMENT_CHANNEL_PUBDATE][0] stringValue];
             NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
+            NSString *channelCopyRight = [[channel elementsForName:ELEMENT_CHANNEL_COPYRIGHT][0] stringValue];
 
             if (_xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 channelTitle = [FeedParser filterHtmlLabelInString:channelTitle];
@@ -141,6 +143,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
             channelElement.descriptionOfElement = channelDescription;
             channelElement.pubDateStringOfElement = channelPubDate;
             channelElement.languageOfChannel = channelLanguage;
+            channelElement.copyrightOfChannel = channelCopyRight;
             [self postElementDidParsed:channelElement];
 
             [self parserItemElements:channel];
@@ -175,8 +178,6 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-//    LOGD(@"didStartElement elementName : %@", elementName);
-//    LOGD(@"didStartElement qualifiedName : %@", qName);
     // Adjust path
     self.currentPath = [self.currentPath stringByAppendingPathComponent:qName];
     self.currentElementAttributes = attributeDict;
@@ -194,16 +195,86 @@ typedef NS_ENUM(NSInteger, FeedType) {
         }
         return;
     }
+
+    // Entering new feed element
+    if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_CHANNEL_PATH]) {
+        RSSBaseElement *element = [[RSSChannelElement alloc] initWithTitle:@""];
+        self.currentElement = element;
+        return;
+    }
+
+    if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH]) {
+        RSSBaseElement *element = [[RSSItemElement alloc] initWithTitle:@""];
+        self.currentElement = element;
+        return;
+    }
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qName {
-//    LOGD(@"didEndElement elementName : %@", elementName);
-//    LOGD(@"didEndElement qualifiedName : %@", qName);
+    LOGD(@"didEndElement qualifiedName : %@", qName);
+    // Store data
+    BOOL processed = NO;
+
+    if (![self.currentText isEqualToString:@""]) {
+        NSString *processedText = [NSString stringWithString:self.currentText];
+        // Process
+        switch (self.feedType) {
+            case FeedTypeRSS: {
+                if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
+                    self.currentElement.titleOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_LINK_PATH]) {
+                    self.currentElement.linkOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_DESCRIPTION_PATH]) {
+                    self.currentElement.descriptionOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_PUBDATE_PATH]) {
+                    self.currentElement.pubDateStringOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_LANGUAGE_PATH]) {
+                    if ([self.currentElement isKindOfClass:[RSSChannelElement class]]) {
+                        ((RSSChannelElement *) self.currentElement).languageOfChannel = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_COPYRIGHT_PATH]) {
+                    if ([self.currentElement isKindOfClass:[RSSChannelElement class]]) {
+                        ((RSSChannelElement *) self.currentElement).copyrightOfChannel = processedText;
+                        processed = YES;
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    // Adjust path
+    self.currentPath = [self.currentPath stringByDeletingLastPathComponent];
+
+    if (!processed) {
+        if (self.feedType == FeedTypeRSS && [qName isEqualToString:ROOT_NAME]) {
+            // post channel's info
+            LOGD(@"postElementDidParsed channel's info : %@", self.currentElement.description);
+            [self postElementDidParsed:self.currentElement];
+        }
+        // post channel's children item
+    }
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
     LOGD(@"foundCharacters : %@", string);
+
+    [self.currentText appendString:string];
+}
+
+- (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock {
+    NSString *dataString = [[NSString alloc] initWithData:CDATABlock encoding:NSUTF8StringEncoding];
+    if (dataString != nil) {
+        [self.currentText appendString:dataString];
+    }
 }
 
 #pragma mark PostElementDidParsed
