@@ -135,7 +135,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
             NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
             NSString *channelCopyRight = [[channel elementsForName:ELEMENT_CHANNEL_COPYRIGHT][0] stringValue];
 
-            if (_xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+            if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 channelTitle = [FeedParser filterHtmlLabelInString:channelTitle];
                 channelDescription = [FeedParser filterHtmlLabelInString:channelDescription];
             }
@@ -223,12 +223,18 @@ typedef NS_ENUM(NSInteger, FeedType) {
         switch (self.feedType) {
             case FeedTypeRSS: {
                 if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
+                    if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [FeedParser filterHtmlLabelInString:processedText];
+                    }
                     self.currentChannel.titleOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_LINK_PATH]) {
                     self.currentChannel.linkOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_DESCRIPTION_PATH]) {
+                    if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [FeedParser filterHtmlLabelInString:processedText];
+                    }
                     self.currentChannel.descriptionOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_PUBDATE_PATH]) {
