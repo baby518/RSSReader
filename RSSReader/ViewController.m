@@ -122,20 +122,26 @@
         return;
     }
     if ([element isKindOfClass:[RSSChannelElement class]]) {
-        [_channelTitleTextField setStringValue:element.titleOfElement];
         [_channelLinkTextField setStringValue:element.linkOfElement];
         [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
         [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
 
         if (_useHTMLLabelCheckBox.state == 0) {
+            [_channelTitleTextField setStringValue:element.titleOfElement];
             [_channelDescriptionTextField setStringValue:element.descriptionOfElement];
         } else {
-            NSAttributedString *attributedString = [[NSAttributedString alloc]
+            NSAttributedString *attributedStringTitle = [[NSAttributedString alloc]
+                    initWithData:[element.titleOfElement dataUsingEncoding:NSUnicodeStringEncoding]
+                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+              documentAttributes:nil
+                           error:nil];
+            [_channelTitleTextField setAttributedStringValue:attributedStringTitle];
+            NSAttributedString *attributedStringDescription = [[NSAttributedString alloc]
                     initWithData:[element.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
                          options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
               documentAttributes:nil
                            error:nil];
-            [_channelDescriptionTextField setAttributedStringValue:attributedString];
+            [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
         }
         [_channelPubDateTextField setStringValue:[RSSSchema convertDate2String:element.pubDateOfElement]];
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
