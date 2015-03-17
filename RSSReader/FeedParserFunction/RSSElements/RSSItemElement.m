@@ -9,5 +9,15 @@
 #import "RSSItemElement.h"
 
 @implementation RSSItemElement
-
+- (NSString *)description {
+    NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:", NSStringFromClass([self class])];
+    [description appendFormat:@"  titleOfElement=%@", self.titleOfElement];
+    [description appendFormat:@", linkOfElement=%@", self.linkOfElement];
+    [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
+    [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];
+    [description appendFormat:@", authorOfItem=%@", self.authorOfItem];
+    [description appendFormat:@", guidOfItem=%@", self.guidOfItem];
+    [description appendString:@">"];
+    return description;
+}
 @end

@@ -36,6 +36,10 @@ NSString *const ELEMENT_ITEM_PUBDATE            = @"pubDate";
 NSString *const ELEMENT_ITEM_PUBDATE_PATH       = @"/rss/channel/item/pubDate";
 NSString *const ELEMENT_ITEM_DC_CREATOR         = @"dc:creator";
 NSString *const ELEMENT_ITEM_DC_CREATOR_PATH    = @"/rss/channel/item/dc:creator";
+NSString *const ELEMENT_ITEM_AUTHOR             = @"author";
+NSString *const ELEMENT_ITEM_AUTHOR_PATH        = @"/rss/channel/item/author";
+NSString *const ELEMENT_ITEM_GUID               = @"guid";
+NSString *const ELEMENT_ITEM_GUID_PATH          = @"/rss/channel/item/guid";
 
 int const MAX_ELEMENT_COUNTS                    = 100;
 

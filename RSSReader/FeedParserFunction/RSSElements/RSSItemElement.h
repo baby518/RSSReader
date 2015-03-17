@@ -10,7 +10,6 @@
 
 @interface RSSItemElement : RSSBaseElement
 
-@property(nonatomic, strong) NSString *creatorOfItem;
 @property(nonatomic, strong) NSString *authorOfItem;
-@property(nonatomic, strong) NSString *guideOfItem;
+@property(nonatomic, strong) NSString *guidOfItem;
 @end

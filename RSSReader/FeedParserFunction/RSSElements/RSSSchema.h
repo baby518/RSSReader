@@ -37,6 +37,10 @@ extern NSString *const ELEMENT_ITEM_PUBDATE;
 extern NSString *const ELEMENT_ITEM_PUBDATE_PATH;
 extern NSString *const ELEMENT_ITEM_DC_CREATOR;
 extern NSString *const ELEMENT_ITEM_DC_CREATOR_PATH;
+extern NSString *const ELEMENT_ITEM_AUTHOR;
+extern NSString *const ELEMENT_ITEM_AUTHOR_PATH;
+extern NSString *const ELEMENT_ITEM_GUID;
+extern NSString *const ELEMENT_ITEM_GUID_PATH;
 
 extern int const MAX_ELEMENT_COUNTS;
 

@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @property (nonatomic, strong) NSString *currentPath;
 @property (nonatomic, strong) NSMutableString *currentText;
 @property (nonatomic, strong) RSSBaseElement *currentChannel;
-@property (nonatomic, strong) RSSBaseElement *currentChannelItem;
+@property (nonatomic, strong) RSSBaseElement *currentItem;
 @property (nonatomic, strong) NSDictionary *currentElementAttributes;
 
 - (void)resetParserData;
@@ -160,6 +160,28 @@ typedef NS_ENUM(NSInteger, FeedType) {
             NSString *itemDescription = [[item elementsForName:ELEMENT_ITEM_DESCRIPTION][0] stringValue];
             NSString *itemLink = [[item elementsForName:ELEMENT_ITEM_LINK][0] stringValue];
             NSString *itemPubDate = [[item elementsForName:ELEMENT_ITEM_PUBDATE][0] stringValue];
+            NSString *itemCreator = [[item elementsForName:ELEMENT_ITEM_DC_CREATOR][0] stringValue];
+            NSString *itemAuthor = [[item elementsForName:ELEMENT_ITEM_AUTHOR][0] stringValue];
+            NSString *itemGuid = [[item elementsForName:ELEMENT_ITEM_GUID][0] stringValue];
+
+            if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                itemTitle = [FeedParser filterHtmlLabelInString:itemTitle];
+                itemDescription = [FeedParser filterHtmlLabelInString:itemDescription];
+            }
+
+            RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:itemTitle];
+            itemElement.linkOfElement = itemLink;
+            itemElement.descriptionOfElement = itemDescription;
+            itemElement.pubDateStringOfElement = itemPubDate;
+            if (itemCreator != nil) {
+                itemElement.authorOfItem = itemCreator;
+            } else if (itemAuthor != nil) {
+                itemElement.authorOfItem = itemAuthor;
+            }
+            itemElement.guidOfItem = itemGuid;
+
+            LOGD(@"postElementDidParsed current item : %@", itemElement.description);
+            [self postElementDidParsed:itemElement];
         }
     }
 }
@@ -206,7 +228,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
     if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH]) {
         RSSBaseElement *element = [[RSSItemElement alloc] initWithTitle:@""];
-        self.currentChannelItem = element;
+        self.currentItem = element;
         return;
     }
 }
@@ -222,6 +244,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
         // Process
         switch (self.feedType) {
             case FeedTypeRSS: {
+                // Process channel
                 if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
                     if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                         processedText = [FeedParser filterHtmlLabelInString:processedText];
@@ -251,6 +274,44 @@ typedef NS_ENUM(NSInteger, FeedType) {
                         processed = YES;
                     }
                 }
+
+                // Process item
+                if ([self.currentPath isEqualToString:ELEMENT_ITEM_TITLE_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).titleOfElement = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_LINK_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).linkOfElement = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_DESCRIPTION_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).descriptionOfElement = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_PUBDATE_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).pubDateStringOfElement = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_DC_CREATOR_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).authorOfItem = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_AUTHOR_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).authorOfItem = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_GUID_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).guidOfItem = processedText;
+                        processed = YES;
+                    }
+                }
                 break;
             }
             default:
@@ -262,12 +323,18 @@ typedef NS_ENUM(NSInteger, FeedType) {
     self.currentPath = [self.currentPath stringByDeletingLastPathComponent];
 
     if (!processed) {
-        if (self.feedType == FeedTypeRSS && [qName isEqualToString:ROOT_NAME]) {
+        // post channel's children item
+        if (self.feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_ITEM]) {
+            // post item
+            LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
+            [self postElementDidParsed:self.currentItem];
+        }
+
+        if (self.feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_CHANNEL]) {
             // post channel's info
             LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
             [self postElementDidParsed:self.currentChannel];
         }
-        // post channel's children item
     }
 }
 
