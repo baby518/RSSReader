@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AppKit/NSAttributedString.h>
 
 @interface RSSBaseElement : NSObject
 
