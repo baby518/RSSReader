@@ -59,7 +59,7 @@
             [_feedParser stopParser];
             _feedParser = nil;
         }
-        _feedParser = [[FeedParser alloc] initWithParseEngine:(XMLParseEngine)[_parseEnginePopup indexOfSelectedItem] data:data];
+        _feedParser = [[FeedParser alloc] initWithData:data parseEngine:(XMLParseEngine) [_parseEnginePopup indexOfSelectedItem]];
         _feedParser.delegate = self;
         [_feedParser startParserWithStyle:(XMLElementStringStyle) [_elementStringStylePopUp indexOfSelectedItem]];
     }

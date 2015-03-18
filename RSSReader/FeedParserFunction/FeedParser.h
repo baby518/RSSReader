@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 @property (nonatomic, strong, readonly) NSData* xmlData;
 
 - (id)initWithData:(NSData *)data;
-- (id)initWithParseEngine:(XMLParseEngine)engine data:(NSData *)data;
+- (id)initWithData:(NSData *)data parseEngine:(XMLParseEngine)engine;
 
 - (void)startParser;
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;

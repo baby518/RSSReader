@@ -47,10 +47,10 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @implementation FeedParser
 
 - (id)initWithData:(NSData *)data {
-    return [self initWithParseEngine:GDataXMLParseEngine data:data];
+    return [self initWithData:data parseEngine:GDataXMLParseEngine];
 }
 
-- (id)initWithParseEngine:(XMLParseEngine)engine data:(NSData *)data {
+- (id)initWithData:(NSData *)data parseEngine:(XMLParseEngine)engine {
     self = [super self];
     if (self) {
         unsigned long size = [data length];
