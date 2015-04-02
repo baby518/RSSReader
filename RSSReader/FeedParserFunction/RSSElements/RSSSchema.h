@@ -6,6 +6,8 @@
 #import <Foundation/Foundation.h>
 #import "LogHelper.h"
 
+extern NSString *const RSS_MIME_TYPE;
+
 extern NSString *const ROOT_NAME;
 extern NSString *const ROOT_NAME_PATH;
 extern NSString *const ATTRIBUTE_ROOT_VERSION;

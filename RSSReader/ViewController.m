@@ -41,7 +41,7 @@
         [self.openLocalFileButton setEnabled:NO];
         [self.loadUrlButton setEnabled:YES];
         [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:@""];
+        [self.filePathTextField setStringValue:@"http://rss.cnbeta.com/rss"];
     }
 }
 
@@ -52,7 +52,20 @@
     NSString *urlString = [self.filePathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSURL *feedURL = [NSURL URLWithString:urlString];
 
-//    // Create default request with no caching
+    // Method 1 : use NSData load URL
+//    NSError *urlError = nil;
+//    NSData *urlData = [NSData dataWithContentsOfURL:feedURL options:NSDataReadingMappedIfSafe error:&urlError];
+//    if (urlData && !urlError) {
+//        _data = urlData;
+//    } else {
+//        NSLog(@"loadDataFromURL data is %@", urlData);
+//        NSLog(@"loadDataFromURL error is %@", urlError);
+//        _data = nil;
+//    }
+//    [_startParseButton setEnabled:(_data != nil)];
+
+    // Method 2 : use NSURLConnection sync request
+    // Create default request with no caching
 //    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:feedURL
 //                                                                cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
 //                                                            timeoutInterval:60];
@@ -69,17 +82,42 @@
 //        NSLog(@"loadDataFromURL error is %@", error);
 //        _data = nil;
 //    }
+//    [_startParseButton setEnabled:(_data != nil)];
 
-    NSError *urlError = nil;
-    NSData *urlData = [NSData dataWithContentsOfURL:feedURL options:NSDataReadingMappedIfSafe error:&urlError];
-    if (urlData && !urlError) {
-        _data = urlData;
-    } else {
-        NSLog(@"loadDataFromURL data is %@", urlData);
-        NSLog(@"loadDataFromURL error is %@", urlError);
-        _data = nil;
-    }
-    [_startParseButton setEnabled:(_data != nil)];
+    // Method 3: use NSURLConnection Async copy from SeismicXML
+    NSURLRequest *feedURLRequest = [NSURLRequest requestWithURL:feedURL];
+
+    [NSURLConnection sendAsynchronousRequest:feedURLRequest
+            // the NSOperationQueue upon which the handler block will be dispatched:
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               // back on the main thread, check for errors, if no errors start the parsing
+                               // TODO UIApplication is used for IOS
+//                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                               // here we check for any returned NSError from the server, "and" we also check for any http response errors
+                               if (error != nil) {
+//                                   [self handleError:error];
+                                   NSLog(@"NSURLConnection error is %@", error);
+                                   _data = nil;
+                               } else {
+                                   // check for any response errors
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                                   NSLog(@"NSURLConnection completionHandler statusCode : %ld", [httpResponse statusCode]);
+                                   NSLog(@"NSURLConnection completionHandler MIMEType : %@", [httpResponse MIMEType]);
+                                   if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
+                                       // the XML data.
+                                       _data = data;
+                                   } else {
+                                       NSString *errorString = NSLocalizedString(@"HTTP Error", @"Error message displayed when receving a connection error.");
+                                       NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                                       NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                                                  code:[httpResponse statusCode]
+                                                                              userInfo:userInfo];
+//                                       [self handleError:reportError];
+                                   }
+                               }
+                               [_startParseButton setEnabled:(_data != nil)];
+                           }];
 }
 
 - (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender {
