@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
     self = [super self];
     if (self) {
         unsigned long size = [data length];
-        NSLog(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
+        LOGD(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
         _xmlData = data;
     }
     return self;
@@ -65,7 +65,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
         if (urlData && !urlError) {
             self = [self initWithData:urlData];
         } else {
-            NSLog(@"initWithURL loadDataFromURL error is %@", urlError);
+            LOGE(@"initWithURL loadDataFromURL error is %@", urlError);
             if (urlError && errorPtr) {
                 *errorPtr = [[NSError alloc] initWithDomain:urlError.domain code:urlError.code userInfo:urlError.userInfo];
             }
@@ -83,7 +83,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 //        if (data && !error) {
 //            self = [self initWithData:data];
 //        } else {
-//            NSLog(@"loadDataFromURL error is %@", error);
+//            LOGE(@"loadDataFromURL error is %@", error);
 //            if (error && errorPtr) {
 //                *errorPtr = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:error.userInfo];
 //            }
@@ -99,15 +99,13 @@ typedef NS_ENUM(NSInteger, FeedType) {
 //                                   // back on the main thread, check for errors, if no errors start the parsing
 //                                   // here we check for any returned NSError from the server, "and" we also check for any http response errors
 //                                   if (error != nil) {
-//                                       NSLog(@"NSURLConnection error is %@", error);
+//                                       LOGE(@"NSURLConnection error is %@", error);
 //                                       if (errorPtr) {
 //                                           *errorPtr = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:error.userInfo];
 //                                       }
 //                                   } else {
 //                                       // check for any response errors
 //                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-//                                       NSLog(@"NSURLConnection completionHandler statusCode : %ld", [httpResponse statusCode]);
-//                                       NSLog(@"NSURLConnection completionHandler MIMEType : %@", [httpResponse MIMEType]);
 //                                       if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
 //                                           // the XML data.
 //                                           [self initWithData:data];
@@ -117,6 +115,9 @@ typedef NS_ENUM(NSInteger, FeedType) {
 //                                           NSError *reportError = [NSError errorWithDomain:@"HTTP"
 //                                                                                      code:[httpResponse statusCode]
 //                                                                                  userInfo:userInfo];
+//                                           LOGE(@"NSURLConnection statusCode : %ld", [httpResponse statusCode]);
+//                                           LOGE(@"NSURLConnection MIMEType : %@", [httpResponse MIMEType]);
+//                                           LOGE(@"NSURLConnection http error is %@", error);
 //                                           if (errorPtr) {
 //                                               *errorPtr = [[NSError alloc] initWithDomain:reportError.domain code:reportError.code userInfo:reportError.userInfo];
 //                                           }
