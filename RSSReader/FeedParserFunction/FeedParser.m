@@ -47,25 +47,83 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @implementation FeedParser
 
 - (id)initWithData:(NSData *)data {
-    return [self initWithData:data parseEngine:GDataXMLParseEngine];
-}
-
-- (id)initWithData:(NSData *)data parseEngine:(XMLParseEngine)engine {
     self = [super self];
     if (self) {
         unsigned long size = [data length];
         NSLog(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
-        _xmlParseEngine = engine;
         _xmlData = data;
-        if (_xmlParseEngine == NSXMLParseEngine) {
-            self.nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
-            self.nsXmlParser.delegate = self;
-            [self.nsXmlParser setShouldProcessNamespaces:YES];
-            [self.nsXmlParser setShouldReportNamespacePrefixes:YES];
-            [self.nsXmlParser setShouldResolveExternalEntities:YES];
-        } else if (_xmlParseEngine == GDataXMLParseEngine) {
-            self.gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
+    }
+    return self;
+}
+
+- (id)initWithURL:(NSURL *)feedURL error:(NSError **)errorPtr {
+    self = [super self];
+    if (self) {
+        // Method 1 : use NSData load URL
+        NSError *urlError = nil;
+        NSData *urlData = [NSData dataWithContentsOfURL:feedURL options:NSDataReadingMappedIfSafe error:&urlError];
+        if (urlData && !urlError) {
+            self = [self initWithData:urlData];
+        } else {
+            NSLog(@"initWithURL loadDataFromURL error is %@", urlError);
+            if (urlError && errorPtr) {
+                *errorPtr = [[NSError alloc] initWithDomain:urlError.domain code:urlError.code userInfo:urlError.userInfo];
+            }
         }
+
+//        // Method 2 : use NSURLConnection sync request
+//        // Create default request with no caching
+//        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:feedURL
+//                                                                    cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+//                                                                timeoutInterval:60];
+//        // Sync
+//        NSURLResponse *response = nil;
+//        NSError *error = nil;
+//        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//        if (data && !error) {
+//            self = [self initWithData:data];
+//        } else {
+//            NSLog(@"loadDataFromURL error is %@", error);
+//            if (error && errorPtr) {
+//                *errorPtr = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:error.userInfo];
+//            }
+//        }
+
+//        // Method 3: use NSURLConnection Async copy from SeismicXML
+//        NSURLRequest *feedURLRequest = [NSURLRequest requestWithURL:feedURL];
+//
+//        [NSURLConnection sendAsynchronousRequest:feedURLRequest
+//                // the NSOperationQueue upon which the handler block will be dispatched:
+//                                           queue:[NSOperationQueue mainQueue]
+//                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+//                                   // back on the main thread, check for errors, if no errors start the parsing
+//                                   // here we check for any returned NSError from the server, "and" we also check for any http response errors
+//                                   if (error != nil) {
+//                                       NSLog(@"NSURLConnection error is %@", error);
+//                                       if (errorPtr) {
+//                                           *errorPtr = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:error.userInfo];
+//                                       }
+//                                   } else {
+//                                       // check for any response errors
+//                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+//                                       NSLog(@"NSURLConnection completionHandler statusCode : %ld", [httpResponse statusCode]);
+//                                       NSLog(@"NSURLConnection completionHandler MIMEType : %@", [httpResponse MIMEType]);
+//                                       if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
+//                                           // the XML data.
+//                                           [self initWithData:data];
+//                                       } else {
+//                                           NSString *errorString = @"Error message displayed when receving a connection error.";
+//                                           NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+//                                           NSError *reportError = [NSError errorWithDomain:@"HTTP"
+//                                                                                      code:[httpResponse statusCode]
+//                                                                                  userInfo:userInfo];
+//                                           if (errorPtr) {
+//                                               *errorPtr = [[NSError alloc] initWithDomain:reportError.domain code:reportError.code userInfo:reportError.userInfo];
+//                                           }
+//                                       }
+//                                   }
+//                               }];
+
     }
     return self;
 }
@@ -75,6 +133,22 @@ typedef NS_ENUM(NSInteger, FeedType) {
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
+    [self startParserWithStyle:elementStringStyle parseEngine:GDataXMLParseEngine];
+}
+
+- (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine {
+    // set engine
+    _xmlParseEngine = engine;
+    if (_xmlParseEngine == NSXMLParseEngine) {
+        self.nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
+        self.nsXmlParser.delegate = self;
+        [self.nsXmlParser setShouldProcessNamespaces:YES];
+        [self.nsXmlParser setShouldReportNamespacePrefixes:YES];
+        [self.nsXmlParser setShouldResolveExternalEntities:YES];
+    } else if (_xmlParseEngine == GDataXMLParseEngine) {
+        self.gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
+    }
+    // start parser
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         _xmlElementStringStyle = elementStringStyle;
         [self resetParserData];
