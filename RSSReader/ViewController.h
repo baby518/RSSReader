@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 - (IBAction)startParserButtonPressed:(NSButton *)sender;
 - (IBAction)loadUrlButtonPressed:(NSButton *)sender;
 - (IBAction)didChannelLinkClicked:(NSButton *)sender;
-- (void) startParseData:(NSData *)data;
+- (void) startParse;
 
 - (NSString *)getFilePathFromDialog;
 - (NSData *)loadDataFromFile:(NSString *)path;

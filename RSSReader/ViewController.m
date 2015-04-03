@@ -51,12 +51,16 @@
     NSString *urlString = [self.filePathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSURL *feedURL = [NSURL URLWithString:urlString];
 
-    NSError *urlError = nil;
-    _feedParser = [[FeedParser alloc] initWithURL:feedURL error:&urlError];
-    NSLog(@"initWithURL error is %@", urlError);
-    _data = [_feedParser.xmlData copy];
+//    NSError *urlError = nil;
+//    _feedParser = [[FeedParser alloc] initWithURLSync:feedURL error:&urlError];
+//    _feedParser.delegate = self;
+//    NSLog(@"initWithURL error is %@", urlError);
+//    _data = [_feedParser.xmlData copy];
+//
+//    [_startParseButton setEnabled:(_data != nil)];
 
-    [_startParseButton setEnabled:(_data != nil)];
+    _feedParser = [[FeedParser alloc] initWithURLAsync:feedURL];
+    _feedParser.delegate = self;
 }
 
 - (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender {
@@ -73,11 +77,13 @@
     if (path != nil) [self clearUIContents];
     
     _data = [self loadDataFromFile:path];
+    _feedParser = [[FeedParser alloc] initWithData:_data];
+    _feedParser.delegate = self;
     [_startParseButton setEnabled:(_data != nil)];
 }
 
 - (IBAction)startParserButtonPressed:(NSButton *)sender {
-    [self startParseData:_data];
+    [self startParse];
 }
 
 - (IBAction)didChannelLinkClicked:(NSButton *)sender {
@@ -92,17 +98,12 @@
     }
 }
 
-- (void) startParseData:(NSData *)data {
-    if (data != nil) {
-        if (_feedParser != nil) {
-            [_feedParser stopParser];
-            _feedParser = nil;
-        }
-        _feedParser = [[FeedParser alloc] initWithData:data];
-        _feedParser.delegate = self;
-        [_feedParser startParserWithStyle:(XMLElementStringStyle) [_elementStringStylePopUp indexOfSelectedItem]
-                              parseEngine:(XMLParseEngine) [_parseEnginePopup indexOfSelectedItem]];
+- (void) startParse {
+    if (_feedParser != nil) {
+        [_feedParser stopParser];
     }
+    [_feedParser startParserWithStyle:(XMLElementStringStyle) [_elementStringStylePopUp indexOfSelectedItem]
+                          parseEngine:(XMLParseEngine) [_parseEnginePopup indexOfSelectedItem]];
 }
 
 - (NSData *)loadDataFromFile:(NSString *)path {
@@ -154,7 +155,14 @@
     [_channelLanguageTextField setStringValue:@""];
 }
 
-#pragma mark - XMLParserDelegate
+#pragma mark - FeedParserDelegate
+
+- (void)urlAsyncDidLoad:(NSError *)error {
+    if (error == nil) {
+        _data = [_feedParser.xmlData copy];
+        [_startParseButton setEnabled:(_data != nil)];
+    }
+}
 
 - (void)elementDidParsed:(RSSBaseElement *)element {
     if (element == nil) {

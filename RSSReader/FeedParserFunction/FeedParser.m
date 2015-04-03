@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
 // post result
 - (void)postElementDidParsed:(RSSBaseElement *)element;
+- (void)postURLAsyncResult:(NSError *)error;
 
 @end
 
@@ -56,7 +57,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
     return self;
 }
 
-- (id)initWithURL:(NSURL *)feedURL error:(NSError **)errorPtr {
+- (id)initWithURLSync:(NSURL *)feedURL error:(NSError **)errorPtr {
     self = [super self];
     if (self) {
         // Method 1 : use NSData load URL
@@ -88,43 +89,45 @@ typedef NS_ENUM(NSInteger, FeedType) {
 //                *errorPtr = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:error.userInfo];
 //            }
 //        }
+    }
+    return self;
+}
 
-//        // Method 3: use NSURLConnection Async copy from SeismicXML
-//        NSURLRequest *feedURLRequest = [NSURLRequest requestWithURL:feedURL];
-//
-//        [NSURLConnection sendAsynchronousRequest:feedURLRequest
-//                // the NSOperationQueue upon which the handler block will be dispatched:
-//                                           queue:[NSOperationQueue mainQueue]
-//                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-//                                   // back on the main thread, check for errors, if no errors start the parsing
-//                                   // here we check for any returned NSError from the server, "and" we also check for any http response errors
-//                                   if (error != nil) {
-//                                       LOGE(@"NSURLConnection error is %@", error);
-//                                       if (errorPtr) {
-//                                           *errorPtr = [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:error.userInfo];
-//                                       }
-//                                   } else {
-//                                       // check for any response errors
-//                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-//                                       if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
-//                                           // the XML data.
-//                                           [self initWithData:data];
-//                                       } else {
-//                                           NSString *errorString = @"Error message displayed when receving a connection error.";
-//                                           NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
-//                                           NSError *reportError = [NSError errorWithDomain:@"HTTP"
-//                                                                                      code:[httpResponse statusCode]
-//                                                                                  userInfo:userInfo];
-//                                           LOGE(@"NSURLConnection statusCode : %ld", [httpResponse statusCode]);
-//                                           LOGE(@"NSURLConnection MIMEType : %@", [httpResponse MIMEType]);
-//                                           LOGE(@"NSURLConnection http error is %@", error);
-//                                           if (errorPtr) {
-//                                               *errorPtr = [[NSError alloc] initWithDomain:reportError.domain code:reportError.code userInfo:reportError.userInfo];
-//                                           }
-//                                       }
-//                                   }
-//                               }];
+- (id)initWithURLAsync:(NSURL *)feedURL {
+    self = [super self];
+    if (self) {
+        // Method 3: use NSURLConnection Async copy from SeismicXML
+        NSURLRequest *feedURLRequest = [NSURLRequest requestWithURL:feedURL];
 
+        [NSURLConnection sendAsynchronousRequest:feedURLRequest
+                // the NSOperationQueue upon which the handler block will be dispatched:
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   // back on the main thread, check for errors, if no errors start the parsing
+                                   // here we check for any returned NSError from the server, "and" we also check for any http response errors
+                                   if (error != nil) {
+                                       LOGE(@"NSURLConnection error is %@", error);
+                                       [self postURLAsyncResult:error];
+                                   } else {
+                                       // check for any response errors
+                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                                       if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
+                                           // the XML data.
+                                           [self initWithData:data];
+                                           [self postURLAsyncResult:nil];
+                                       } else {
+                                           NSString *errorString = @"Error message displayed when receving a connection error.";
+                                           NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                                           NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                                                      code:[httpResponse statusCode]
+                                                                                  userInfo:userInfo];
+                                           LOGE(@"NSURLConnection statusCode : %ld", [httpResponse statusCode]);
+                                           LOGE(@"NSURLConnection MIMEType : %@", [httpResponse MIMEType]);
+                                           LOGE(@"NSURLConnection http response error is %@", reportError);
+                                           [self postURLAsyncResult:reportError];
+                                       }
+                                   }
+                               }];
     }
     return self;
 }
@@ -431,6 +434,14 @@ typedef NS_ENUM(NSInteger, FeedType) {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
             [self.delegate elementDidParsed:element];
+        }
+    });
+}
+
+- (void)postURLAsyncResult:(NSError *)error{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(urlAsyncDidLoad:)]) {
+            [self.delegate urlAsyncDidLoad:error];
         }
     });
 }
