@@ -24,8 +24,12 @@
 
 #pragma mark RSSParser super
 - (void)startParser {
-    LOGD(@"GDataRSSParser startParser");
-    [super startParser];
+    [self startParserWithStyle:XMLElementStringNormal];
+}
+
+- (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
+    LOGD(@"GDataRSSParser startParser elementStringStyle %ld", elementStringStyle);
+    [super startParserWithStyle:elementStringStyle];
 
     self.gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:self.xmlData options:0 error:nil];
     [self parserRootElements:self.gDataXmlDoc];
@@ -48,7 +52,7 @@
         [self postErrorOccurred:nil];
         return;
     }
-//    self.feedType = FeedTypeRSS;
+    self.feedType = FeedTypeRSS;
     NSString *version = [[gDataRootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
     LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:gDataRootElement];
@@ -65,10 +69,10 @@
             NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
             NSString *channelCopyRight = [[channel elementsForName:ELEMENT_CHANNEL_COPYRIGHT][0] stringValue];
 
-//            if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-//                channelTitle = [FeedParser filterHtmlLabelInString:channelTitle];
-//                channelDescription = [FeedParser filterHtmlLabelInString:channelDescription];
-//            }
+            if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                channelTitle = [RSSParser filterHtmlLabelInString:channelTitle];
+                channelDescription = [RSSParser filterHtmlLabelInString:channelDescription];
+            }
             RSSChannelElement *channelElement = [[RSSChannelElement alloc] initWithTitle:channelTitle];
             channelElement.linkOfElement = channelLink;
             channelElement.descriptionOfElement = channelDescription;
@@ -94,10 +98,10 @@
             NSString *itemAuthor = [[item elementsForName:ELEMENT_ITEM_AUTHOR][0] stringValue];
             NSString *itemGuid = [[item elementsForName:ELEMENT_ITEM_GUID][0] stringValue];
 
-//            if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-//                itemTitle = [FeedParser filterHtmlLabelInString:itemTitle];
-//                itemDescription = [FeedParser filterHtmlLabelInString:itemDescription];
-//            }
+            if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                itemTitle = [RSSParser filterHtmlLabelInString:itemTitle];
+                itemDescription = [RSSParser filterHtmlLabelInString:itemDescription];
+            }
 
             RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:itemTitle];
             itemElement.linkOfElement = itemLink;

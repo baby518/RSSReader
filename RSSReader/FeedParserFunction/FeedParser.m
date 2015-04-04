@@ -13,10 +13,7 @@
 #pragma mark FeedParser (private)
 @interface FeedParser ()
 
-- (void)parseErrorOccurred;
-
 // post result
-- (void)postElementDidParsed:(RSSBaseElement *)element;
 - (void)postURLAsyncResult:(NSError *)error;
 
 @end
@@ -137,8 +134,7 @@
         self.parser.delegate = self;
         // start parser
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            _xmlElementStringStyle = elementStringStyle;
-            [self.parser startParser];
+            [self.parser startParserWithStyle:elementStringStyle];
         });
     }
 }
@@ -149,19 +145,7 @@
     }
 }
 
-- (void)parseErrorOccurred {
-    [self stopParser];
-}
-
-
-#pragma mark PostElementDidParsed
-- (void)postElementDidParsed:(RSSBaseElement *)element {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
-            [self.delegate elementDidParsed:element];
-        }
-    });
-}
+#pragma mark postURLAsyncResult
 
 - (void)postURLAsyncResult:(NSError *)error{
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -178,7 +162,11 @@
 }
 
 - (void)elementDidParsed:(RSSBaseElement *)element {
-    [self postElementDidParsed:element];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
+            [self.delegate elementDidParsed:element];
+        }
+    });
 }
 
 @end

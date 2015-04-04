@@ -13,14 +13,6 @@
 #import "RSSItemElement.h"
 #import "LogHelper.h"
 
-typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
-    /** return all result ues NSString*/
-    XMLElementStringNormal           = 0,
-    /** return result filtered HTML label.*/
-    XMLElementStringFilterHtmlLabel  = 1,
-};
-#define XMLElementStringStyleArrays @[@"Normal", @"FilterHtmlLabel"]
-
 typedef NS_ENUM(NSInteger, XMLParseEngine) {
     /** Use GDataXMLParser.*/
     GDataXMLParseEngine  = 0,
@@ -41,7 +33,6 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 
 @property (nonatomic, assign) id <FeedParserDelegate> delegate;
 @property (nonatomic, strong) RSSParser* parser;
-@property (nonatomic, assign, readonly) XMLElementStringStyle xmlElementStringStyle;
 @property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;

@@ -26,6 +26,9 @@
 - (void)startParser {
 }
 
+- (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
+}
+
 - (void)stopParser {
 }
 

@@ -25,11 +25,16 @@
 
 #pragma mark RSSParser super
 - (void)startParser {
-    LOGD(@"RSSParser startParser");
-    [super startParser];
+    [self startParserWithStyle:XMLElementStringNormal];
+}
+
+- (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
+    LOGD(@"RSSParser startParser elementStringStyle %ld", elementStringStyle);
+    [super startParserWithStyle:elementStringStyle];
 
     [self resetParserData];
 
+    xmlElementStringStyle = elementStringStyle;
     self.nsXmlParser = [[NSXMLParser alloc] initWithData:self.xmlData];
     self.nsXmlParser.delegate = self;
     [self.nsXmlParser setShouldProcessNamespaces:YES];
@@ -41,9 +46,9 @@
 
 - (void)stopParser {
     LOGD(@"RSSParser stopParser");
-    [super stopParser];
-
     [self.nsXmlParser abortParsing];
+
+    [super stopParser];
 }
 
 #pragma mark NSRSSParser (private)
@@ -114,18 +119,18 @@
             case FeedTypeRSS: {
                 // Process channel
                 if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
-//                    if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-//                        processedText = [FeedParser filterHtmlLabelInString:processedText];
-//                    }
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                    }
                     self.currentChannel.titleOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_LINK_PATH]) {
                     self.currentChannel.linkOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_DESCRIPTION_PATH]) {
-//                    if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-//                        processedText = [FeedParser filterHtmlLabelInString:processedText];
-//                    }
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                    }
                     self.currentChannel.descriptionOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_PUBDATE_PATH]) {
