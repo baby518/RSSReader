@@ -7,6 +7,8 @@
 //
 
 #import "FeedParser.h"
+#import "NSRSSParser.h"
+#import "GDataRSSParser.h"
 
 #pragma mark FeedParser (private)
 @interface FeedParser ()
@@ -18,8 +20,6 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
 @property (nonatomic, assign) FeedType feedType;
 
-// properties used for GDataXML
-@property (nonatomic, strong) GDataXMLDocument *gDataXmlDoc;
 // properties used for NSXMLParser
 @property (nonatomic, strong) NSXMLParser *nsXmlParser;
 @property (nonatomic, strong) NSString *currentPath;
@@ -30,11 +30,6 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
 - (void)resetParserData;
 - (void)parseErrorOccurred;
-
-// methods used for GDataXML
-- (void)parserRootElements:(GDataXMLDocument *)xmlDocument;
-- (void)parserChannelElements:(GDataXMLElement *)rootElement;
-- (void)parserItemElements:(GDataXMLElement *)rootElement;
 
 // methods used for NSXMLParser
 
@@ -141,27 +136,53 @@ typedef NS_ENUM(NSInteger, FeedType) {
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine {
+//    // set engine
+//    _xmlParseEngine = engine;
+//    if (_xmlParseEngine == NSXMLParseEngine) {
+//        self.nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
+//        self.nsXmlParser.delegate = self;
+//        [self.nsXmlParser setShouldProcessNamespaces:YES];
+//        [self.nsXmlParser setShouldReportNamespacePrefixes:YES];
+//        [self.nsXmlParser setShouldResolveExternalEntities:YES];
+//    } else if (_xmlParseEngine == GDataXMLParseEngine) {
+//        self.gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
+//    }
+//
+//    // start parser
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        _xmlElementStringStyle = elementStringStyle;
+//        [self resetParserData];
+//        if (_xmlParseEngine == NSXMLParseEngine) {
+//            [self.nsXmlParser parse];
+//        } else if (_xmlParseEngine == GDataXMLParseEngine) {
+//            [self parserRootElements:self.gDataXmlDoc];
+//        }
+//    });
+
     // set engine
     _xmlParseEngine = engine;
-    if (_xmlParseEngine == NSXMLParseEngine) {
-        self.nsXmlParser = [[NSXMLParser alloc] initWithData:_xmlData];
-        self.nsXmlParser.delegate = self;
-        [self.nsXmlParser setShouldProcessNamespaces:YES];
-        [self.nsXmlParser setShouldReportNamespacePrefixes:YES];
-        [self.nsXmlParser setShouldResolveExternalEntities:YES];
-    } else if (_xmlParseEngine == GDataXMLParseEngine) {
-        self.gDataXmlDoc = [[GDataXMLDocument alloc] initWithData:_xmlData options:0 error:nil];
+    // Determine the Class for the parser
+    switch (_xmlParseEngine) {
+        case GDataXMLParseEngine:
+            self.parser = [[GDataRSSParser alloc] initWithData:_xmlData];
+            break;
+        case NSXMLParseEngine:
+            self.parser = [[NSRSSParser alloc] initWithData:_xmlData];
+            break;
+        default:
+            NSAssert1(NO, @"Unknown parser type %ld", _xmlParseEngine);
+            break;
     }
-    // start parser
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        _xmlElementStringStyle = elementStringStyle;
-        [self resetParserData];
-        if (_xmlParseEngine == NSXMLParseEngine) {
-            [self.nsXmlParser parse];
-        } else if (_xmlParseEngine == GDataXMLParseEngine) {
-            [self parserRootElements:self.gDataXmlDoc];
-        }
-    });
+    if (self.parser != nil) {
+        // Set parser's delegate.
+        self.parser.delegate = self;
+        // start parser
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            _xmlElementStringStyle = elementStringStyle;
+            [self resetParserData];
+            [self.parser startParser];
+        });
+    }
 }
 
 - (void)stopParser {
@@ -182,86 +203,6 @@ typedef NS_ENUM(NSInteger, FeedType) {
 - (void)parseErrorOccurred {
     [self resetParserData];
     [self stopParser];
-}
-
-#pragma mark GDataXMLParseEngine
-- (void)parserRootElements:(GDataXMLDocument *)xmlDocument {
-    GDataXMLElement *gDataRootElement = [xmlDocument rootElement];
-    if (gDataRootElement == nil) {
-        LOGE(@"Root Element is not found !!!");
-        [self parseErrorOccurred];
-        return;
-    } else if (![[gDataRootElement name] isEqualToString:ROOT_NAME]) {
-        LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", [gDataRootElement name]);
-        [self parseErrorOccurred];
-        return;
-    }
-    self.feedType = FeedTypeRSS;
-    NSString *version = [[gDataRootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
-    LOGD(@"This rss file's VERSION is %@", version);
-    [self parserChannelElements:gDataRootElement];
-}
-
-- (void)parserChannelElements:(GDataXMLElement *)rootElement {
-    NSArray *channels = [rootElement elementsForName:ELEMENT_CHANNEL];
-    for (GDataXMLElement *channel in channels) {
-        if (channel != nil) {
-            NSString *channelTitle = [[channel elementsForName:ELEMENT_CHANNEL_TITLE][0] stringValue];
-            NSString *channelLink = [[channel elementsForName:ELEMENT_CHANNEL_LINK][0] stringValue];
-            NSString *channelDescription = [[channel elementsForName:ELEMENT_CHANNEL_DESCRIPTION][0] stringValue];
-            NSString *channelPubDate = [[channel elementsForName:ELEMENT_CHANNEL_PUBDATE][0] stringValue];
-            NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
-            NSString *channelCopyRight = [[channel elementsForName:ELEMENT_CHANNEL_COPYRIGHT][0] stringValue];
-
-            if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                channelTitle = [FeedParser filterHtmlLabelInString:channelTitle];
-                channelDescription = [FeedParser filterHtmlLabelInString:channelDescription];
-            }
-            RSSChannelElement *channelElement = [[RSSChannelElement alloc] initWithTitle:channelTitle];
-            channelElement.linkOfElement = channelLink;
-            channelElement.descriptionOfElement = channelDescription;
-            channelElement.pubDateStringOfElement = channelPubDate;
-            channelElement.languageOfChannel = channelLanguage;
-            channelElement.copyrightOfChannel = channelCopyRight;
-            [self postElementDidParsed:channelElement];
-
-            [self parserItemElements:channel];
-        }
-    }
-}
-
-- (void)parserItemElements:(GDataXMLElement *)rootElement {
-    NSArray *items = [rootElement elementsForName:ELEMENT_ITEM];
-    for (GDataXMLElement *item in items) {
-        if (item != nil) {
-            NSString *itemTitle = [[item elementsForName:ELEMENT_ITEM_TITLE][0] stringValue];
-            NSString *itemDescription = [[item elementsForName:ELEMENT_ITEM_DESCRIPTION][0] stringValue];
-            NSString *itemLink = [[item elementsForName:ELEMENT_ITEM_LINK][0] stringValue];
-            NSString *itemPubDate = [[item elementsForName:ELEMENT_ITEM_PUBDATE][0] stringValue];
-            NSString *itemCreator = [[item elementsForName:ELEMENT_ITEM_DC_CREATOR][0] stringValue];
-            NSString *itemAuthor = [[item elementsForName:ELEMENT_ITEM_AUTHOR][0] stringValue];
-            NSString *itemGuid = [[item elementsForName:ELEMENT_ITEM_GUID][0] stringValue];
-
-            if (self.xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                itemTitle = [FeedParser filterHtmlLabelInString:itemTitle];
-                itemDescription = [FeedParser filterHtmlLabelInString:itemDescription];
-            }
-
-            RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:itemTitle];
-            itemElement.linkOfElement = itemLink;
-            itemElement.descriptionOfElement = itemDescription;
-            itemElement.pubDateStringOfElement = itemPubDate;
-            if (itemCreator != nil) {
-                itemElement.authorOfItem = itemCreator;
-            } else if (itemAuthor != nil) {
-                itemElement.authorOfItem = itemAuthor;
-            }
-            itemElement.guidOfItem = itemGuid;
-
-            LOGD(@"postElementDidParsed current item : %@", itemElement.description);
-            [self postElementDidParsed:itemElement];
-        }
-    }
 }
 
 #pragma mark - NSXMLParseEngine & NSXMLParserDelegate
@@ -445,6 +386,18 @@ typedef NS_ENUM(NSInteger, FeedType) {
         }
     });
 }
+
+#pragma mark RSSParserDelegate
+
+- (void)parseErrorOccurred:(NSError *)error {
+    [self resetParserData];
+    [self stopParser];
+}
+
+- (void)elementDidParsed:(RSSBaseElement *)element {
+    [self postElementDidParsed:element];
+}
+
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString {
     NSAttributedString *attributedString = [[NSAttributedString alloc]

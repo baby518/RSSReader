@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/NSAttributedString.h>
-#import "GDataXMLNode.h"
+#import "RSSParser.h"
 #import "RSSSchema.h"
 #import "RSSChannelElement.h"
 #import "RSSItemElement.h"
@@ -35,9 +35,13 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 - (void)elementDidParsed:(RSSBaseElement *)element;
 @end
 
-@interface FeedParser : NSObject <NSXMLParserDelegate>
+/**
+* FeedParser has two functions, load data from URL and use RSSParser to parse data.
+* */
+@interface FeedParser : NSObject <NSXMLParserDelegate, RSSParserDelegate>
 
 @property (nonatomic, assign) id <FeedParserDelegate> delegate;
+@property (nonatomic, strong) RSSParser* parser;
 @property (nonatomic, assign, readonly) XMLElementStringStyle xmlElementStringStyle;
 @property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 
