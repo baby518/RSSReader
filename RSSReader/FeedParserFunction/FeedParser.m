@@ -12,10 +12,9 @@
 
 #pragma mark FeedParser (private)
 @interface FeedParser ()
-
+- (void) initializeData:(NSData *)data;
 // post result
 - (void)postURLAsyncResult:(NSError *)error;
-
 @end
 
 #pragma mark FeedParser
@@ -24,9 +23,7 @@
 - (id)initWithData:(NSData *)data {
     self = [super self];
     if (self) {
-        unsigned long size = [data length];
-        LOGD(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
-        _xmlData = data;
+        [self initializeData:data];
     }
     return self;
 }
@@ -38,7 +35,7 @@
         NSError *urlError = nil;
         NSData *urlData = [NSData dataWithContentsOfURL:feedURL options:NSDataReadingMappedIfSafe error:&urlError];
         if (urlData && !urlError) {
-            self = [self initWithData:urlData];
+            [self initializeData:urlData];
         } else {
             LOGE(@"initWithURL loadDataFromURL error is %@", urlError);
             if (urlError && errorPtr) {
@@ -56,7 +53,7 @@
 //        NSError *error = nil;
 //        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
 //        if (data && !error) {
-//            self = [self initWithData:data];
+//            [self initializeData:data];
 //        } else {
 //            LOGE(@"loadDataFromURL error is %@", error);
 //            if (error && errorPtr) {
@@ -87,7 +84,7 @@
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                                        if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
                                            // the XML data.
-                                           [self initWithData:data];
+                                           [self initializeData:data];
                                            [self postURLAsyncResult:nil];
                                        } else {
                                            NSString *errorString = @"Error message displayed when receving a connection error.";
@@ -115,6 +112,10 @@
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine {
+    if (_xmlData == nil) {
+        LOGW(@"return because xmlData is nil, may be Async NSURLConnection Request is not complete.");
+        return;
+    }
     // set engine
     _xmlParseEngine = engine;
     // Determine the Class for the parser
@@ -145,7 +146,13 @@
     }
 }
 
-#pragma mark postURLAsyncResult
+#pragma mark FeedParser (private)
+
+- (void) initializeData:(NSData *)data {
+    unsigned long size = [data length];
+    LOGD(@"initializeData size : %lu Byte, %lu KB", size, size / 1024);
+    _xmlData = data;
+}
 
 - (void)postURLAsyncResult:(NSError *)error{
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -13,11 +13,6 @@
 #import "RSSItemElement.h"
 #import "LogHelper.h"
 
-@protocol RSSParserDelegate <NSObject>
-- (void)parseErrorOccurred:(NSError *)error;
-- (void)elementDidParsed:(RSSBaseElement *)element;
-@end
-
 typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
     /** return all result ues NSString*/
     XMLElementStringNormal           = 0,
@@ -25,6 +20,11 @@ typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
     XMLElementStringFilterHtmlLabel  = 1,
 };
 #define XMLElementStringStyleArrays @[@"Normal", @"FilterHtmlLabel"]
+
+@protocol RSSParserDelegate <NSObject>
+- (void)parseErrorOccurred:(NSError *)error;
+- (void)elementDidParsed:(RSSBaseElement *)element;
+@end
 
 @interface RSSParser : NSObject {
 @protected
@@ -37,7 +37,6 @@ typedef NS_ENUM(NSInteger, FeedType) {
 };
 
 @property (nonatomic, assign) FeedType feedType;
-
 
 @property (nonatomic, assign) id <RSSParserDelegate> delegate;
 @property (nonatomic, strong, readonly) NSData* xmlData;
