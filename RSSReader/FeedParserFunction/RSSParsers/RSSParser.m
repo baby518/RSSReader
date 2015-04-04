@@ -46,4 +46,13 @@
         }
     });
 }
+
++ (NSString *)filterHtmlLabelInString:(NSString *)srcString {
+    NSAttributedString *attributedString = [[NSAttributedString alloc]
+            initWithData:[srcString dataUsingEncoding:NSUnicodeStringEncoding]
+                 options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+      documentAttributes:nil
+                   error:nil];
+    return attributedString.string;
+}
 @end

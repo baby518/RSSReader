@@ -8,6 +8,6 @@
 
 #import "RSSParser.h"
 
-@interface NSRSSParser : RSSParser
+@interface NSRSSParser : RSSParser<NSXMLParserDelegate>
 
 @end

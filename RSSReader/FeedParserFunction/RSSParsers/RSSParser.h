@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AppKit/NSAttributedString.h>
 #import "RSSSchema.h"
 #import "RSSChannelElement.h"
 #import "RSSItemElement.h"
@@ -18,6 +19,14 @@
 @end
 
 @interface RSSParser : NSObject
+
+typedef NS_ENUM(NSInteger, FeedType) {
+    FeedTypeUnknown = 0,
+    FeedTypeRSS     = 1,
+};
+
+@property (nonatomic, assign) FeedType feedType;
+
 @property (nonatomic, assign) id <RSSParserDelegate> delegate;
 @property (nonatomic, strong, readonly) NSData* xmlData;
 - (id)initWithData:(NSData *)data;
@@ -26,4 +35,6 @@
 
 - (void)postErrorOccurred:(NSError *)error;
 - (void)postElementDidParsed:(RSSBaseElement *)element;
+
++ (NSString *)filterHtmlLabelInString:(NSString *)srcString;
 @end
