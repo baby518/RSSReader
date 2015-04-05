@@ -53,7 +53,7 @@
 
 #pragma mark NSRSSParser (private)
 - (void)resetParserData {
-    self.feedType = FeedTypeUnknown;
+    feedType = FeedTypeUnknown;
     self.currentPath = @"/";
     self.currentText = [[NSMutableString alloc] init];
     self.currentElementAttributes = nil;
@@ -82,9 +82,9 @@
     [self.currentText setString:@""];
 
     // Determine feed type
-    if (self.feedType == FeedTypeUnknown) {
+    if (feedType == FeedTypeUnknown) {
         if ([qName isEqualToString:ROOT_NAME]) {
-            self.feedType = FeedTypeRSS;
+            feedType = FeedTypeRSS;
         } else {
             LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", qName);
             [self postErrorOccurred:nil];
@@ -93,13 +93,13 @@
     }
 
     // Entering new feed element
-    if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_CHANNEL_PATH]) {
+    if (feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_CHANNEL_PATH]) {
         RSSBaseElement *element = [[RSSChannelElement alloc] initWithTitle:@""];
         self.currentChannel = element;
         return;
     }
 
-    if (self.feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH]) {
+    if (feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH]) {
         RSSBaseElement *element = [[RSSItemElement alloc] initWithTitle:@""];
         self.currentItem = element;
         return;
@@ -115,7 +115,7 @@
     if (![self.currentText isEqualToString:@""]) {
         NSString *processedText = [NSString stringWithString:self.currentText];
         // Process
-        switch (self.feedType) {
+        switch (feedType) {
             case FeedTypeRSS: {
                 // Process channel
                 if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
@@ -197,13 +197,13 @@
 
     if (!processed) {
         // post channel's children item
-        if (self.feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_ITEM]) {
+        if (feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_ITEM]) {
             // post item
             LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
             [self postElementDidParsed:self.currentItem];
         }
 
-        if (self.feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_CHANNEL]) {
+        if (feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_CHANNEL]) {
             // post channel's info
             LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
             [self postElementDidParsed:self.currentChannel];

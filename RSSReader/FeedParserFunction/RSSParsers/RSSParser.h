@@ -21,6 +21,11 @@ typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
 };
 #define XMLElementStringStyleArrays @[@"Normal", @"FilterHtmlLabel"]
 
+typedef NS_ENUM(NSInteger, FeedType) {
+    FeedTypeUnknown = 0,
+    FeedTypeRSS     = 1,
+};
+
 @protocol RSSParserDelegate <NSObject>
 - (void)parseErrorOccurred:(NSError *)error;
 - (void)elementDidParsed:(RSSBaseElement *)element;
@@ -29,14 +34,8 @@ typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
 @interface RSSParser : NSObject {
 @protected
     XMLElementStringStyle xmlElementStringStyle;
+    FeedType feedType;
 }
-
-typedef NS_ENUM(NSInteger, FeedType) {
-    FeedTypeUnknown = 0,
-    FeedTypeRSS     = 1,
-};
-
-@property (nonatomic, assign) FeedType feedType;
 
 @property (nonatomic, assign) id <RSSParserDelegate> delegate;
 @property (nonatomic, strong, readonly) NSData* xmlData;
@@ -45,7 +44,9 @@ typedef NS_ENUM(NSInteger, FeedType) {
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;
 - (void)stopParser;
 
+// try to set protected later
 - (void)postErrorOccurred:(NSError *)error;
+// try to set protected later
 - (void)postElementDidParsed:(RSSBaseElement *)element;
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString;

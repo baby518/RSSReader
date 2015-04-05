@@ -52,7 +52,7 @@
         [self postErrorOccurred:nil];
         return;
     }
-    self.feedType = FeedTypeRSS;
+    feedType = FeedTypeRSS;
     NSString *version = [[gDataRootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
     LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:gDataRootElement];
