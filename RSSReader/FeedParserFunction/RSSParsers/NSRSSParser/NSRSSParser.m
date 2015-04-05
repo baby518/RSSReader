@@ -24,9 +24,6 @@
 @implementation NSRSSParser
 
 #pragma mark RSSParser super
-- (void)startParser {
-    [self startParserWithStyle:XMLElementStringNormal];
-}
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
     LOGD(@"RSSParser startParser elementStringStyle %ld", elementStringStyle);
@@ -34,7 +31,6 @@
 
     [self resetParserData];
 
-    xmlElementStringStyle = elementStringStyle;
     self.nsXmlParser = [[NSXMLParser alloc] initWithData:self.xmlData];
     self.nsXmlParser.delegate = self;
     [self.nsXmlParser setShouldProcessNamespaces:YES];
@@ -112,7 +108,7 @@
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qName {
-    LOGD(@"didEndElement qualifiedName : %@", qName);
+//    LOGD(@"didEndElement qualifiedName : %@", qName);
     // Store data
     BOOL processed = NO;
 
@@ -155,6 +151,9 @@
                 // Process item
                 if ([self.currentPath isEqualToString:ELEMENT_ITEM_TITLE_PATH]) {
                     if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                            processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        }
                         ((RSSItemElement *) self.currentItem).titleOfElement = processedText;
                         processed = YES;
                     }
@@ -164,6 +163,9 @@
                         processed = YES;
                     }
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_DESCRIPTION_PATH]) {
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                    }
                     if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
                         ((RSSItemElement *) self.currentItem).descriptionOfElement = processedText;
                         processed = YES;
@@ -208,9 +210,11 @@
                     if (self.currentChannel != nil && [self.currentItem isKindOfClass:[RSSItemElement class]]) {
                         [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
                     }
-                    // post item
-                    LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
-                    [self postElementDidParsed:self.currentItem];
+                    /* zhangchao Time:2015-04-05,not post items now, just post channel. START ++++*/
+//                    // post item
+//                    LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
+//                    [self postElementDidParsed:self.currentItem];
+                    /* zhangchao Time:2015-04-05,not post items now, just post channel. END ----*/
                 } else if ([qName isEqualToString:ELEMENT_CHANNEL]) {
                     // post channel's info
                     LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
@@ -225,7 +229,7 @@
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-    LOGD(@"foundCharacters : %@", string);
+//    LOGD(@"foundCharacters : %@", string);
 
     [self.currentText appendString:string];
 }

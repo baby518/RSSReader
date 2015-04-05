@@ -24,9 +24,11 @@
 }
 
 - (void)startParser {
+    [self startParserWithStyle:XMLElementStringNormal];
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
+    xmlElementStringStyle = elementStringStyle;
 }
 
 - (void)stopParser {

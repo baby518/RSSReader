@@ -23,9 +23,6 @@
 @implementation GDataRSSParser
 
 #pragma mark RSSParser super
-- (void)startParser {
-    [self startParserWithStyle:XMLElementStringNormal];
-}
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
     LOGD(@"GDataRSSParser startParser elementStringStyle %ld", elementStringStyle);
@@ -87,6 +84,7 @@
             // add items in channel's item array.
             [self parserItemElements:channel parent:channelElement];
 
+            LOGD(@"postElementDidParsed current channel : %@", channelElement.description);
             [self postElementDidParsed:channelElement];
         }
     }
@@ -121,8 +119,10 @@
             itemElement.guidOfItem = itemGuid;
 
             [parentChannel addItem:itemElement];
-            LOGD(@"postElementDidParsed current item : %@", itemElement.description);
-            [self postElementDidParsed:itemElement];
+            /* zhangchao Time:2015-04-05,not post items now, just post channel. START ++++*/
+//            LOGD(@"postElementDidParsed current item : %@", itemElement.description);
+//            [self postElementDidParsed:itemElement];
+            /* zhangchao Time:2015-04-05,not post items now, just post channel. END ----*/
         }
     }
 }
