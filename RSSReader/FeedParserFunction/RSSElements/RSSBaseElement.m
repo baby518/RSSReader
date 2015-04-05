@@ -26,6 +26,9 @@
     self = [super init];
     if (self) {
         self.titleOfElement = title;
+        self.linkOfElement = @"";
+        self.descriptionOfElement = @"";
+        self.pubDateStringOfElement = @"";
     }
     return self;
 }

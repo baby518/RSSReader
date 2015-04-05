@@ -70,6 +70,13 @@
             NSString *channelLanguage = [[channel elementsForName:ELEMENT_CHANNEL_LANGUAGE][0] stringValue];
             NSString *channelCopyRight = [[channel elementsForName:ELEMENT_CHANNEL_COPYRIGHT][0] stringValue];
 
+            if (channelTitle == nil) channelTitle = @"";
+            if (channelLink == nil) channelLink = @"";
+            if (channelDescription == nil) channelDescription = @"";
+            if (channelPubDate == nil) channelPubDate = @"";
+            if (channelLanguage == nil) channelLanguage = @"";
+            if (channelCopyRight == nil) channelCopyRight = @"";
+
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 channelTitle = [RSSParser filterHtmlLabelInString:channelTitle];
                 channelDescription = [RSSParser filterHtmlLabelInString:channelDescription];
@@ -101,6 +108,14 @@
             NSString *itemCreator = [[item elementsForName:ELEMENT_ITEM_DC_CREATOR][0] stringValue];
             NSString *itemAuthor = [[item elementsForName:ELEMENT_ITEM_AUTHOR][0] stringValue];
             NSString *itemGuid = [[item elementsForName:ELEMENT_ITEM_GUID][0] stringValue];
+
+            if (itemTitle == nil) itemTitle = @"";
+            if (itemDescription == nil) itemDescription = @"";
+            if (itemLink == nil) itemLink = @"";
+            if (itemPubDate == nil) itemPubDate = @"";
+            if (itemCreator == nil) itemCreator = @"";
+            if (itemAuthor == nil) itemAuthor = @"";
+            if (itemGuid == nil) itemGuid = @"";
 
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 itemTitle = [RSSParser filterHtmlLabelInString:itemTitle];

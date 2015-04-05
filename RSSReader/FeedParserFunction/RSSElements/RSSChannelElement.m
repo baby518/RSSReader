@@ -14,6 +14,8 @@
     self = [super initWithTitle:title];
     if (self) {
         _itemsOfChannel = [NSMutableArray array];
+        self.languageOfChannel = @"";
+        self.copyrightOfChannel = @"";
     }
     return self;
 }
