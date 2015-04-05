@@ -10,6 +10,14 @@
 
 @implementation RSSChannelElement
 
+- (instancetype)initWithTitle:(NSString *)title {
+    self = [super initWithTitle:title];
+    if (self) {
+        _itemsOfChannel = [NSMutableArray array];
+    }
+    return self;
+}
+
 - (void)addItem:(RSSItemElement *)item {
     [_itemsOfChannel addObject:item];
 }
@@ -23,6 +31,7 @@
     [description appendFormat:@", languageOfChannel=%@", self.languageOfChannel];
     [description appendFormat:@", copyrightOfChannel=%@", self.copyrightOfChannel];
     [description appendString:@">"];
+    [description appendFormat:@"\n has %ld items", self.itemsOfChannel.count];
     return description;
 }
 @end

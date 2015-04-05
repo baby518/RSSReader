@@ -204,6 +204,10 @@
         switch (feedType) {
             case FeedTypeRSS: {
                 if ([qName isEqualToString:ELEMENT_ITEM]) {
+                    // add items in channel's item array.
+                    if (self.currentChannel != nil && [self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
+                    }
                     // post item
                     LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
                     [self postElementDidParsed:self.currentItem];

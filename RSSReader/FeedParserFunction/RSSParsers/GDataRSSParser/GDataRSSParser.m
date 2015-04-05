@@ -17,7 +17,7 @@
 // methods used for GDataXML
 - (void)parserRootElements:(GDataXMLDocument *)xmlDocument;
 - (void)parserChannelElements:(GDataXMLElement *)rootElement;
-- (void)parserItemElements:(GDataXMLElement *)rootElement;
+- (void)parserItemElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel;
 @end
 
 @implementation GDataRSSParser
@@ -83,14 +83,16 @@
             channelElement.pubDateStringOfElement = channelPubDate;
             channelElement.languageOfChannel = channelLanguage;
             channelElement.copyrightOfChannel = channelCopyRight;
-            [self postElementDidParsed:channelElement];
 
-            [self parserItemElements:channel];
+            // add items in channel's item array.
+            [self parserItemElements:channel parent:channelElement];
+
+            [self postElementDidParsed:channelElement];
         }
     }
 }
 
-- (void)parserItemElements:(GDataXMLElement *)rootElement {
+- (void)parserItemElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel{
     NSArray *items = [rootElement elementsForName:ELEMENT_ITEM];
     for (GDataXMLElement *item in items) {
         if (item != nil) {
@@ -118,6 +120,7 @@
             }
             itemElement.guidOfItem = itemGuid;
 
+            [parentChannel addItem:itemElement];
             LOGD(@"postElementDidParsed current item : %@", itemElement.description);
             [self postElementDidParsed:itemElement];
         }
