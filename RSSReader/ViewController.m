@@ -13,6 +13,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _numberOfRows = 0;
+
     [_startParseButton setEnabled:false];
     [_xmlSourcePopup addItemsWithTitles:XMLSourceArrays];
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
@@ -20,6 +22,9 @@
     // Do any additional setup after loading the view.
     XMLSource source = (XMLSource) [_xmlSourcePopup indexOfSelectedItem];
     [self checkXmlSourceChoose:source];
+
+    self.feedItemsTableView.delegate = self;
+    self.feedItemsTableView.dataSource = self;
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -141,8 +146,8 @@
 
 - (void)removeAllObjectsOfTable {
 //    [_currentTrackPoints removeAllObjects];
-//    _numberOfRows = 0;
-//    [_itemsTableView reloadData];
+    _numberOfRows = 0;
+    [self.feedItemsTableView reloadData];
 }
 
 - (void)clearUIContents {
@@ -192,19 +197,42 @@
             [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
         }
         [_channelPubDateTextField setStringValue:[RSSSchema convertDate2String:element.pubDateOfElement]];
+
+        _currentChannel = ((RSSChannelElement *) element);
+        _numberOfRows = _currentChannel.itemsOfChannel.count;
+        NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfRows);
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
     }
+    [self.feedItemsTableView reloadData];
 }
 
-//#pragma mark - NSTableViewDelegate
-//- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-//    // Get a new ViewCell
-//    NSTableCellView *cellView = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
-//    return cellView;
-//}
-//
-//- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-//    return _numberOfRows;
-//}
+- (void)allElementsDidParsed {
+    NSLog(@"allElementsDidParsed.");
+}
+
+#pragma mark - NSTableViewDelegate
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSUInteger unsignedRow = (NSUInteger) row;
+    // Get a new ViewCell
+    NSTableCellView *cellView = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
+
+    if ([tableColumn.identifier isEqualToString:@"ItemID"]) {
+        [[cellView textField] setStringValue:[NSString stringWithFormat:@"%ld", unsignedRow + 1]];
+    } else if ([tableColumn.identifier isEqualToString:@"ItemDate"]) {
+        NSString *dateString = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).pubDateStringOfElement;
+        [[cellView textField] setStringValue:dateString];
+    } else if ([tableColumn.identifier isEqualToString:@"ItemTitle"]) {
+        NSString *title = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).titleOfElement;
+        [[cellView textField] setStringValue:title];
+    } else if ([tableColumn.identifier isEqualToString:@"ItemDescription"]) {
+        NSString *description = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).descriptionOfElement;
+        [[cellView textField] setStringValue:description];
+    }
+    return cellView;
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    return _numberOfRows;
+}
 @end

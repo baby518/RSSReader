@@ -20,6 +20,8 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 @interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDataSource, NSTableViewDelegate>
 @property (nonatomic, strong, readonly) NSData *data;
 @property (nonatomic, strong, readonly) FeedParser *feedParser;
+@property (nonatomic, assign, readonly) long numberOfRows;
+@property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
 
 @property (weak) IBOutlet NSTextField *filePathTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
@@ -35,6 +37,7 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 @property (weak) IBOutlet NSButton *useHTMLLabelCheckBox;
 @property (weak) IBOutlet NSButton *openLocalFileButton;
 @property (weak) IBOutlet NSButton *loadUrlButton;
+@property (weak) IBOutlet NSTableView *feedItemsTableView;
 
 - (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender;
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
