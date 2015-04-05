@@ -66,10 +66,14 @@
 
 - (void)parserDidEndDocument:(NSXMLParser *)parser {
     LOGD(@"parserDidEndDocument");
+    // parsed done.
+    LOGD(@"parsed done, postAllElementsDidParsed.");
+    [self postAllElementsDidParsed];
 }
 
 -(void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
     LOGD(@"parseErrorOccurred %@", parseError);
+    [self postErrorOccurred:parseError];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
@@ -197,16 +201,21 @@
 
     if (!processed) {
         // post channel's children item
-        if (feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_ITEM]) {
-            // post item
-            LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
-            [self postElementDidParsed:self.currentItem];
-        }
-
-        if (feedType == FeedTypeRSS && [qName isEqualToString:ELEMENT_CHANNEL]) {
-            // post channel's info
-            LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
-            [self postElementDidParsed:self.currentChannel];
+        switch (feedType) {
+            case FeedTypeRSS: {
+                if ([qName isEqualToString:ELEMENT_ITEM]) {
+                    // post item
+                    LOGD(@"postElementDidParsed current item : %@", self.currentItem.description);
+                    [self postElementDidParsed:self.currentItem];
+                } else if ([qName isEqualToString:ELEMENT_CHANNEL]) {
+                    // post channel's info
+                    LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
+                    [self postElementDidParsed:self.currentChannel];
+                } else if ([qName isEqualToString:ROOT_NAME]) {
+                }
+            };
+            default:
+                break;
         }
     }
 }

@@ -32,7 +32,7 @@
 - (void)stopParser {
 }
 
-#pragma mark PostElementDidParsed
+#pragma mark Post Element Parse Result
 
 - (void)postErrorOccurred:(NSError *)error {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -46,6 +46,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
             [self.delegate elementDidParsed:element];
+        }
+    });
+}
+
+- (void)postAllElementsDidParsed {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
+            [self.delegate allElementsDidParsed];
         }
     });
 }

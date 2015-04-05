@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @protocol RSSParserDelegate <NSObject>
 - (void)parseErrorOccurred:(NSError *)error;
 - (void)elementDidParsed:(RSSBaseElement *)element;
+- (void)allElementsDidParsed;
 @end
 
 @interface RSSParser : NSObject {
@@ -48,6 +49,8 @@ typedef NS_ENUM(NSInteger, FeedType) {
 - (void)postErrorOccurred:(NSError *)error;
 // try to set protected later
 - (void)postElementDidParsed:(RSSBaseElement *)element;
+// try to set protected later
+- (void)postAllElementsDidParsed;
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString;
 @end

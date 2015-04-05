@@ -56,6 +56,10 @@
     NSString *version = [[gDataRootElement attributeForName:ATTRIBUTE_ROOT_VERSION] stringValue];
     LOGD(@"This rss file's VERSION is %@", version);
     [self parserChannelElements:gDataRootElement];
+
+    // parsed done.
+    LOGD(@"parsed done, postAllElementsDidParsed.");
+    [self postAllElementsDidParsed];
 }
 
 - (void)parserChannelElements:(GDataXMLElement *)rootElement {

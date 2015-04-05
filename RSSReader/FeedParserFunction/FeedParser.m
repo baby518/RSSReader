@@ -176,4 +176,12 @@
     });
 }
 
+- (void)allElementsDidParsed {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
+            [self.delegate allElementsDidParsed];
+        }
+    });
+}
+
 @end
