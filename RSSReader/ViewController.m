@@ -64,7 +64,12 @@
 //
 //    [_startParseButton setEnabled:(_data != nil)];
 
-    _feedParser = [[FeedParser alloc] initWithURLAsync:feedURL];
+    _feedParser = [[FeedParser alloc] initWithURLAsync:feedURL completionHandler:^(NSError *error) {
+        if (error == nil) {
+            _data = [_feedParser.xmlData copy];
+            [_startParseButton setEnabled:(_data != nil)];
+        }
+    }];
     _feedParser.delegate = self;
 }
 
@@ -161,13 +166,6 @@
 }
 
 #pragma mark - FeedParserDelegate
-
-- (void)urlAsyncDidLoad:(NSError *)error {
-    if (error == nil) {
-        _data = [_feedParser.xmlData copy];
-        [_startParseButton setEnabled:(_data != nil)];
-    }
-}
 
 - (void)elementDidParsed:(RSSBaseElement *)element {
     if (element == nil) {

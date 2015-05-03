@@ -22,7 +22,6 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 #define XMLParseEngineArrays @[@"GDataXMLParser", @"NSXMLParser"]
 
 @protocol FeedParserDelegate <NSObject>
-- (void)urlAsyncDidLoad:(NSError *)error;
 - (void)elementDidParsed:(RSSBaseElement *)element;
 - (void)allElementsDidParsed;
 @end
@@ -42,7 +41,7 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 /*
 * init with NSURL, use NSURLConnection sendAsynchronousRequest get data;
 * call urlAsyncDidLoad when done it.*/
-- (id)initWithURLAsync:(NSURL *)feedURL;
+- (id)initWithURLAsync:(NSURL *)feedURL completionHandler:(void (^)(NSError *error)) handler;
 /*
 * init with NSURL, use NSURLConnection sendSynchronousRequest get data;
 * */

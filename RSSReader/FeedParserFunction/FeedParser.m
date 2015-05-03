@@ -13,8 +13,6 @@
 #pragma mark FeedParser (private)
 @interface FeedParser ()
 - (void) initializeData:(NSData *)data;
-// post result
-- (void)postURLAsyncResult:(NSError *)error;
 @end
 
 #pragma mark FeedParser
@@ -64,7 +62,7 @@
     return self;
 }
 
-- (id)initWithURLAsync:(NSURL *)feedURL {
+- (id)initWithURLAsync:(NSURL *)feedURL completionHandler:(void (^)(NSError *error)) handler {
     self = [super self];
     if (self) {
         // Method 3: use NSURLConnection Async copy from SeismicXML
@@ -78,14 +76,14 @@
                                    // here we check for any returned NSError from the server, "and" we also check for any http response errors
                                    if (error != nil) {
                                        LOGE(@"NSURLConnection error is %@", error);
-                                       [self postURLAsyncResult:error];
+                                       handler(error);
                                    } else {
                                        // check for any response errors
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                                        if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
                                            // the XML data.
                                            [self initializeData:data];
-                                           [self postURLAsyncResult:nil];
+                                           handler(nil);
                                        } else {
                                            NSString *errorString = @"Error message displayed when receving a connection error.";
                                            NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
@@ -95,7 +93,7 @@
                                            LOGE(@"NSURLConnection statusCode : %ld", [httpResponse statusCode]);
                                            LOGE(@"NSURLConnection MIMEType : %@", [httpResponse MIMEType]);
                                            LOGE(@"NSURLConnection http response error is %@", reportError);
-                                           [self postURLAsyncResult:reportError];
+                                           handler(reportError);
                                        }
                                    }
                                }];
@@ -154,13 +152,6 @@
     _xmlData = data;
 }
 
-- (void)postURLAsyncResult:(NSError *)error{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(urlAsyncDidLoad:)]) {
-            [self.delegate urlAsyncDidLoad:error];
-        }
-    });
-}
 
 #pragma mark RSSParserDelegate
 
