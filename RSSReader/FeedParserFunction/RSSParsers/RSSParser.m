@@ -37,27 +37,21 @@
 #pragma mark Post Element Parse Result
 
 - (void)postErrorOccurred:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(postErrorOccurred:)]) {
-            [self.delegate parseErrorOccurred:error];
-        }
-    });
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(postErrorOccurred:)]) {
+        [self.delegate parseErrorOccurred:error];
+    }
 }
 
 - (void)postElementDidParsed:(RSSBaseElement *)element {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
-            [self.delegate elementDidParsed:element];
-        }
-    });
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
+        [self.delegate elementDidParsed:element];
+    }
 }
 
 - (void)postAllElementsDidParsed {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
-            [self.delegate allElementsDidParsed];
-        }
-    });
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
+        [self.delegate allElementsDidParsed];
+    }
 }
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString {
