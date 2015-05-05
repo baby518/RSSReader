@@ -38,14 +38,16 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 @property (nonatomic, strong, readonly) NSData* xmlData;
 
 - (id)initWithData:(NSData *)data;
+/* init with NSURL, must start request before parse.*/
+- (id)initWithURL:(NSURL *)feedURL;
 /*
-* init with NSURL, use NSURLConnection sendAsynchronousRequest get data;
-* call urlAsyncDidLoad when done it.*/
-- (id)initWithURLAsync:(NSURL *)feedURL completionHandler:(void (^)(NSError *error)) handler;
+* use NSURLConnection sendAsynchronousRequest get data;
+* call handler when done it.*/
+- (void)startRequestAsync:(void (^)(NSError *error)) handler;
 /*
-* init with NSURL, use NSURLConnection sendSynchronousRequest get data;
+* use NSURLConnection sendSynchronousRequest get data;
 * */
-- (id)initWithURLSync:(NSURL *)feedURL error:(NSError **)errorPtr;
+- (void)startRequestSync:(NSError **)errorPtr;
 
 - (void)startParser;
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;

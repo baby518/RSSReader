@@ -57,14 +57,16 @@
     NSURL *feedURL = [NSURL URLWithString:urlString];
 
 //    NSError *urlError = nil;
-//    _feedParser = [[FeedParser alloc] initWithURLSync:feedURL error:&urlError];
+//    _feedParser = [[FeedParser alloc] initWithURL:feedURL];
+//    [_feedParser startRequestSync:&urlError];
 //    _feedParser.delegate = self;
 //    NSLog(@"initWithURL error is %@", urlError);
 //    _data = [_feedParser.xmlData copy];
 //
 //    [_startParseButton setEnabled:(_data != nil)];
 
-    _feedParser = [[FeedParser alloc] initWithURLAsync:feedURL completionHandler:^(NSError *error) {
+    _feedParser = [[FeedParser alloc] initWithURL:feedURL];
+    [self.feedParser startRequestAsync:^(NSError *error) {
         if (error == nil) {
             _data = [_feedParser.xmlData copy];
             [_startParseButton setEnabled:(_data != nil)];
