@@ -6,6 +6,7 @@
 #import "RSSSchema.h"
 
 NSString *const RSS_MIME_TYPE                       = @"application/rss+xml";
+NSString *const RSS_MIME_TYPE_XML                   = @"text/xml";
 
 NSString *const ROOT_NAME                           = @"rss";
 NSString *const ROOT_NAME_PATH                      = @"/rss";

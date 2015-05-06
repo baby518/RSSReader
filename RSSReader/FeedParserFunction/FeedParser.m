@@ -84,7 +84,8 @@
                                } else {
                                    // check for any response errors
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                                   if ((([httpResponse statusCode] / 100) == 2) && [[response MIMEType] isEqual:RSS_MIME_TYPE]) {
+                                   if ((([httpResponse statusCode] / 100) == 2) &&
+                                           ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML])) {
                                        // the XML data.
                                        [self initializeData:data];
                                        handler(nil);

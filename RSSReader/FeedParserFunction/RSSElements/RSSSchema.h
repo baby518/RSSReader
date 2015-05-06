@@ -7,6 +7,7 @@
 #import "LogHelper.h"
 
 extern NSString *const RSS_MIME_TYPE;
+extern NSString *const RSS_MIME_TYPE_XML;
 
 extern NSString *const ROOT_NAME;
 extern NSString *const ROOT_NAME_PATH;
