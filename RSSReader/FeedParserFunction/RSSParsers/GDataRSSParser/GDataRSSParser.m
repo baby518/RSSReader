@@ -126,9 +126,9 @@
             itemElement.linkOfElement = itemLink;
             itemElement.descriptionOfElement = itemDescription;
             itemElement.pubDateStringOfElement = itemPubDate;
-            if (itemCreator != nil) {
+            if (![itemCreator isEqualToString:@""]) {
                 itemElement.authorOfItem = itemCreator;
-            } else if (itemAuthor != nil) {
+            } else if (![itemAuthor isEqualToString:@""]) {
                 itemElement.authorOfItem = itemAuthor;
             }
             itemElement.guidOfItem = itemGuid;
