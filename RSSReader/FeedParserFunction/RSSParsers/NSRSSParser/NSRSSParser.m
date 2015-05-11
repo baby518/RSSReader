@@ -77,7 +77,7 @@
     // Adjust path
     self.currentPath = [self.currentPath stringByAppendingPathComponent:qName];
     self.currentElementAttributes = attributeDict;
-    LOGD(@"didStartElement currentPath : %@", self.currentPath);
+//    LOGD(@"didStartElement currentPath : %@", self.currentPath);
     // Reset
     [self.currentText setString:@""];
 
@@ -188,6 +188,11 @@
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_GUID_PATH]) {
                     if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
                         ((RSSItemElement *) self.currentItem).guidOfItem = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_CONTENT_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).contentOfItem = processedText;
                         processed = YES;
                     }
                 }

@@ -12,4 +12,5 @@
 
 @property(nonatomic, strong) NSString *authorOfItem;
 @property(nonatomic, strong) NSString *guidOfItem;
+@property(nonatomic, strong) NSString *contentOfItem;
 @end

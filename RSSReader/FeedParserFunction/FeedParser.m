@@ -85,12 +85,14 @@
                                    // check for any response errors
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                                    if ((([httpResponse statusCode] / 100) == 2) &&
-                                           ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML])) {
+                                           ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML]
+                                                   || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2])) {
                                        // the XML data.
                                        [self initializeData:data];
                                        handler(nil);
                                    } else {
-                                       NSString *errorString = @"Error message displayed when receving a connection error.";
+                                       NSString *errorString = [NSString stringWithFormat:@"%@ : %@",
+                                                       feedURLRequest.URL, @"Error message displayed when receving a connection error."];
                                        NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                                        NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                                                   code:[httpResponse statusCode]
@@ -109,7 +111,7 @@
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
-    [self startParserWithStyle:elementStringStyle parseEngine:GDataXMLParseEngine];
+    [self startParserWithStyle:elementStringStyle parseEngine:NSXMLParseEngine];
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine {

@@ -8,6 +8,7 @@
 
 extern NSString *const RSS_MIME_TYPE;
 extern NSString *const RSS_MIME_TYPE_XML;
+extern NSString *const RSS_MIME_TYPE_XML2;
 
 extern NSString *const ROOT_NAME;
 extern NSString *const ROOT_NAME_PATH;
@@ -44,6 +45,8 @@ extern NSString *const ELEMENT_ITEM_AUTHOR;
 extern NSString *const ELEMENT_ITEM_AUTHOR_PATH;
 extern NSString *const ELEMENT_ITEM_GUID;
 extern NSString *const ELEMENT_ITEM_GUID_PATH;
+extern NSString *const ELEMENT_ITEM_CONTENT;
+extern NSString *const ELEMENT_ITEM_CONTENT_PATH;
 
 extern int const MAX_ELEMENT_COUNTS;
 

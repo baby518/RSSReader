@@ -108,6 +108,7 @@
             NSString *itemCreator = [[item elementsForName:ELEMENT_ITEM_DC_CREATOR][0] stringValue];
             NSString *itemAuthor = [[item elementsForName:ELEMENT_ITEM_AUTHOR][0] stringValue];
             NSString *itemGuid = [[item elementsForName:ELEMENT_ITEM_GUID][0] stringValue];
+            NSString *content = [[item elementsForName:ELEMENT_ITEM_CONTENT][0] stringValue];
 
             if (itemTitle == nil) itemTitle = @"";
             if (itemDescription == nil) itemDescription = @"";
@@ -116,6 +117,7 @@
             if (itemCreator == nil) itemCreator = @"";
             if (itemAuthor == nil) itemAuthor = @"";
             if (itemGuid == nil) itemGuid = @"";
+            if (content == nil) content = @"";
 
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 itemTitle = [RSSParser filterHtmlLabelInString:itemTitle];
@@ -132,6 +134,7 @@
                 itemElement.authorOfItem = itemAuthor;
             }
             itemElement.guidOfItem = itemGuid;
+            itemElement.contentOfItem = content;
 
             [parentChannel addItem:itemElement];
             /* zhangchao Time:2015-04-05,not post items now, just post channel. START ++++*/

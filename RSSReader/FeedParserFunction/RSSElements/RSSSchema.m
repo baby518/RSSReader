@@ -7,6 +7,7 @@
 
 NSString *const RSS_MIME_TYPE                       = @"application/rss+xml";
 NSString *const RSS_MIME_TYPE_XML                   = @"text/xml";
+NSString *const RSS_MIME_TYPE_XML2                  = @"application/xhtml+xml";
 
 NSString *const ROOT_NAME                           = @"rss";
 NSString *const ROOT_NAME_PATH                      = @"/rss";
@@ -43,6 +44,8 @@ NSString *const ELEMENT_ITEM_AUTHOR             = @"author";
 NSString *const ELEMENT_ITEM_AUTHOR_PATH        = @"/rss/channel/item/author";
 NSString *const ELEMENT_ITEM_GUID               = @"guid";
 NSString *const ELEMENT_ITEM_GUID_PATH          = @"/rss/channel/item/guid";
+NSString *const ELEMENT_ITEM_CONTENT            = @"content:encoded";
+NSString *const ELEMENT_ITEM_CONTENT_PATH       = @"/rss/channel/item/content:encoded";
 
 int const MAX_ELEMENT_COUNTS                    = 100;
 
