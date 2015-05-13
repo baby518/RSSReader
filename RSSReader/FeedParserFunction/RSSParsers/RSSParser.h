@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, XMLElementStringStyle) {
 typedef NS_ENUM(NSInteger, FeedType) {
     FeedTypeUnknown = 0,
     FeedTypeRSS     = 1,
+    FeedTypeAtom    = 2,
 };
 
 @protocol RSSParserDelegate <NSObject>

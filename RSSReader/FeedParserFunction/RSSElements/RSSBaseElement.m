@@ -8,13 +8,7 @@
 
 #import "RSSBaseElement.h"
 #import "RSSSchema.h"
-
-//@interface RSSBaseElement()
-//
-//@property(nonatomic, strong) NSString *pubDateStringOfElement;
-//@property(nonatomic, strong) NSDate *pubDateOfElement;
-//
-//@end
+#import "AtomSchema.h"
 
 @implementation RSSBaseElement
 
@@ -37,6 +31,9 @@
     _pubDateStringOfElement = pubDateStringOfElement;
     if (_pubDateStringOfElement != nil) {
         _pubDateOfElement = [RSSSchema convertString2Date:_pubDateStringOfElement];
+        if (_pubDateOfElement == nil) {
+            _pubDateOfElement = [AtomSchema convertString2Date:_pubDateStringOfElement];
+        }
     }
 }
 

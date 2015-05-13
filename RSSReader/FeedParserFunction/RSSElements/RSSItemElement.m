@@ -16,6 +16,7 @@
     [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
     [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];
     [description appendFormat:@", authorOfItem=%@", self.authorOfItem];
+    [description appendFormat:@", authorLinkOfItem=%@", self.authorLinkOfItem];
     [description appendFormat:@", guidOfItem=%@", self.guidOfItem];
     [description appendFormat:@", has content : %d", (self.contentOfItem != nil && ![self.contentOfItem isEqualToString:@""])];
     [description appendString:@">"];

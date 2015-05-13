@@ -7,6 +7,7 @@
 //
 
 #import "NSRSSParser.h"
+#import "AtomSchema.h"
 
 #pragma mark NSRSSParser (private)
 @interface NSRSSParser ()
@@ -85,21 +86,26 @@
     if (feedType == FeedTypeUnknown) {
         if ([qName isEqualToString:ROOT_NAME]) {
             feedType = FeedTypeRSS;
+        } else if ([qName isEqualToString:ATOM_ROOT_NAME]) {
+            feedType = FeedTypeAtom;
         } else {
-            LOGE(@"This xml file's ROOT is %@, it seems not a rss file !!!", qName);
+            LOGE(@"This xml file's ROOT is %@, it seems not a rss or feed file !!!", qName);
             [self postErrorOccurred:nil];
+            return;
         }
-        return;
-    }
-
-    // Entering new feed element
-    if (feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_CHANNEL_PATH]) {
         RSSBaseElement *element = [[RSSChannelElement alloc] initWithTitle:@""];
         self.currentChannel = element;
         return;
     }
 
-    if (feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH]) {
+    // Entering new feed element
+    if ((feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_CHANNEL_PATH])
+            || (feedType == FeedTypeAtom && [self.currentPath isEqualToString:ATOM_ROOT_NAME_PATH])) {
+        return;
+    }
+
+    if ((feedType == FeedTypeRSS && [self.currentPath isEqualToString:ELEMENT_ITEM_PATH])
+            || (feedType == FeedTypeAtom && [self.currentPath isEqualToString:ATOM_ENTRY_PATH])) {
         RSSBaseElement *element = [[RSSItemElement alloc] initWithTitle:@""];
         self.currentItem = element;
         return;
@@ -112,7 +118,7 @@
     // Store data
     BOOL processed = NO;
 
-    if (![self.currentText isEqualToString:@""]) {
+    if (self.currentText != nil) {
         NSString *processedText = [NSString stringWithString:self.currentText];
         // Process
         switch (feedType) {
@@ -150,31 +156,23 @@
 
                 // Process item
                 if ([self.currentPath isEqualToString:ELEMENT_ITEM_TITLE_PATH]) {
-                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
-                        if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                            processedText = [RSSParser filterHtmlLabelInString:processedText];
-                        }
-                        ((RSSItemElement *) self.currentItem).titleOfElement = processedText;
-                        processed = YES;
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
                     }
+                    self.currentItem.titleOfElement = processedText;
+                    processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_LINK_PATH]) {
-                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
-                        ((RSSItemElement *) self.currentItem).linkOfElement = processedText;
-                        processed = YES;
-                    }
+                    self.currentItem.linkOfElement = processedText;
+                    processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_DESCRIPTION_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                         processedText = [RSSParser filterHtmlLabelInString:processedText];
                     }
-                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
-                        ((RSSItemElement *) self.currentItem).descriptionOfElement = processedText;
-                        processed = YES;
-                    }
+                    self.currentItem.descriptionOfElement = processedText;
+                    processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_PUBDATE_PATH]) {
-                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
-                        ((RSSItemElement *) self.currentItem).pubDateStringOfElement = processedText;
-                        processed = YES;
-                    }
+                    self.currentItem.pubDateStringOfElement = processedText;
+                    processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_DC_CREATOR_PATH]) {
                     if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
                         ((RSSItemElement *) self.currentItem).authorOfItem = processedText;
@@ -195,6 +193,67 @@
                         ((RSSItemElement *) self.currentItem).contentOfItem = processedText;
                         processed = YES;
                     }
+                }
+                break;
+            }
+            case FeedTypeAtom: {
+                // Info
+                if ([self.currentPath isEqualToString:ATOM_FEED_TITLE_PATH]) {
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                    }
+                    self.currentChannel.titleOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ATOM_FEED_SUBTITLE_PATH]) {
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                    }
+                    self.currentChannel.descriptionOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ATOM_FEED_LINK_PATH]) {
+                    self.currentItem.linkOfElement = (self.currentElementAttributes)[@"href"];
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ATOM_FEED_UPDATED_PATH]) {
+                    self.currentChannel.pubDateStringOfElement = processedText;
+                    processed = YES;
+                }
+
+                // Item
+                if ([self.currentPath isEqualToString:ATOM_ENTRY_TITLE_PATH]) {
+                    if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
+                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                    }
+                    self.currentItem.titleOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ATOM_ENTRY_LINK_PATH]) {
+                    self.currentItem.linkOfElement = (self.currentElementAttributes)[@"href"];
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ATOM_ENTRY_SUMMARY_PATH]) {
+                    self.currentItem.descriptionOfElement = processedText;
+                    processed = YES;
+                } else if ([self.currentPath isEqualToString:ATOM_ENTRY_CONTENT_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).contentOfItem = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ATOM_ENTRY_AUTHOR_NAME_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).authorOfItem = processedText;
+                        processed = YES;
+                    }
+                }  else if ([self.currentPath isEqualToString:ATOM_ENTRY_AUTHOR_LINK_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).authorLinkOfItem = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ATOM_ENTRY_DC_CREATOR_PATH]) {
+                    if ([self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        ((RSSItemElement *) self.currentItem).authorOfItem = processedText;
+                        processed = YES;
+                    }
+                } else if ([self.currentPath isEqualToString:ATOM_ENTRY_UPDATED_PATH]) {
+                    self.currentItem.pubDateStringOfElement = processedText;
+                    processed = YES;
                 }
                 break;
             }
@@ -227,6 +286,18 @@
                 } else if ([qName isEqualToString:ROOT_NAME]) {
                 }
             };
+            case FeedTypeAtom: {
+                if ([qName isEqualToString:ATOM_ENTRY]) {
+                    // add items in channel's item array.
+                    if (self.currentChannel != nil && [self.currentItem isKindOfClass:[RSSItemElement class]]) {
+                        [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
+                    }
+                } else if ([qName isEqualToString:ATOM_ROOT_NAME]) {
+                    // post channel's info
+                    LOGD(@"postElementDidParsed atom channel's info : %@", self.currentChannel.description);
+                    [self postElementDidParsed:self.currentChannel];
+                }
+            }
             default:
                 break;
         }

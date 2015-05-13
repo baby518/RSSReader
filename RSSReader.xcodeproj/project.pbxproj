@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A8E2BFBC3479327F33A0928E /* RSSSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B46F1C3F5D21E50D5737 /* RSSSchema.m */; };
 		D460FC251AD01B79007367A0 /* GDataXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D460FC241AD01B79007367A0 /* GDataXMLNode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D49DAF7C1B02456900386DC7 /* AtomSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = D49DAF7B1B02456900386DC7 /* AtomSchema.m */; };
 		D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4CEC7191A827AB300D0A87A /* libxml2.dylib */; };
 		D4D00DBB1A8BC86300B7E02B /* FeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D00DBA1A8BC86300B7E02B /* FeedParser.m */; };
 		D4D82D001A8A4A6700B7BF98 /* RSSBaseElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D82CFF1A8A4A6700B7BF98 /* RSSBaseElement.m */; };
@@ -29,6 +30,8 @@
 		A8E2B46F1C3F5D21E50D5737 /* RSSSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSSchema.m; sourceTree = "<group>"; };
 		D460FC231AD01B79007367A0 /* GDataXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataXMLNode.h; sourceTree = "<group>"; };
 		D460FC241AD01B79007367A0 /* GDataXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDataXMLNode.m; sourceTree = "<group>"; };
+		D49DAF7A1B02456900386DC7 /* AtomSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtomSchema.h; sourceTree = "<group>"; };
+		D49DAF7B1B02456900386DC7 /* AtomSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AtomSchema.m; sourceTree = "<group>"; };
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		D4CFD03B1A83C287008E699E /* LogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogHelper.h; sourceTree = "<group>"; };
 		D4D00DB91A8BC86300B7E02B /* FeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedParser.h; sourceTree = "<group>"; };
@@ -100,6 +103,8 @@
 				D4D82D051A8A4AF000B7BF98 /* RSSItemElement.m */,
 				A8E2B224C03B6A6D11352D72 /* RSSSchema.h */,
 				A8E2B46F1C3F5D21E50D5737 /* RSSSchema.m */,
+				D49DAF7A1B02456900386DC7 /* AtomSchema.h */,
+				D49DAF7B1B02456900386DC7 /* AtomSchema.m */,
 			);
 			path = RSSElements;
 			sourceTree = "<group>";
@@ -246,6 +251,7 @@
 			files = (
 				D4FA67391A8133A900265869 /* ViewController.m in Sources */,
 				D4D82D061A8A4AF000B7BF98 /* RSSItemElement.m in Sources */,
+				D49DAF7C1B02456900386DC7 /* AtomSchema.m in Sources */,
 				D4FA67361A8133A900265869 /* main.m in Sources */,
 				D4FA67341A8133A900265869 /* AppDelegate.m in Sources */,
 				D460FC251AD01B79007367A0 /* GDataXMLNode.m in Sources */,

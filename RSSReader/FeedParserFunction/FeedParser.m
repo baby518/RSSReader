@@ -9,6 +9,7 @@
 #import "FeedParser.h"
 #import "NSRSSParser.h"
 #import "GDataRSSParser.h"
+#import "AtomSchema.h"
 
 #pragma mark FeedParser (private)
 @interface FeedParser ()
@@ -86,7 +87,7 @@
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                                    if ((([httpResponse statusCode] / 100) == 2) &&
                                            ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML]
-                                                   || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2])) {
+                                                   || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2] || [[response MIMEType] isEqual:ATOM_MIME_TYPE])) {
                                        // the XML data.
                                        [self initializeData:data];
                                        handler(nil);

@@ -11,6 +11,7 @@
 @interface RSSItemElement : RSSBaseElement
 
 @property(nonatomic, strong) NSString *authorOfItem;
+@property(nonatomic, strong) NSString *authorLinkOfItem;
 @property(nonatomic, strong) NSString *guidOfItem;
 @property(nonatomic, strong) NSString *contentOfItem;
 @end
