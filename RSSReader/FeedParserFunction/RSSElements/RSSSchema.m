@@ -64,7 +64,7 @@ int const MAX_ELEMENT_COUNTS                    = 100;
 }
 
 + (NSString *)convertDate2String:(NSDate *)time {
-    if (time == nil) return @"null";
+    if (time == nil) return nil;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 
     dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:[[NSLocale currentLocale] localeIdentifier]];
