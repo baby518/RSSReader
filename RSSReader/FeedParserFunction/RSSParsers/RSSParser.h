@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
     FeedType feedType;
 }
 
-@property (nonatomic, assign) id <RSSParserDelegate> delegate;
+@property (nonatomic, weak) id <RSSParserDelegate> delegate;
 @property (nonatomic, strong, readonly) NSData* xmlData;
 - (id)initWithData:(NSData *)data;
 - (void)startParser;

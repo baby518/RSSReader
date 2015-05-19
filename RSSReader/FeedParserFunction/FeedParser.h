@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 * */
 @interface FeedParser : NSObject <RSSParserDelegate>
 
-@property (nonatomic, assign) id <FeedParserDelegate> delegate;
+@property (nonatomic, weak) id <FeedParserDelegate> delegate;
 @property (nonatomic, strong) RSSParser* parser;
 @property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 
