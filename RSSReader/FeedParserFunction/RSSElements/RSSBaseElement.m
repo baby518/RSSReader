@@ -19,10 +19,11 @@
 - (instancetype)initWithTitle:(NSString *)title {
     self = [super init];
     if (self) {
-        self.titleOfElement = title;
-        self.linkOfElement = @"";
-        self.descriptionOfElement = @"";
-        self.pubDateStringOfElement = @"";
+        _titleOfElement = title;
+        _linkOfElement = @"";
+        _descriptionOfElement = @"";
+        _pubDateStringOfElement = @"";
+        _imageUrlArray = [NSMutableArray array];
     }
     return self;
 }
@@ -43,6 +44,7 @@
     [description appendFormat:@", linkOfElement=%@", self.linkOfElement];
     [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
     [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];
+    [description appendFormat:@", imageCount=%lu", self.imageUrlArray.count];
     [description appendString:@">"];
     return description;
 }

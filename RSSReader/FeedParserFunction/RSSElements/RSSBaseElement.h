@@ -15,6 +15,7 @@
 @property(nonatomic, strong) NSString *descriptionOfElement;
 @property(nonatomic, strong) NSString *pubDateStringOfElement;
 @property(nonatomic, strong, readonly) NSDate *pubDateOfElement;
+@property(nonatomic, strong) NSMutableArray *imageUrlArray;
 
 - (instancetype)initWithTitle:(NSString *)title;
 - (NSString *)description;

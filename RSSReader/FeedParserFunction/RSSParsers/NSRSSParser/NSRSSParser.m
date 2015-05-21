@@ -154,6 +154,12 @@
                     }
                 }
 
+                // Process image url
+                if ([self.currentPath isEqualToString:ELEMENT_IMAGE_URL_PATH]) {
+                    [self.currentChannel.imageUrlArray addObject:processedText];
+                    processed = YES;
+                }
+
                 // Process item
                 if ([self.currentPath isEqualToString:ELEMENT_ITEM_TITLE_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {

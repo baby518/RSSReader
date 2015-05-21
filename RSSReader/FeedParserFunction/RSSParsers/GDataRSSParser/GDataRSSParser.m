@@ -20,6 +20,7 @@
 // rss type
 - (void)parserChannelElements:(GDataXMLElement *)rootElement;
 - (void)parserItemElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel;
+- (void)parserImageElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel;
 // atom type
 - (void)parserFeedElements:(GDataXMLElement *)rootElement;
 - (void)parserEntryElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel;
@@ -99,11 +100,23 @@
             channelElement.languageOfChannel = channelLanguage;
             channelElement.copyrightOfChannel = channelCopyRight;
 
+            // add image url.
+            [self parserImageElements:channel parent:channelElement];
             // add items in channel's item array.
             [self parserItemElements:channel parent:channelElement];
 
             LOGD(@"postElementDidParsed current channel : %@", channelElement.description);
             [self postElementDidParsed:channelElement];
+        }
+    }
+}
+
+- (void)parserImageElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel {
+    NSArray *images = [rootElement elementsForName:ELEMENT_IMAGE];
+    for (GDataXMLElement *image in images) {
+        if (image != nil) {
+            NSString *imageURL = [[image elementsForName:ELEMENT_IMAGE_URL][0] stringValue];
+            [parentChannel.imageUrlArray addObject:imageURL];
         }
     }
 }

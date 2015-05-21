@@ -29,6 +29,11 @@ extern NSString *const ELEMENT_CHANNEL_LANGUAGE_PATH;
 extern NSString *const ELEMENT_CHANNEL_COPYRIGHT;
 extern NSString *const ELEMENT_CHANNEL_COPYRIGHT_PATH;
 
+extern NSString *const ELEMENT_IMAGE;
+extern NSString *const ELEMENT_IMAGE_PATH;
+extern NSString *const ELEMENT_IMAGE_URL;
+extern NSString *const ELEMENT_IMAGE_URL_PATH;
+
 extern NSString *const ELEMENT_ITEM;
 extern NSString *const ELEMENT_ITEM_PATH;
 extern NSString *const ELEMENT_ITEM_TITLE;

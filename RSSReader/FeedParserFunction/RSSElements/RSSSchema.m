@@ -28,6 +28,11 @@ NSString *const ELEMENT_CHANNEL_LANGUAGE_PATH       = @"/rss/channel/language";
 NSString *const ELEMENT_CHANNEL_COPYRIGHT           = @"copyright";
 NSString *const ELEMENT_CHANNEL_COPYRIGHT_PATH      = @"/rss/channel/copyright";
 
+NSString *const ELEMENT_IMAGE               = @"image";
+NSString *const ELEMENT_IMAGE_PATH          = @"/rss/channel/image";
+NSString *const ELEMENT_IMAGE_URL           = @"url";
+NSString *const ELEMENT_IMAGE_URL_PATH      = @"/rss/channel/image/url";
+
 NSString *const ELEMENT_ITEM                    = @"item";
 NSString *const ELEMENT_ITEM_PATH               = @"/rss/channel/item";
 NSString *const ELEMENT_ITEM_TITLE              = @"title";
