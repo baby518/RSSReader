@@ -61,4 +61,6 @@ extern int const MAX_ELEMENT_COUNTS;
 + (NSDate *)convertString2Date:(NSString *)string;
 /** convert NSDate to pubDate String. */
 + (NSString *)convertDate2String:(NSDate *)time;
+/** convert NSDate to pubDate String, not include year. */
++ (NSString *)convertDate2StringNoYear:(NSDate *)time;
 @end

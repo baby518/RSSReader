@@ -77,4 +77,14 @@ int const MAX_ELEMENT_COUNTS                    = 100;
     NSString *dateString = [dateFormatter stringFromDate:time];
     return dateString;
 }
+
++ (NSString *)convertDate2StringNoYear:(NSDate *)time {
+    if (time == nil) return nil;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:[[NSLocale currentLocale] localeIdentifier]];
+    [dateFormatter setDateFormat:@"MM-dd HH:mm:ss"];
+    NSString *dateString = [dateFormatter stringFromDate:time];
+    return dateString;
+}
 @end
