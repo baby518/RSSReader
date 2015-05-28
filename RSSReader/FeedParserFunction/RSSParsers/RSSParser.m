@@ -55,11 +55,38 @@
 }
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString {
-    NSAttributedString *attributedString = [[NSAttributedString alloc]
-            initWithData:[srcString dataUsingEncoding:NSUnicodeStringEncoding]
-                 options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-      documentAttributes:nil
-                   error:nil];
-    return attributedString.string;
+//    NSAttributedString *attributedString = [[NSAttributedString alloc]
+//            initWithData:[srcString dataUsingEncoding:NSUnicodeStringEncoding]
+//                 options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+//      documentAttributes:nil
+//                   error:nil];
+//    return attributedString.string;
+
+    return [RSSParser removeHTMLLabel:srcString];
+}
+
++ (NSString *)removeHTMLLabel:(NSString *)html {
+    NSScanner *theScanner;
+    NSString *text = nil;
+    theScanner = [NSScanner scannerWithString:html];
+
+    while (![theScanner isAtEnd]) {
+        // find start of tag
+        [theScanner scanUpToString:@"<" intoString:NULL];
+
+        // find end of tag
+        [theScanner scanUpToString:@">" intoString:&text];
+
+        // replace the found tag with a space
+        //(you can filter multi-spaces out later if you wish)
+        html = [html stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@>", text] withString:@" "];
+    }
+
+    return html;
+}
+
++ (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html {
+    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    return [[RSSParser removeHTMLLabel:html] stringByTrimmingCharactersInSet:whitespace];
 }
 @end
