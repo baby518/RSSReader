@@ -66,8 +66,18 @@
 }
 
 + (NSString *)removeHTMLLabel:(NSString *)html {
+    return [RSSParser removeHTMLLabel:html maxLength:html.length];
+}
+
++ (NSString *)removeHTMLLabel:(NSString *)html maxLength:(NSUInteger)targetLength {
     NSScanner *theScanner;
     NSString *text = nil;
+
+    NSUInteger length = [html length];
+    if (length > targetLength) {
+        html = [html substringToIndex:MIN(targetLength, length)];
+    }
+
     theScanner = [NSScanner scannerWithString:html];
 
     while (![theScanner isAtEnd]) {
@@ -88,5 +98,10 @@
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html {
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     return [[RSSParser removeHTMLLabel:html] stringByTrimmingCharactersInSet:whitespace];
+}
+
++ (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength {
+    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    return [[RSSParser removeHTMLLabel:html maxLength:maxLength] stringByTrimmingCharactersInSet:whitespace];
 }
 @end

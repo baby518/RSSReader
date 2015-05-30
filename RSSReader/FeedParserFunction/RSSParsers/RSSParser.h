@@ -55,5 +55,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString;
 + (NSString *)removeHTMLLabel:(NSString *)html;
++ (NSString *)removeHTMLLabel:(NSString *)html maxLength:(NSUInteger)maxLength;
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html;
++ (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength;
 @end
