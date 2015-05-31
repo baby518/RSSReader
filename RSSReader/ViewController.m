@@ -220,8 +220,11 @@
     if ([tableColumn.identifier isEqualToString:@"ItemID"]) {
         [[cellView textField] setStringValue:[NSString stringWithFormat:@"%ld", unsignedRow + 1]];
     } else if ([tableColumn.identifier isEqualToString:@"ItemDate"]) {
-        NSString *dateString = [RSSSchema convertDate2String:((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).pubDateOfElement];
-        [[cellView textField] setStringValue:dateString];
+        NSDate *pubDate = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).pubDateOfElement;
+        NSString *dateString = [RSSSchema convertDate2String:pubDate];
+        if (dateString != nil) {
+            [[cellView textField] setStringValue:dateString];
+        }
     } else if ([tableColumn.identifier isEqualToString:@"ItemTitle"]) {
         NSString *title = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).titleOfElement;
         [[cellView textField] setStringValue:title];

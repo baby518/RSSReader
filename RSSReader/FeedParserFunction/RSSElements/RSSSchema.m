@@ -65,6 +65,12 @@ int const MAX_ELEMENT_COUNTS                    = 100;
     [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss Z"];
 
     NSDate *result = [dateFormatter dateFromString:string];
+    
+    if (result == nil) {
+        // Sat, 30 May 2015 18:48:42 CST
+        [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss 'CST'"];
+        result = [dateFormatter dateFromString:string];
+    }
     return result;
 }
 
