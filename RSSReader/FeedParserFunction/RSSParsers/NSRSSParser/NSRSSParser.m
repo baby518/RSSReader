@@ -32,7 +32,7 @@
 
     [self resetParserData];
 
-    self.nsXmlParser = [[NSXMLParser alloc] initWithData:self.xmlData];
+    _nsXmlParser = [[NSXMLParser alloc] initWithData:self.xmlData];
     self.nsXmlParser.delegate = self;
     [self.nsXmlParser setShouldProcessNamespaces:YES];
     [self.nsXmlParser setShouldReportNamespacePrefixes:YES];
@@ -42,10 +42,9 @@
 }
 
 - (void)stopParser {
-    LOGD(@"RSSParser stopParser");
-    [self.nsXmlParser abortParsing];
-
     [super stopParser];
+    LOGD(@"NSRSSParser stopParser");
+    [self.nsXmlParser abortParsing];
 }
 
 #pragma mark NSRSSParser (private)
@@ -62,14 +61,13 @@
 }
 
 - (void)parserDidEndDocument:(NSXMLParser *)parser {
-    LOGD(@"parserDidEndDocument");
     // parsed done.
     LOGD(@"parsed done, postAllElementsDidParsed.");
     [self postAllElementsDidParsed];
 }
 
 -(void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
-    LOGD(@"parseErrorOccurred %@", parseError);
+    LOGE(@"parseErrorOccurred %@", parseError);
     [self postErrorOccurred:parseError];
 }
 

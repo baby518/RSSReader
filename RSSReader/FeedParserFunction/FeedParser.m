@@ -14,6 +14,8 @@
 #pragma mark FeedParser (private)
 @interface FeedParser ()
 @property(nonatomic, strong, readonly) NSURL *feedURL;
+@property(nonatomic, strong) NSURLSession *URLSession;
+@property(nonatomic, strong) NSURLSessionDataTask *URLSessionDataTask;
 
 - (void)initializeData:(NSData *)data;
 @end
@@ -35,6 +37,13 @@
         _feedURL = feedURL;
     }
     return self;
+}
+
+- (NSURLSession *)URLSession {
+    if (_URLSession == nil) {
+        _URLSession = [NSURLSession sharedSession];
+    }
+    return _URLSession;
 }
 
 - (void)startRequestSync:(NSError **)errorPtr {
@@ -73,38 +82,49 @@
     // Method 3: use NSURLConnection Async copy from SeismicXML
     NSURLRequest *feedURLRequest = [NSURLRequest requestWithURL:self.feedURL];
 
-    [NSURLConnection sendAsynchronousRequest:feedURLRequest
-            // the NSOperationQueue upon which the handler block will be dispatched:
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               // back on the main thread, check for errors, if no errors start the parsing
-                               // here we check for any returned NSError from the server, "and" we also check for any http response errors
-                               if (error != nil) {
-                                   LOGE(@"NSURLConnection error is %@", error);
-                                   handler(error);
-                               } else {
-                                   // check for any response errors
-                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                                   if ((([httpResponse statusCode] / 100) == 2) &&
-                                           ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML]
-                                                   || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2] || [[response MIMEType] isEqual:ATOM_MIME_TYPE])) {
-                                       // the XML data.
-                                       [self initializeData:data];
-                                       handler(nil);
-                                   } else {
-                                       NSString *errorString = [NSString stringWithFormat:@"%@ : %@",
-                                                       feedURLRequest.URL, @"Error message displayed when receving a connection error."];
-                                       NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
-                                       NSError *reportError = [NSError errorWithDomain:@"HTTP"
-                                                                                  code:[httpResponse statusCode]
-                                                                              userInfo:userInfo];
-                                       LOGE(@"NSURLConnection statusCode : %ld", [httpResponse statusCode]);
-                                       LOGE(@"NSURLConnection MIMEType : %@", [httpResponse MIMEType]);
-                                       LOGE(@"NSURLConnection http response error is %@", reportError);
-                                       handler(reportError);
-                                   }
-                               }
-                           }];
+//    [NSURLConnection sendAsynchronousRequest:feedURLRequest
+//            // the NSOperationQueue upon which the handler block will be dispatched:
+//                                       queue:[NSOperationQueue mainQueue]
+//                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+//                               // back on the main thread, check for errors, if no errors start the parsing
+//                               // here we check for any returned NSError from the server, "and" we also check for any http response errors
+//                               [self processURLRequest:feedURLRequest data:data response:response error:error block:handler];
+//                           }];
+
+    __weak FeedParser *weakSelf = self;
+    _URLSessionDataTask = [self.URLSession dataTaskWithRequest:feedURLRequest
+                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                 // back on the main thread, check for errors, if no errors start the parsing
+                                                 // here we check for any returned NSError from the server, "and" we also check for any http response errors
+                                                 [weakSelf processURLRequest:feedURLRequest data:data response:response error:error block:handler];
+                                             }];
+    [_URLSessionDataTask resume];
+}
+
+- (void)processURLRequest:(NSURLRequest *)feedURLRequest data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error block:(void (^)(NSError *error))handler {
+    if (error != nil) {
+        LOGE(@"NSURLConnection error is %@", error);
+        handler(error);
+    } else {
+        // check for any response errors
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+        if ((([httpResponse statusCode] / 100) == 2) &&
+                ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML]
+                        || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2] || [[response MIMEType] isEqual:ATOM_MIME_TYPE])) {
+            // the XML data.
+            [self initializeData:data];
+            handler(nil);
+        } else {
+            NSString *errorString = [NSString stringWithFormat:@"%@ : %@",
+                                                               feedURLRequest.URL, @"Error message displayed when receving a connection error."];
+            NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+            NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                       code:[httpResponse statusCode]
+                                                   userInfo:userInfo];
+            LOGE(@"NSURLConnection http response error is %@, MIMEType : %@", reportError, httpResponse.MIMEType);
+            handler(reportError);
+        }
+    }
 }
 
 - (void)startParser {
@@ -113,6 +133,7 @@
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
     [self startParserWithStyle:elementStringStyle parseEngine:NSXMLParseEngine];
+//    [self startParserWithStyle:elementStringStyle parseEngine:GDataXMLParseEngine];
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine {
@@ -145,6 +166,11 @@
 }
 
 - (void)stopParser {
+    // cancel URL Connection first.
+    if (self.URLSessionDataTask != nil) {
+        [self.URLSessionDataTask cancel];
+    }
+
     if (self.parser != nil) {
         [self.parser stopParser];
     }
