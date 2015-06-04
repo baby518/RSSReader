@@ -45,6 +45,7 @@
 
 #pragma mark GDataXMLParseEngine
 - (void)parserRootElements:(GDataXMLDocument *)xmlDocument {
+    if (!parsing) return;
     GDataXMLElement *gDataRootElement = [xmlDocument rootElement];
     if (gDataRootElement == nil) {
         NSString *errorString = [NSString stringWithFormat:@"%@", @"Root Element is not found !!!"];
@@ -76,6 +77,7 @@
 }
 
 - (void)parserChannelElements:(GDataXMLElement *)rootElement {
+    if (!parsing) return;
     NSArray *channels = [rootElement elementsForName:ELEMENT_CHANNEL];
     for (GDataXMLElement *channel in channels) {
         if (channel != nil) {
@@ -116,6 +118,7 @@
 }
 
 - (void)parserImageElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel {
+    if (!parsing) return;
     NSArray *images = [rootElement elementsForName:ELEMENT_IMAGE];
     for (GDataXMLElement *image in images) {
         if (image != nil) {
@@ -126,6 +129,7 @@
 }
 
 - (void)parserItemElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel{
+    if (!parsing) return;
     NSArray *items = [rootElement elementsForName:ELEMENT_ITEM];
     for (GDataXMLElement *item in items) {
         if (item != nil) {
@@ -174,6 +178,7 @@
 }
 
 - (void)parserFeedElements:(GDataXMLElement *)rootElement {
+    if (!parsing) return;
     NSString *feedTitle = [[rootElement elementsForName:ATOM_FEED_TITLE][0] stringValue];
     GDataXMLElement *feedLinkElement = [rootElement elementsForName:ATOM_FEED_LINK][0];
     NSString *feedLink = [[feedLinkElement attributeForName:@"href"] stringValue];
@@ -204,6 +209,7 @@
 }
 
 - (void)parserEntryElements:(GDataXMLElement *)rootElement parent:(RSSChannelElement *)parentChannel{
+    if (!parsing) return;
     NSArray *entries = [rootElement elementsForName:ATOM_ENTRY];
     for (GDataXMLElement *entry in entries) {
         if (entry != nil) {

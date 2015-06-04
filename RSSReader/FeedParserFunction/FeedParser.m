@@ -132,8 +132,7 @@
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
-    [self startParserWithStyle:elementStringStyle parseEngine:NSXMLParseEngine];
-//    [self startParserWithStyle:elementStringStyle parseEngine:GDataXMLParseEngine];
+    [self startParserWithStyle:elementStringStyle parseEngine:GDataXMLParseEngine];
 }
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine {
