@@ -37,6 +37,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 @protected
     XMLElementStringStyle xmlElementStringStyle;
     FeedType feedType;
+    BOOL parsing;
 }
 
 @property (nonatomic, weak) id <RSSParserDelegate> delegate;
@@ -45,6 +46,8 @@ typedef NS_ENUM(NSInteger, FeedType) {
 - (void)startParser;
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;
 - (void)stopParser;
+- (BOOL)isParsing;
+- (void)didParserFinish;
 
 // try to set protected later
 - (void)postErrorOccurred:(NSError *)error;

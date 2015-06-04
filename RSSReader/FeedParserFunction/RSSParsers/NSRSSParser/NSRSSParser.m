@@ -42,9 +42,12 @@
 }
 
 - (void)stopParser {
-    [super stopParser];
-    LOGD(@"NSRSSParser stopParser");
-    [self.nsXmlParser abortParsing];
+    LOGD(@"NSRSSParser stopParser parsing : %d", parsing);
+    if (parsing) {
+        [super stopParser];
+        [self.nsXmlParser abortParsing];
+        [self resetParserData];
+    }
 }
 
 #pragma mark NSRSSParser (private)
@@ -55,6 +58,11 @@
     self.currentElementAttributes = nil;
 }
 
+- (void)didParserFinish {
+    [super didParserFinish];
+    [self resetParserData];
+}
+
 #pragma mark - NSXMLParseEngine & NSXMLParserDelegate
 - (void)parserDidStartDocument:(NSXMLParser *)parser {
     LOGD(@"parserDidStartDocument");
@@ -62,13 +70,17 @@
 
 - (void)parserDidEndDocument:(NSXMLParser *)parser {
     // parsed done.
-    LOGD(@"parsed done, postAllElementsDidParsed.");
     [self postAllElementsDidParsed];
 }
 
 -(void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
     LOGE(@"parseErrorOccurred %@", parseError);
     [self postErrorOccurred:parseError];
+}
+
+- (void)parser:(NSXMLParser *)parser validationErrorOccurred:(NSError *)validationError {
+    LOGE(@"validationErrorOccurred %@", validationError);
+    [self postErrorOccurred:validationError];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI

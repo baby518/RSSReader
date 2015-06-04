@@ -47,8 +47,10 @@
 - (void)parserRootElements:(GDataXMLDocument *)xmlDocument {
     GDataXMLElement *gDataRootElement = [xmlDocument rootElement];
     if (gDataRootElement == nil) {
-        LOGE(@"Root Element is not found !!!");
-        [self postErrorOccurred:nil];
+        NSString *errorString = [NSString stringWithFormat:@"%@", @"Root Element is not found !!!"];
+        NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+        NSError *reportError = [NSError errorWithDomain:@"GDataXMLParse" code:0 userInfo:userInfo];
+        [self postErrorOccurred:reportError];
         return;
     } else if ([[gDataRootElement name] isEqualToString:ROOT_NAME]) {
         feedType = FeedTypeRSS;
@@ -61,8 +63,10 @@
 
         [self parserFeedElements:gDataRootElement];
     } else {
-        LOGE(@"This xml file's ROOT is %@, it seems not a rss file or atom file !!!", [gDataRootElement name]);
-        [self postErrorOccurred:nil];
+        NSString *errorString = [NSString stringWithFormat:@"This xml file's ROOT is %@, it seems not a rss file or atom file !!!", [gDataRootElement name]];
+        NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+        NSError *reportError = [NSError errorWithDomain:@"GDataXMLParse" code:0 userInfo:userInfo];
+        [self postErrorOccurred:reportError];
         return;
     }
 

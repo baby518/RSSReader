@@ -187,6 +187,7 @@
 #pragma mark RSSParserDelegate
 
 - (void)parseErrorOccurred:(NSError *)error {
+    LOGE(@"parseErrorOccurred %@, %@", error, self.feedURL);
     [self stopParser];
 }
 

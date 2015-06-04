@@ -29,15 +29,30 @@
 
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle {
     xmlElementStringStyle = elementStringStyle;
+    parsing = YES;
 }
 
 - (void)stopParser {
+    parsing = NO;
+}
+
+- (BOOL)isParsing {
+    return parsing;
+}
+
+- (void)didParserFinish {
+    LOGD(@"didParserFinish, postAllElementsDidParsed.");
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
+        [self.delegate allElementsDidParsed];
+    }
+    parsing = NO;
 }
 
 #pragma mark Post Element Parse Result
 
 - (void)postErrorOccurred:(NSError *)error {
-    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(postErrorOccurred:)]) {
+    [self stopParser];
+    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parseErrorOccurred:)]) {
         [self.delegate parseErrorOccurred:error];
     }
 }
@@ -49,9 +64,7 @@
 }
 
 - (void)postAllElementsDidParsed {
-    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
-        [self.delegate allElementsDidParsed];
-    }
+    [self didParserFinish];
 }
 
 + (NSString *)filterHtmlLabelInString:(NSString *)srcString {
