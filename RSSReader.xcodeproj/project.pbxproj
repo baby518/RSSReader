@@ -15,6 +15,7 @@
 		D4D82D001A8A4A6700B7BF98 /* RSSBaseElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D82CFF1A8A4A6700B7BF98 /* RSSBaseElement.m */; };
 		D4D82D031A8A4AD400B7BF98 /* RSSChannelElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D82D021A8A4AD400B7BF98 /* RSSChannelElement.m */; };
 		D4D82D061A8A4AF000B7BF98 /* RSSItemElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D82D051A8A4AF000B7BF98 /* RSSItemElement.m */; };
+		D4DD33BB1B20BC02000A99E2 /* XMLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DD33BA1B20BC02000A99E2 /* XMLHelper.m */; };
 		D4F046C91ACFA4E40036D4B2 /* RSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F046C81ACFA4E40036D4B2 /* RSSParser.m */; };
 		D4F046D21ACFA5960036D4B2 /* NSRSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F046D11ACFA5960036D4B2 /* NSRSSParser.m */; };
 		D4F046D51ACFA5AF0036D4B2 /* GDataRSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F046D41ACFA5AF0036D4B2 /* GDataRSSParser.m */; };
@@ -42,6 +43,8 @@
 		D4D82D021A8A4AD400B7BF98 /* RSSChannelElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSChannelElement.m; sourceTree = "<group>"; };
 		D4D82D041A8A4AF000B7BF98 /* RSSItemElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSItemElement.h; sourceTree = "<group>"; };
 		D4D82D051A8A4AF000B7BF98 /* RSSItemElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSItemElement.m; sourceTree = "<group>"; };
+		D4DD33B91B20BC02000A99E2 /* XMLHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLHelper.h; sourceTree = "<group>"; };
+		D4DD33BA1B20BC02000A99E2 /* XMLHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLHelper.m; sourceTree = "<group>"; };
 		D4F046C71ACFA4E40036D4B2 /* RSSParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSParser.h; sourceTree = "<group>"; };
 		D4F046C81ACFA4E40036D4B2 /* RSSParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSParser.m; sourceTree = "<group>"; };
 		D4F046D01ACFA5960036D4B2 /* NSRSSParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSRSSParser.h; sourceTree = "<group>"; };
@@ -83,6 +86,8 @@
 		D4CEC7141A827A5300D0A87A /* FeedParserFunction */ = {
 			isa = PBXGroup;
 			children = (
+				D4DD33B91B20BC02000A99E2 /* XMLHelper.h */,
+				D4DD33BA1B20BC02000A99E2 /* XMLHelper.m */,
 				D4F046BD1ACFA4260036D4B2 /* RSSParsers */,
 				D4D82CFD1A8A4A6700B7BF98 /* RSSElements */,
 				D4D00DB91A8BC86300B7E02B /* FeedParser.h */,
@@ -260,6 +265,7 @@
 				D4D82D031A8A4AD400B7BF98 /* RSSChannelElement.m in Sources */,
 				D4F046C91ACFA4E40036D4B2 /* RSSParser.m in Sources */,
 				D4D00DBB1A8BC86300B7E02B /* FeedParser.m in Sources */,
+				D4DD33BB1B20BC02000A99E2 /* XMLHelper.m in Sources */,
 				A8E2BFBC3479327F33A0928E /* RSSSchema.m in Sources */,
 				D4F046D21ACFA5960036D4B2 /* NSRSSParser.m in Sources */,
 			);
