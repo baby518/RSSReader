@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 @protocol FeedParserDelegate <NSObject>
 - (void)elementDidParsed:(RSSBaseElement *)element;
 - (void)allElementsDidParsed;
+- (void)parseCompleted:(BOOL)completed;
 @end
 
 /**

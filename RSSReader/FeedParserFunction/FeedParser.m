@@ -92,6 +92,7 @@
 //                           }];
 
     __weak FeedParser *weakSelf = self;
+    self.URLSession.configuration.timeoutIntervalForRequest = 10; // set timeout 10s
     _URLSessionDataTask = [self.URLSession dataTaskWithRequest:feedURLRequest
                                              completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                  // back on the main thread, check for errors, if no errors start the parsing
@@ -173,6 +174,12 @@
     if (self.parser != nil) {
         [self.parser stopParser];
     }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parseCompleted:)]) {
+            [self.delegate parseCompleted:NO];
+        }
+    });
 }
 
 #pragma mark FeedParser (private)
@@ -202,6 +209,9 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(allElementsDidParsed)]) {
             [self.delegate allElementsDidParsed];
+        }
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parseCompleted:)]) {
+            [self.delegate parseCompleted:YES];
         }
     });
 }
