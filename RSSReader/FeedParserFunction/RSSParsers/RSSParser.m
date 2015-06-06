@@ -28,6 +28,8 @@
                                                               options:NSCaseInsensitiveSearch
                                                                 range:NSMakeRange(0, 40)];
                 _xmlData = [string dataUsingEncoding:NSUTF8StringEncoding];
+            } else {
+                _xmlData = data;
             }
         } else {
             _xmlData = data;
