@@ -18,6 +18,7 @@
 		D4D82D061A8A4AF000B7BF98 /* RSSItemElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D82D051A8A4AF000B7BF98 /* RSSItemElement.m */; };
 		D4DD33BB1B20BC02000A99E2 /* XMLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DD33BA1B20BC02000A99E2 /* XMLHelper.m */; };
 		D4E0D8951B273DDA00C63047 /* NSString+helper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0D8941B273DDA00C63047 /* NSString+helper.m */; };
+		D4E90BCE1B2754CB00E53484 /* FeedParser.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4E90BD01B2754CB00E53484 /* FeedParser.strings */; };
 		D4F046C91ACFA4E40036D4B2 /* RSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F046C81ACFA4E40036D4B2 /* RSSParser.m */; };
 		D4F046D21ACFA5960036D4B2 /* NSRSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F046D11ACFA5960036D4B2 /* NSRSSParser.m */; };
 		D4F046D51ACFA5AF0036D4B2 /* GDataRSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F046D41ACFA5AF0036D4B2 /* GDataRSSParser.m */; };
@@ -51,6 +52,8 @@
 		D4DD33BA1B20BC02000A99E2 /* XMLHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLHelper.m; sourceTree = "<group>"; };
 		D4E0D8931B273DDA00C63047 /* NSString+helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+helper.h"; sourceTree = "<group>"; };
 		D4E0D8941B273DDA00C63047 /* NSString+helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+helper.m"; sourceTree = "<group>"; };
+		D4E90BCF1B2754CB00E53484 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/FeedParser.strings; sourceTree = "<group>"; };
+		D4E90BD11B2754CC00E53484 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FeedParser.strings"; sourceTree = "<group>"; };
 		D4F046C71ACFA4E40036D4B2 /* RSSParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSParser.h; sourceTree = "<group>"; };
 		D4F046C81ACFA4E40036D4B2 /* RSSParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSParser.m; sourceTree = "<group>"; };
 		D4F046D01ACFA5960036D4B2 /* NSRSSParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSRSSParser.h; sourceTree = "<group>"; };
@@ -103,6 +106,7 @@
 				D4CFD03B1A83C287008E699E /* LogHelper.h */,
 				A8E2B2A22362FB37D85BB302 /* NSDate+helper.h */,
 				A8E2B4B07BAF94B4ECF3BF7A /* NSDate+helper.m */,
+				D4E90BD01B2754CB00E53484 /* FeedParser.strings */,
 			);
 			path = FeedParserFunction;
 			sourceTree = "<group>";
@@ -236,6 +240,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = D4FA67241A8133A900265869;
 			productRefGroup = D4FA672E1A8133A900265869 /* Products */;
@@ -253,6 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4FA673B1A8133A900265869 /* Images.xcassets in Resources */,
+				D4E90BCE1B2754CB00E53484 /* FeedParser.strings in Resources */,
 				D4FA673E1A8133A900265869 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +292,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		D4E90BD01B2754CB00E53484 /* FeedParser.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D4E90BCF1B2754CB00E53484 /* Base */,
+				D4E90BD11B2754CC00E53484 /* zh-Hans */,
+			);
+			name = FeedParser.strings;
+			sourceTree = "<group>";
+		};
 		D4FA673C1A8133A900265869 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

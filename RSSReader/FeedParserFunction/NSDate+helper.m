@@ -12,18 +12,33 @@
     NSTimeInterval temp = 0;
     NSString *result;
     if (timeInterval < 60) {
-        result = [NSString stringWithFormat:@"刚刚"];
+        result = NSLocalizedStringFromTable(@"DateString.Now", @"FeedParser", @"Now");
     } else if ((temp = timeInterval / 60) < 60) {
-        result = [NSString stringWithFormat:@"%lu分钟前", (NSInteger) temp];
+        NSInteger number = (NSInteger) temp;
+        result = [NSString stringWithFormat:@"%lu %@", number, number > 1 ?
+                NSLocalizedStringFromTable(@"DateString.MinsAgo", @"FeedParser", @"mins ago") :
+                NSLocalizedStringFromTable(@"DateString.MinAgo", @"FeedParser", @"min ago")];
     } else if ((temp = temp / 60) < 24) {
-        result = [NSString stringWithFormat:@"%lu小时前", (NSInteger) temp];
+        NSInteger number = (NSInteger) temp;
+        result = [NSString stringWithFormat:@"%lu %@", number, number > 1 ?
+                NSLocalizedStringFromTable(@"DateString.HoursAgo", @"FeedParser", @"hours ago") :
+                NSLocalizedStringFromTable(@"DateString.HourAgo", @"FeedParser", @"hour ago")];
     } else if ((temp = temp / 24) < 30) {
-        result = [NSString stringWithFormat:@"%lu天前", (NSInteger) temp];
+        NSInteger number = (NSInteger) temp;
+        result = [NSString stringWithFormat:@"%lu %@", number, number > 1 ?
+                NSLocalizedStringFromTable(@"DateString.DaysAgo", @"FeedParser", @"days ago") :
+                NSLocalizedStringFromTable(@"DateString.DayAgo", @"FeedParser", @"day ago")];
     } else if ((temp = temp / 30) < 12) {
-        result = [NSString stringWithFormat:@"%lu月前", (NSInteger) temp];
+        NSInteger number = (NSInteger) temp;
+        result = [NSString stringWithFormat:@"%lu %@", number, number > 1 ?
+                NSLocalizedStringFromTable(@"DateString.MonthsAgo", @"FeedParser", @"months ago") :
+                NSLocalizedStringFromTable(@"DateString.MonthAgo", @"FeedParser", @"month ago")];
     } else {
         temp = temp / 12;
-        result = [NSString stringWithFormat:@"%lu年前", (NSInteger) temp];
+        NSInteger number = (NSInteger) temp;
+        result = [NSString stringWithFormat:@"%lu %@", number, number > 1 ?
+                NSLocalizedStringFromTable(@"DateString.YearsAgo", @"FeedParser", @"years ago") :
+                NSLocalizedStringFromTable(@"DateString.YearAgo", @"FeedParser", @"year ago")];
     }
     return result;
 }

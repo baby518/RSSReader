@@ -1,0 +1,19 @@
+/* 
+  FeedParser.strings
+  NewsShelf
+
+  Created by zhangchao on 15/6/10.
+  Copyright (c) 2015年 zhangchao. All rights reserved.
+*/
+
+"DateString.Now" = "Now";
+"DateString.MinAgo" = "min ago";
+"DateString.MinsAgo" = "mins ago";
+"DateString.HourAgo" = "hour ago";
+"DateString.HoursAgo" = "hours ago";
+"DateString.DayAgo" = "day ago";
+"DateString.DaysAgo" = "days ago";
+"DateString.MonthAgo" = "month ago";
+"DateString.MonthsAgo" = "months ago";
+"DateString.YearAgo" = "year ago";
+"DateString.YearsAgo" = "years ago";
