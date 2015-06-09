@@ -8,6 +8,7 @@
 
 #import "NSRSSParser.h"
 #import "AtomSchema.h"
+#import "NSString+helper.h"
 
 #pragma mark NSRSSParser (private)
 @interface NSRSSParser ()
@@ -136,7 +137,7 @@
                 // Process channel
                 if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_TITLE_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentChannel.titleOfElement = processedText;
                     processed = YES;
@@ -145,7 +146,7 @@
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_CHANNEL_DESCRIPTION_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentChannel.descriptionOfElement = processedText;
                     processed = YES;
@@ -173,7 +174,7 @@
                 // Process item
                 if ([self.currentPath isEqualToString:ELEMENT_ITEM_TITLE_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentItem.titleOfElement = processedText;
                     processed = YES;
@@ -182,7 +183,7 @@
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ELEMENT_ITEM_DESCRIPTION_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentItem.descriptionOfElement = processedText;
                     processed = YES;
@@ -216,13 +217,13 @@
                 // Info
                 if ([self.currentPath isEqualToString:ATOM_FEED_TITLE_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentChannel.titleOfElement = processedText;
                     processed = YES;
                 } else if ([self.currentPath isEqualToString:ATOM_FEED_SUBTITLE_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentChannel.descriptionOfElement = processedText;
                     processed = YES;
@@ -237,7 +238,7 @@
                 // Item
                 if ([self.currentPath isEqualToString:ATOM_ENTRY_TITLE_PATH]) {
                     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                        processedText = [RSSParser filterHtmlLabelInString:processedText];
+                        processedText = [NSString filterHtmlLabelInString:processedText];
                     }
                     self.currentItem.titleOfElement = processedText;
                     processed = YES;

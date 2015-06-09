@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "NSDate+helper.h"
+#import "NSString+helper.h"
 
 @implementation ViewController
 
@@ -15,7 +17,6 @@
     
     _numberOfRows = 0;
 
-    [_startParseButton setEnabled:false];
     [_xmlSourcePopup addItemsWithTitles:XMLSourceArrays];
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
@@ -46,7 +47,8 @@
         [self.openLocalFileButton setEnabled:NO];
         [self.loadUrlButton setEnabled:YES];
         [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:@"http://rss.cnbeta.com/rss"];
+        [self.filePathTextField setStringValue:@"http://news.163.com/special/00011K6L/rss_sh.xml"];
+//        [self.filePathTextField setStringValue:@"http://192.168.2.2/qq_web_2312.xml"];
     }
 }
 
@@ -66,13 +68,13 @@
 //    [_startParseButton setEnabled:(_data != nil)];
 
     _feedParser = [[FeedParser alloc] initWithURL:feedURL];
+    _feedParser.delegate = self;
+    __weak FeedParser *weakSelf = self.feedParser;
     [self.feedParser startRequestAsync:^(NSError *error) {
         if (error == nil) {
-            _data = [_feedParser.xmlData copy];
-            [_startParseButton setEnabled:(_data != nil)];
+            [weakSelf startParser];
         }
     }];
-    _feedParser.delegate = self;
 }
 
 - (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender {
@@ -91,10 +93,6 @@
     _data = [self loadDataFromFile:path];
     _feedParser = [[FeedParser alloc] initWithData:_data];
     _feedParser.delegate = self;
-    [_startParseButton setEnabled:(_data != nil)];
-}
-
-- (IBAction)startParserButtonPressed:(NSButton *)sender {
     [self startParse];
 }
 
@@ -116,6 +114,12 @@
     }
     [_feedParser startParserWithStyle:(XMLElementStringStyle) [_elementStringStylePopUp indexOfSelectedItem]
                           parseEngine:(XMLParseEngine) [_parseEnginePopup indexOfSelectedItem]];
+}
+
+- (IBAction)stopParser:(NSButton *)sender {
+    if (_feedParser != nil) {
+        [_feedParser stopParser];
+    }
 }
 
 - (NSData *)loadDataFromFile:(NSString *)path {
@@ -196,7 +200,10 @@
                            error:nil];
             [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
         }
-        [_channelPubDateTextField setStringValue:[RSSSchema convertDate2String:element.pubDateOfElement]];
+        NSString *dataString = [element.pubDateOfElement convertToString];
+        if (dataString != nil) {
+            [_channelPubDateTextField setStringValue:dataString];
+        }
 
         _currentChannel = ((RSSChannelElement *) element);
         _numberOfRows = _currentChannel.itemsOfChannel.count;
@@ -211,6 +218,11 @@
     NSLog(@"allElementsDidParsed.");
 }
 
+- (void)parseCompleted:(BOOL)completed {
+
+}
+
+
 #pragma mark - NSTableViewDelegate
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSUInteger unsignedRow = (NSUInteger) row;
@@ -221,7 +233,7 @@
         [[cellView textField] setStringValue:[NSString stringWithFormat:@"%ld", unsignedRow + 1]];
     } else if ([tableColumn.identifier isEqualToString:@"ItemDate"]) {
         NSDate *pubDate = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).pubDateOfElement;
-        NSString *dateString = [RSSSchema convertDate2String:pubDate];
+        NSString *dateString = [pubDate convertToString];
         if (dateString != nil) {
             [[cellView textField] setStringValue:dateString];
         }
@@ -230,7 +242,7 @@
         [[cellView textField] setStringValue:title];
     } else if ([tableColumn.identifier isEqualToString:@"ItemDescription"]) {
         NSString *description = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).descriptionOfElement;
-        [[cellView textField] setStringValue:description];
+        [[cellView textField] setStringValue:[NSString removeHTMLLabelAndWhitespace:description maxLength:200]];
     }
     return cellView;
 }

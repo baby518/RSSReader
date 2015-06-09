@@ -9,6 +9,7 @@
 #import "GDataXMLNode.h"
 #import "GDataRSSParser.h"
 #import "AtomSchema.h"
+#import "NSString+helper.h"
 
 #pragma mark GDataRSSParser (private)
 @interface GDataRSSParser ()
@@ -96,8 +97,8 @@
             if (channelCopyRight == nil) channelCopyRight = @"";
 
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                channelTitle = [RSSParser filterHtmlLabelInString:channelTitle];
-                channelDescription = [RSSParser filterHtmlLabelInString:channelDescription];
+                channelTitle = [NSString filterHtmlLabelInString:channelTitle];
+                channelDescription = [NSString filterHtmlLabelInString:channelDescription];
             }
             RSSChannelElement *channelElement = [[RSSChannelElement alloc] initWithTitle:channelTitle];
             channelElement.linkOfElement = channelLink;
@@ -152,8 +153,8 @@
             if (content == nil) content = @"";
 
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                itemTitle = [RSSParser filterHtmlLabelInString:itemTitle];
-                itemDescription = [RSSParser filterHtmlLabelInString:itemDescription];
+                itemTitle = [NSString filterHtmlLabelInString:itemTitle];
+                itemDescription = [NSString filterHtmlLabelInString:itemDescription];
             }
 
             RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:itemTitle];
@@ -191,8 +192,8 @@
     if (feedUpdated == nil) feedUpdated = @"";
 
     if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-        feedTitle = [RSSParser filterHtmlLabelInString:feedTitle];
-        feedSubtitle = [RSSParser filterHtmlLabelInString:feedSubtitle];
+        feedTitle = [NSString filterHtmlLabelInString:feedTitle];
+        feedSubtitle = [NSString filterHtmlLabelInString:feedSubtitle];
     }
 
     // use channel instead feed.....
@@ -234,8 +235,8 @@
             if (content == nil) content = @"";
 
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
-                entryTitle = [RSSParser filterHtmlLabelInString:entryTitle];
-                entrySummary = [RSSParser filterHtmlLabelInString:entrySummary];
+                entryTitle = [NSString filterHtmlLabelInString:entryTitle];
+                entrySummary = [NSString filterHtmlLabelInString:entrySummary];
             }
 
             RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:entryTitle];

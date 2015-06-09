@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AppKit/NSAttributedString.h>
 #import "RSSSchema.h"
 #import "RSSChannelElement.h"
 #import "RSSItemElement.h"
@@ -55,10 +54,4 @@ typedef NS_ENUM(NSInteger, FeedType) {
 - (void)postElementDidParsed:(RSSBaseElement *)element;
 // try to set protected later
 - (void)postAllElementsDidParsed;
-
-+ (NSString *)filterHtmlLabelInString:(NSString *)srcString;
-+ (NSString *)removeHTMLLabel:(NSString *)html;
-+ (NSString *)removeHTMLLabel:(NSString *)html maxLength:(NSUInteger)targetLength;
-+ (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html;
-+ (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength;
 @end

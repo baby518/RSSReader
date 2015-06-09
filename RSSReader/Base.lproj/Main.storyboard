@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D130a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E26a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -700,12 +700,12 @@
                             </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wnF-ct-4dn">
                                 <rect key="frame" x="369" y="305" width="101" height="52"/>
-                                <buttonCell key="cell" type="square" title="开始解析" bezelStyle="shadowlessSquare" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YMG-V6-Lah">
+                                <buttonCell key="cell" type="square" title="停止" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YMG-V6-Lah">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="startParserButtonPressed:" target="XfG-lQ-9wD" id="VWF-hD-XK7"/>
+                                    <action selector="stopParser:" target="XfG-lQ-9wD" id="sjN-Cr-6IJ"/>
                                 </connections>
                             </button>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E7g-sg-Quw" userLabel="Title">
@@ -751,6 +751,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xZs-2d-hcp">
+                                <rect key="frame" x="-2" y="0.0" width="4" height="0.0"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="网址：" id="gj0-Uv-h1x">
                                     <font key="font" size="13" name="HiraginoSansGB-W3"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -855,6 +856,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Ml5-p9-M21" viewBased="YES" id="rzl-3u-eJA">
+                                            <rect key="frame" x="0.0" y="0.0" width="457" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -956,7 +958,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="ItemDescription" width="149" minWidth="10" maxWidth="300" id="baM-kO-54P">
+                                                <tableColumn identifier="ItemDescription" width="159" minWidth="10" maxWidth="300" id="baM-kO-54P">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="内容">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1021,7 +1023,7 @@
                         <outlet property="loadUrlButton" destination="zui-Gg-Y8L" id="feB-4h-ncZ"/>
                         <outlet property="openLocalFileButton" destination="vu5-Kl-8dv" id="7p9-4E-he2"/>
                         <outlet property="parseEnginePopup" destination="5mt-Ed-fbH" id="59R-8i-tQ6"/>
-                        <outlet property="startParseButton" destination="wnF-ct-4dn" id="fDT-RR-bzq"/>
+                        <outlet property="stopParserButton" destination="wnF-ct-4dn" id="6z2-uw-H4e"/>
                         <outlet property="useHTMLLabelCheckBox" destination="xjg-ku-c8x" id="0tV-RE-Ac2"/>
                         <outlet property="xmlSourcePopup" destination="SKd-DB-QTx" id="myD-i9-rsX"/>
                     </connections>

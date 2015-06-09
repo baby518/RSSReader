@@ -30,7 +30,6 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 @property (weak) IBOutlet NSTextField *channelLanguageTextField;
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
 @property (weak) IBOutlet NSButton *channelLinkButton;
-@property (weak) IBOutlet NSButton *startParseButton;
 @property (weak) IBOutlet NSPopUpButton *xmlSourcePopup;
 @property (weak) IBOutlet NSPopUpButton *elementStringStylePopUp;
 @property (weak) IBOutlet NSPopUpButton *parseEnginePopup;
@@ -38,13 +37,14 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 @property (weak) IBOutlet NSButton *openLocalFileButton;
 @property (weak) IBOutlet NSButton *loadUrlButton;
 @property (weak) IBOutlet NSTableView *feedItemsTableView;
+@property (strong) IBOutlet NSButton *stopParserButton;
 
 - (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender;
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
-- (IBAction)startParserButtonPressed:(NSButton *)sender;
 - (IBAction)loadUrlButtonPressed:(NSButton *)sender;
 - (IBAction)didChannelLinkClicked:(NSButton *)sender;
 - (void) startParse;
+- (IBAction)stopParser:(NSButton *)sender;
 
 - (NSString *)getFilePathFromDialog;
 - (NSData *)loadDataFromFile:(NSString *)path;
