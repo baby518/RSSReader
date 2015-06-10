@@ -112,6 +112,15 @@
             // add items in channel's item array.
             [self parserItemElements:channel parent:channelElement];
 
+            // if channel not has pubDate, use first child's pubDate instead.
+            if ([channelElement.pubDateStringOfElement isEqualToString:@""]) {
+                if (channelElement.itemsOfChannel.count > 0) {
+                    RSSBaseElement *firstChild = channelElement.itemsOfChannel[0];
+                    NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
+                    channelElement.pubDateStringOfElement = pubDateOfFirstItem;
+                }
+            }
+
             LOGD(@"postElementDidParsed current channel : %@", channelElement.description);
             [self postElementDidParsed:channelElement];
         }
@@ -204,6 +213,15 @@
 
     // add items in channel's item array.
     [self parserEntryElements:rootElement parent:channelElement];
+
+    // if channel not has pubDate, use first child's pubDate instead.
+    if ([channelElement.pubDateStringOfElement isEqualToString:@""]) {
+        if (channelElement.itemsOfChannel.count > 0) {
+            RSSBaseElement *firstChild = channelElement.itemsOfChannel[0];
+            NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
+            channelElement.pubDateStringOfElement = pubDateOfFirstItem;
+        }
+    }
 
     LOGD(@"postElementDidParsed current channel : %@", channelElement.description);
     [self postElementDidParsed:channelElement];

@@ -297,6 +297,18 @@
 //                    [self postElementDidParsed:self.currentItem];
                     /* zhangchao Time:2015-04-05,not post items now, just post channel. END ----*/
                 } else if ([qName isEqualToString:ELEMENT_CHANNEL]) {
+
+                    // if channel not has pubDate, use first child's pubDate instead.
+                    if ([self.currentChannel isKindOfClass:[RSSChannelElement class]]) {
+                        if ([self.currentChannel.pubDateStringOfElement isEqualToString:@""]) {
+                            if (((RSSChannelElement *) self.currentChannel).itemsOfChannel.count > 0) {
+                                RSSBaseElement *firstChild = (((RSSChannelElement *) self.currentChannel).itemsOfChannel[0]);
+                                NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
+                                self.currentChannel.pubDateStringOfElement = pubDateOfFirstItem;
+                            }
+                        }
+                    }
+
                     // post channel's info
                     LOGD(@"postElementDidParsed channel's info : %@", self.currentChannel.description);
                     [self postElementDidParsed:self.currentChannel];
@@ -310,6 +322,16 @@
                         [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
                     }
                 } else if ([qName isEqualToString:ATOM_ROOT_NAME]) {
+                    // if channel not has pubDate, use first child's pubDate instead.
+                    if ([self.currentChannel isKindOfClass:[RSSChannelElement class]]) {
+                        if ([self.currentChannel.pubDateStringOfElement isEqualToString:@""]) {
+                            if (((RSSChannelElement *) self.currentChannel).itemsOfChannel.count > 0) {
+                                RSSBaseElement *firstChild = (((RSSChannelElement *) self.currentChannel).itemsOfChannel[0]);
+                                NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
+                                self.currentChannel.pubDateStringOfElement = pubDateOfFirstItem;
+                            }
+                        }
+                    }
                     // post channel's info
                     LOGD(@"postElementDidParsed atom channel's info : %@", self.currentChannel.description);
                     [self postElementDidParsed:self.currentChannel];
