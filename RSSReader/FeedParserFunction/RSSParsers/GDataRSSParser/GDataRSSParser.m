@@ -114,10 +114,11 @@
 
             // if channel not has pubDate, use first child's pubDate instead.
             if ([channelElement.pubDateStringOfElement isEqualToString:@""]) {
-                if (channelElement.itemsOfChannel.count > 0) {
-                    RSSBaseElement *firstChild = channelElement.itemsOfChannel[0];
-                    NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
-                    channelElement.pubDateStringOfElement = pubDateOfFirstItem;
+                for (RSSBaseElement *element in channelElement.itemsOfChannel) {
+                    if (element.pubDateOfElement != nil) {
+                        channelElement.pubDateOfElement = channelElement.pubDateOfElement == nil ?
+                                element.pubDateOfElement : [channelElement.pubDateOfElement laterDate:element.pubDateOfElement];
+                    }
                 }
             }
 
@@ -216,10 +217,11 @@
 
     // if channel not has pubDate, use first child's pubDate instead.
     if ([channelElement.pubDateStringOfElement isEqualToString:@""]) {
-        if (channelElement.itemsOfChannel.count > 0) {
-            RSSBaseElement *firstChild = channelElement.itemsOfChannel[0];
-            NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
-            channelElement.pubDateStringOfElement = pubDateOfFirstItem;
+        for (RSSBaseElement *element in channelElement.itemsOfChannel) {
+            if (element.pubDateOfElement != nil) {
+                channelElement.pubDateOfElement = channelElement.pubDateOfElement == nil ?
+                        element.pubDateOfElement : [channelElement.pubDateOfElement laterDate:element.pubDateOfElement];
+            }
         }
     }
 

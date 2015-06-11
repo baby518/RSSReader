@@ -297,14 +297,14 @@
 //                    [self postElementDidParsed:self.currentItem];
                     /* zhangchao Time:2015-04-05,not post items now, just post channel. END ----*/
                 } else if ([qName isEqualToString:ELEMENT_CHANNEL]) {
-
                     // if channel not has pubDate, use first child's pubDate instead.
                     if ([self.currentChannel isKindOfClass:[RSSChannelElement class]]) {
                         if ([self.currentChannel.pubDateStringOfElement isEqualToString:@""]) {
-                            if (((RSSChannelElement *) self.currentChannel).itemsOfChannel.count > 0) {
-                                RSSBaseElement *firstChild = (((RSSChannelElement *) self.currentChannel).itemsOfChannel[0]);
-                                NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
-                                self.currentChannel.pubDateStringOfElement = pubDateOfFirstItem;
+                            for (RSSBaseElement *element in ((RSSChannelElement *) self.currentChannel).itemsOfChannel) {
+                                if (element.pubDateOfElement != nil) {
+                                    self.currentChannel.pubDateOfElement = self.currentChannel.pubDateOfElement == nil ?
+                                            element.pubDateOfElement : [self.currentChannel.pubDateOfElement laterDate:element.pubDateOfElement];
+                                }
                             }
                         }
                     }
@@ -325,10 +325,11 @@
                     // if channel not has pubDate, use first child's pubDate instead.
                     if ([self.currentChannel isKindOfClass:[RSSChannelElement class]]) {
                         if ([self.currentChannel.pubDateStringOfElement isEqualToString:@""]) {
-                            if (((RSSChannelElement *) self.currentChannel).itemsOfChannel.count > 0) {
-                                RSSBaseElement *firstChild = (((RSSChannelElement *) self.currentChannel).itemsOfChannel[0]);
-                                NSString *pubDateOfFirstItem = firstChild.pubDateStringOfElement;
-                                self.currentChannel.pubDateStringOfElement = pubDateOfFirstItem;
+                            for (RSSBaseElement *element in ((RSSChannelElement *) self.currentChannel).itemsOfChannel) {
+                                if (element.pubDateOfElement != nil) {
+                                    self.currentChannel.pubDateOfElement = self.currentChannel.pubDateOfElement == nil ?
+                                            element.pubDateOfElement : [self.currentChannel.pubDateOfElement laterDate:element.pubDateOfElement];
+                                }
                             }
                         }
                     }
