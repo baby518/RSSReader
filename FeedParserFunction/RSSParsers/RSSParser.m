@@ -38,6 +38,27 @@
     return self;
 }
 
+- (void)setFilterArray:(NSArray *)array {
+    // delete same values.
+    NSSet *set = [NSSet setWithArray:array];
+    _filterKeyArray = [set allObjects];
+}
+
+- (BOOL)needIgnoreItem:(NSString *)string {
+    // if itemTitle contain filter's key, ignore this item.
+    BOOL needReturn = NO;
+    for (NSObject *keyString in self.filterKeyArray) {
+        if ([keyString isKindOfClass:[NSString class]] && [string containsString:(NSString *) keyString]) {
+            needReturn = YES;
+        }
+        if (needReturn) {
+            LOGW(@"This item will be ignored, because has keyString : %@, itemTitle : %@", keyString, string);
+            break;
+        }
+    }
+    return needReturn;
+}
+
 - (void)startParser {
     [self startParserWithStyle:XMLElementStringNormal];
 }

@@ -37,6 +37,8 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 @property (nonatomic, assign, readonly) XMLParseEngine xmlParseEngine;
 
 @property (nonatomic, strong, readonly) NSData* xmlData;
+/** parser will ignore item whose title contain blackList's key string. */
+@property (nonatomic, strong) NSMutableArray* blackList;
 
 - (id)initWithData:(NSData *)data;
 /* init with NSURL, must start request before parse.*/

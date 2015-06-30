@@ -167,6 +167,11 @@
                 itemDescription = [NSString filterHtmlLabelInString:itemDescription];
             }
 
+            // if itemTitle contain filter's key, ignore this item.
+            if ([self needIgnoreItem:itemTitle]) {
+                continue;
+            }
+
             RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:itemTitle];
             itemElement.linkOfElement = itemLink;
             itemElement.descriptionOfElement = itemDescription;
@@ -257,6 +262,11 @@
             if (xmlElementStringStyle == XMLElementStringFilterHtmlLabel) {
                 entryTitle = [NSString filterHtmlLabelInString:entryTitle];
                 entrySummary = [NSString filterHtmlLabelInString:entrySummary];
+            }
+
+            // if itemTitle contain filter's key, ignore this item.
+            if ([self needIgnoreItem:entryTitle]) {
+                continue;
             }
 
             RSSItemElement *itemElement = [[RSSItemElement alloc] initWithTitle:entryTitle];

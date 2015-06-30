@@ -41,6 +41,7 @@ typedef NS_ENUM(NSInteger, FeedType) {
 
 @property (nonatomic, weak) id <RSSParserDelegate> delegate;
 @property (nonatomic, strong, readonly) NSData* xmlData;
+@property (nonatomic, strong, readonly) NSArray* filterKeyArray;
 - (id)initWithData:(NSData *)data;
 - (void)startParser;
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;
@@ -48,6 +49,8 @@ typedef NS_ENUM(NSInteger, FeedType) {
 - (BOOL)isParsing;
 - (void)didParserFinish;
 
+- (void)setFilterArray:(NSArray *)array;
+- (BOOL)needIgnoreItem:(NSString *)string;
 // try to set protected later
 - (void)postErrorOccurred:(NSError *)error;
 // try to set protected later

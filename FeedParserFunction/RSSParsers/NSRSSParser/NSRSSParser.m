@@ -289,7 +289,11 @@
                 if ([qName isEqualToString:ELEMENT_ITEM]) {
                     // add items in channel's item array.
                     if (self.currentChannel != nil && [self.currentItem isKindOfClass:[RSSItemElement class]]) {
-                        [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
+                        // if itemTitle contain filter's key, ignore this item.
+                        if ([self needIgnoreItem:self.currentItem.descriptionOfElement]) {
+                        } else {
+                            [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
+                        }
                     }
                     /* zhangchao Time:2015-04-05,not post items now, just post channel. START ++++*/
 //                    // post item
@@ -319,7 +323,11 @@
                 if ([qName isEqualToString:ATOM_ENTRY]) {
                     // add items in channel's item array.
                     if (self.currentChannel != nil && [self.currentItem isKindOfClass:[RSSItemElement class]]) {
-                        [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
+                        // if itemTitle contain filter's key, ignore this item.
+                        if ([self needIgnoreItem:self.currentItem.descriptionOfElement]) {
+                        } else {
+                            [((RSSChannelElement *) self.currentChannel) addItem:((RSSItemElement *) self.currentItem)];
+                        }
                     }
                 } else if ([qName isEqualToString:ATOM_ROOT_NAME]) {
                     // if channel not has pubDate, use first child's pubDate instead.

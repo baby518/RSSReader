@@ -23,8 +23,16 @@
 #pragma mark FeedParser
 @implementation FeedParser
 
-- (id)initWithData:(NSData *)data {
+- (id)init {
     self = [super self];
+    if (self) {
+        _blackList = [NSMutableArray array];
+    }
+    return self;
+}
+
+- (id)initWithData:(NSData *)data {
+    self = [self init];
     if (self) {
         [self initializeData:data];
     }
@@ -32,7 +40,7 @@
 }
 
 - (id)initWithURL:(NSURL *)feedURL {
-    self = [super self];
+    self = [self init];
     if (self) {
         _feedURL = feedURL;
     }
@@ -158,6 +166,12 @@
     if (self.parser != nil) {
         // Set parser's delegate.
         self.parser.delegate = self;
+
+        // set filter keys
+        if (self.blackList != nil) {
+            [self.parser setFilterArray:[NSArray arrayWithArray:self.blackList]];
+        }
+
         // start parser
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.parser startParserWithStyle:elementStringStyle];
