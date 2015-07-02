@@ -13,17 +13,31 @@
 @implementation RSSBaseElement
 
 - (instancetype)init {
-    return [self initWithTitle:@""];
-}
-
-- (instancetype)initWithTitle:(NSString *)title {
     self = [super init];
     if (self) {
-        _titleOfElement = title;
+        _titleOfElement = @"";
         _linkOfElement = @"";
         _descriptionOfElement = @"";
         _pubDateStringOfElement = @"";
         _imageUrlArray = [NSMutableArray array];
+    }
+    return self;
+}
+
+- (instancetype)initWithTitle:(NSString *)title {
+    self = [self init];
+    if (self) {
+        _titleOfElement = title;
+        _linkOfElement = @"";
+    }
+    return self;
+}
+
+- (instancetype)initWithURL:(NSURL *)url {
+    self = [self init];
+    if (self) {
+        _titleOfElement = @"";
+        _linkOfElement = [url absoluteString];
     }
     return self;
 }

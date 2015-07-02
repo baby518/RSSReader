@@ -18,5 +18,6 @@
 @property(nonatomic, strong) NSMutableArray *imageUrlArray;
 
 - (instancetype)initWithTitle:(NSString *)title;
+- (instancetype)initWithURL:(NSURL *)url;
 - (NSString *)description;
 @end
