@@ -49,12 +49,18 @@
 }
 
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html {
-    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    return [[NSString removeHTMLLabel:html] stringByTrimmingCharactersInSet:whitespace];
+    return [NSString removeHTMLLabelAndWhitespace:html maxLength:html.length];;
 }
 
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength {
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    return [[NSString removeHTMLLabel:html maxLength:maxLength] stringByTrimmingCharactersInSet:whitespace];
+    // delete whitespace and newLine of head and foot;
+    NSString *result = [[NSString removeHTMLLabel:html maxLength:maxLength] stringByTrimmingCharactersInSet:whitespace];
+    // delete newLine of body.
+    result = [result stringByReplacingOccurrencesOfString:@" \n" withString:@""];
+    // delete repeat whitespace of body.
+    result = [result stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+    result = [result stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+    return result;
 }
 @end
