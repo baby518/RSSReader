@@ -57,10 +57,9 @@
     // delete whitespace and newLine of head and foot;
     NSString *result = [[NSString removeHTMLLabel:html maxLength:maxLength] stringByTrimmingCharactersInSet:whitespace];
     // delete newLine of body.
-    result = [result stringByReplacingOccurrencesOfString:@" \n" withString:@""];
+    result = [result stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     // delete repeat whitespace of body.
-    result = [result stringByReplacingOccurrencesOfString:@"  " withString:@" "];
-    result = [result stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+    result = [result stringByReplacingOccurrencesOfString:@"   " withString:@" "];
     return result;
 }
 @end
