@@ -47,7 +47,7 @@
         [self.openLocalFileButton setEnabled:NO];
         [self.loadUrlButton setEnabled:YES];
         [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:@"http://news.163.com/special/00011K6L/rss_sh.xml"];
+        [self.filePathTextField setStringValue:@"http://www.cnbeta.com"];
 //        [self.filePathTextField setStringValue:@"http://192.168.2.2/qq_web_2312.xml"];
     }
 }
