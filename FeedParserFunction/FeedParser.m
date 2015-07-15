@@ -10,6 +10,8 @@
 #import "NSRSSParser.h"
 #import "GDataRSSParser.h"
 #import "AtomSchema.h"
+#import "HTMLSchema.h"
+#import "TFHpple.h"
 
 #pragma mark FeedParser (private)
 @interface FeedParser ()
@@ -117,22 +119,48 @@
     } else {
         // check for any response errors
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-        if ((([httpResponse statusCode] / 100) == 2) &&
-                ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML]
-                        || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2] || [[response MIMEType] isEqual:ATOM_MIME_TYPE])) {
-            // the XML data.
-            [self initializeData:data];
-            handler(nil);
-        } else {
-            NSString *errorString = [NSString stringWithFormat:@"%@ : %@",
-                                                               feedURLRequest.URL, @"Error message displayed when receving a connection error."];
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
-            NSError *reportError = [NSError errorWithDomain:@"HTTP"
-                                                       code:[httpResponse statusCode]
-                                                   userInfo:userInfo];
-            LOGE(@"NSURLConnection http response error is %@, MIMEType : %@", reportError, httpResponse.MIMEType);
-            handler(reportError);
+        if (([httpResponse statusCode] / 100) == 2) {
+            if ([[response MIMEType] isEqual:RSS_MIME_TYPE] || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML]
+                    || [[response MIMEType] isEqual:RSS_MIME_TYPE_XML2] || [[response MIMEType] isEqual:ATOM_MIME_TYPE]) {
+                // the XML data.
+                [self initializeData:data];
+                handler(nil);
+                return;
+            } else if ([[response MIMEType] isEqual:HTML_MIME_TYPE]) {
+                [self getFeedUrlFromHTML:data handle:handler];
+                return;
+            }
         }
+        NSString *errorString = [NSString stringWithFormat:@"%@ : %@",
+                                                           feedURLRequest.URL, @"Error message displayed when receving a connection error."];
+        NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+        NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                   code:[httpResponse statusCode]
+                                               userInfo:userInfo];
+        LOGE(@"NSURLConnection http response error is %@, MIMEType : %@", reportError, httpResponse.MIMEType);
+        handler(reportError);
+    }
+}
+
+- (void)getFeedUrlFromHTML:(NSData *)data handle:(void (^)(NSError *error))handler {
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:data];
+    NSString *RSS_XPATH = [NSString stringWithFormat:@"//head/link[@type=\"%@\"]", RSS_MIME_TYPE];
+    NSString *ATOM_XPATH = [NSString stringWithFormat:@"//head/link[@type=\"%@\"]", ATOM_MIME_TYPE];
+    
+    TFHppleElement *result = [doc peekAtSearchWithXPathQuery:RSS_XPATH];
+    if (result == nil) {
+        result = [doc peekAtSearchWithXPathQuery:ATOM_XPATH];
+    }
+    if (result != nil) {
+        NSString *href = [result objectForKey:@"href"];
+        if ([href hasPrefix:@"//"]) {
+            href = [NSString stringWithFormat:@"%@:%@", _feedURL.scheme, href];
+        } else if ([href hasPrefix:@"/"]) {
+            href = [NSString stringWithFormat:@"%@%@", _feedURL, href];
+        }
+        LOGD(@"getFeedUrlFromHTML result: %@", href);
+        _feedURL = [NSURL URLWithString:(href)];
+        [self startRequestAsync:handler];
     }
 }
 

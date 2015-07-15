@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D42BF8191B55636D0004210D /* HTMLSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = D42BF8181B55636D0004210D /* HTMLSchema.m */; };
+		D43DA9771B56CA230064710E /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9721B56CA230064710E /* TFHpple.m */; };
+		D43DA9781B56CA230064710E /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9741B56CA230064710E /* TFHppleElement.m */; };
+		D43DA9791B56CA230064710E /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9761B56CA230064710E /* XPathQuery.m */; };
 		D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4CEC7191A827AB300D0A87A /* libxml2.dylib */; };
 		D4DA8B8E1B3471B1000DC0E8 /* FeedParser.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4DA8B6B1B3471B1000DC0E8 /* FeedParser.strings */; };
 		D4DA8B8F1B3471B1000DC0E8 /* FeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DA8B6E1B3471B1000DC0E8 /* FeedParser.m */; };
@@ -30,6 +34,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D42BF8171B55636D0004210D /* HTMLSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLSchema.h; sourceTree = "<group>"; };
+		D42BF8181B55636D0004210D /* HTMLSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLSchema.m; sourceTree = "<group>"; };
+		D43DA9711B56CA230064710E /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
+		D43DA9721B56CA230064710E /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHpple.m; sourceTree = "<group>"; };
+		D43DA9731B56CA230064710E /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHppleElement.h; sourceTree = "<group>"; };
+		D43DA9741B56CA230064710E /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
+		D43DA9751B56CA230064710E /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPathQuery.h; sourceTree = "<group>"; };
+		D43DA9761B56CA230064710E /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		D4DA8B6C1B3471B1000DC0E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/FeedParser.strings; sourceTree = "<group>"; };
 		D4DA8B6D1B3471B1000DC0E8 /* FeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedParser.h; sourceTree = "<group>"; };
@@ -83,9 +95,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D42BF8161B55636D0004210D /* HTMLParser */ = {
+			isa = PBXGroup;
+			children = (
+				D42BF8171B55636D0004210D /* HTMLSchema.h */,
+				D42BF8181B55636D0004210D /* HTMLSchema.m */,
+			);
+			path = HTMLParser;
+			sourceTree = "<group>";
+		};
+		D4309AE71B5427BB00AF2E93 /* References */ = {
+			isa = PBXGroup;
+			children = (
+				D43DA9701B56CA230064710E /* hpple_HTMLParser */,
+			);
+			path = References;
+			sourceTree = "<group>";
+		};
+		D43DA9701B56CA230064710E /* hpple_HTMLParser */ = {
+			isa = PBXGroup;
+			children = (
+				D43DA9711B56CA230064710E /* TFHpple.h */,
+				D43DA9721B56CA230064710E /* TFHpple.m */,
+				D43DA9731B56CA230064710E /* TFHppleElement.h */,
+				D43DA9741B56CA230064710E /* TFHppleElement.m */,
+				D43DA9751B56CA230064710E /* XPathQuery.h */,
+				D43DA9761B56CA230064710E /* XPathQuery.m */,
+			);
+			name = hpple_HTMLParser;
+			path = hpple_HTMLParser/Pod/Classes;
+			sourceTree = "<group>";
+		};
 		D4DA8B6A1B3471B1000DC0E8 /* FeedParserFunction */ = {
 			isa = PBXGroup;
 			children = (
+				D42BF8161B55636D0004210D /* HTMLParser */,
 				D4DA8B6B1B3471B1000DC0E8 /* FeedParser.strings */,
 				D4DA8B6D1B3471B1000DC0E8 /* FeedParser.h */,
 				D4DA8B6E1B3471B1000DC0E8 /* FeedParser.m */,
@@ -161,6 +205,7 @@
 		D4FA67241A8133A900265869 = {
 			isa = PBXGroup;
 			children = (
+				D4309AE71B5427BB00AF2E93 /* References */,
 				D4DA8B6A1B3471B1000DC0E8 /* FeedParserFunction */,
 				D4CEC7191A827AB300D0A87A /* libxml2.dylib */,
 				D4FA672F1A8133A900265869 /* RSSReader */,
@@ -273,11 +318,15 @@
 				D4DA8B991B3471B1000DC0E8 /* NSRSSParser.m in Sources */,
 				D4DA8B931B3471B1000DC0E8 /* RSSBaseElement.m in Sources */,
 				D4DA8B8F1B3471B1000DC0E8 /* FeedParser.m in Sources */,
+				D43DA9791B56CA230064710E /* XPathQuery.m in Sources */,
 				D4DA8B901B3471B1000DC0E8 /* NSDate+helper.m in Sources */,
 				D4FA67391A8133A900265869 /* ViewController.m in Sources */,
 				D4DA8B981B3471B1000DC0E8 /* GDataXMLNode.m in Sources */,
+				D43DA9781B56CA230064710E /* TFHppleElement.m in Sources */,
 				D4DA8B941B3471B1000DC0E8 /* RSSChannelElement.m in Sources */,
 				D4DA8B9B1B3471B1000DC0E8 /* XMLHelper.m in Sources */,
+				D42BF8191B55636D0004210D /* HTMLSchema.m in Sources */,
+				D43DA9771B56CA230064710E /* TFHpple.m in Sources */,
 				D4DA8B9A1B3471B1000DC0E8 /* RSSParser.m in Sources */,
 				D4DA8B971B3471B1000DC0E8 /* GDataRSSParser.m in Sources */,
 				D4DA8B911B3471B1000DC0E8 /* NSString+helper.m in Sources */,
