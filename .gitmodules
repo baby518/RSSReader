@@ -1,0 +1,3 @@
+[submodule "References/hpple_HTMLParser"]
+	path = References/hpple_HTMLParser
+	url = git@github.com:topfunky/hpple.git
