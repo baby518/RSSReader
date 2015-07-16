@@ -19,6 +19,7 @@
 @property(nonatomic, strong) NSURLSession *URLSession;
 @property(nonatomic, strong) NSURLSessionDataTask *URLSessionDataTask;
 
+@property(nonatomic, assign, readonly) BOOL needHTMLParse;
 - (void)initializeData:(NSData *)data;
 @end
 
@@ -29,6 +30,7 @@
     self = [super self];
     if (self) {
         _blackList = [NSMutableArray array];
+        _needHTMLParse = true;
     }
     return self;
 }
@@ -89,6 +91,11 @@
 }
 
 - (void)startRequestAsync:(void (^)(NSError *error))handler {
+    _needHTMLParse = true;
+    [self goOnRequestAsync:handler];
+}
+
+- (void)goOnRequestAsync:(void (^)(NSError *error))handler {
     // Method 3: use NSURLConnection Async copy from SeismicXML
     NSURLRequest *feedURLRequest = [NSURLRequest requestWithURL:self.feedURL];
 
@@ -126,8 +133,14 @@
                 [self initializeData:data];
                 handler(nil);
                 return;
-            } else if ([[response MIMEType] isEqual:HTML_MIME_TYPE]) {
-                [self getFeedUrlFromHTML:data handle:handler];
+            } else if ([[response MIMEType] isEqual:HTML_MIME_TYPE] && self.needHTMLParse) {
+                // just parse once.
+                _needHTMLParse = false;
+                NSURL *url = [self getFeedUrlFromHTML:data];
+                if (url != nil) {
+                    _feedURL = url;
+                    [self goOnRequestAsync:handler];
+                }
                 return;
             }
         }
@@ -142,7 +155,7 @@
     }
 }
 
-- (void)getFeedUrlFromHTML:(NSData *)data handle:(void (^)(NSError *error))handler {
+- (NSURL *)getFeedUrlFromHTML:(NSData *)data {
     TFHpple *doc = [[TFHpple alloc] initWithHTMLData:data];
     NSString *RSS_XPATH = [NSString stringWithFormat:@"//head/link[@type=\"%@\"]", RSS_MIME_TYPE];
     NSString *ATOM_XPATH = [NSString stringWithFormat:@"//head/link[@type=\"%@\"]", ATOM_MIME_TYPE];
@@ -159,9 +172,9 @@
             href = [NSString stringWithFormat:@"%@%@", _feedURL, href];
         }
         LOGD(@"getFeedUrlFromHTML result: %@", href);
-        _feedURL = [NSURL URLWithString:(href)];
-        [self startRequestAsync:handler];
+        return [NSURL URLWithString:href];
     }
+    return nil;
 }
 
 - (void)startParser {
