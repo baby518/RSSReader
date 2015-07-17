@@ -14,8 +14,8 @@
     self = [super initWithTitle:title];
     if (self) {
         _itemsOfChannel = [NSMutableArray array];
-        self.languageOfChannel = @"";
-        self.copyrightOfChannel = @"";
+        _languageOfChannel = @"";
+        _copyrightOfChannel = @"";
     }
     return self;
 }
@@ -26,10 +26,7 @@
 
 - (NSString *)description {
     NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:", NSStringFromClass([self class])];
-    [description appendFormat:@"  titleOfElement=%@", self.titleOfElement];
-    [description appendFormat:@", linkOfElement=%@", self.linkOfElement];
-    [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
-    [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];
+    [description appendString:[super description]];
     [description appendFormat:@", languageOfChannel=%@", self.languageOfChannel];
     [description appendFormat:@", copyrightOfChannel=%@", self.copyrightOfChannel];
     [description appendString:@">"];

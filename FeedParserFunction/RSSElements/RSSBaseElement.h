@@ -16,6 +16,8 @@
 @property(nonatomic, strong) NSString *pubDateStringOfElement;
 @property(nonatomic, strong) NSDate *pubDateOfElement;
 @property(nonatomic, strong) NSMutableArray *imageUrlArray;
+// channel's feed url
+@property(nonatomic, strong) NSURL *feedURL;
 
 - (instancetype)initWithTitle:(NSString *)title;
 - (instancetype)initWithURL:(NSURL *)url;

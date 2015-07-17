@@ -20,6 +20,7 @@
         _descriptionOfElement = @"";
         _pubDateStringOfElement = @"";
         _imageUrlArray = [NSMutableArray array];
+        _feedURL = nil;
     }
     return self;
 }
@@ -37,7 +38,7 @@
     self = [self init];
     if (self) {
         _titleOfElement = @"";
-        _linkOfElement = [url absoluteString];
+        _feedURL = url;
     }
     return self;
 }
@@ -54,6 +55,7 @@
 
 - (NSString *)description {
     NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:", NSStringFromClass([self class])];
+    [description appendFormat:@"  feedURL=%@", self.feedURL.absoluteString];
     [description appendFormat:@"  titleOfElement=%@", self.titleOfElement];
     [description appendFormat:@", linkOfElement=%@", self.linkOfElement];
     [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];

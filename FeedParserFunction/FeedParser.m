@@ -255,6 +255,7 @@
 - (void)elementDidParsed:(RSSBaseElement *)element {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
+            element.feedURL = self.feedURL;
             [self.delegate elementDidParsed:element];
         }
     });
