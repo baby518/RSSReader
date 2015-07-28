@@ -4,7 +4,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "LogHelper.h"
 
 extern NSString *const RSS_MIME_TYPE;
 extern NSString *const RSS_MIME_TYPE_XML;

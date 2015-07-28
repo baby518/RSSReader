@@ -30,6 +30,7 @@
     if (self) {
         _titleOfElement = title;
         _linkOfElement = @"";
+        _feedURL = nil;
     }
     return self;
 }
@@ -38,6 +39,7 @@
     self = [self init];
     if (self) {
         _titleOfElement = @"";
+        _linkOfElement = @"";
         _feedURL = url;
     }
     return self;
@@ -57,6 +59,8 @@
     NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:", NSStringFromClass([self class])];
     [description appendFormat:@"  feedURL=%@", self.feedURL.absoluteString];
     [description appendFormat:@"  titleOfElement=%@", self.titleOfElement];
+    [description appendFormat:@"  category=%@", self.categoryOfElement];
+    [description appendFormat:@"  starred=%ld", self.starred];
     [description appendFormat:@", linkOfElement=%@", self.linkOfElement];
     [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
     [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];
