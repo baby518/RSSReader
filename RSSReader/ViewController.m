@@ -182,6 +182,7 @@
         [_channelLinkTextField setStringValue:element.linkOfElement];
         [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
         [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
+        [_channelFavIconImageView setImage:[[NSImage alloc] initWithData:element.favIconData]];
 
         if (_useHTMLLabelCheckBox.state == 0) {
             [_channelTitleTextField setStringValue:element.titleOfElement];

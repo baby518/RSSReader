@@ -45,6 +45,17 @@
     return self;
 }
 
+- (NSData *)favIconData {
+    if (_favIconData == nil) {
+        NSLog(@"favIconData favIconURL %@", self.favIconURL);
+        if (self.favIconURL != nil) {
+            _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.favIconURL]];
+        }
+    }
+    NSLog(@"favIconData return %@", _favIconData);
+    return _favIconData;
+}
+
 - (void)setPubDateStringOfElement:(NSString *)pubDateStringOfElement {
     _pubDateStringOfElement = pubDateStringOfElement;
     if (_pubDateStringOfElement != nil) {
