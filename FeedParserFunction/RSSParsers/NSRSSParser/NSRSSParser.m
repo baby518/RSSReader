@@ -167,7 +167,7 @@
 
                 // Process image url
                 if ([self.currentPath isEqualToString:ELEMENT_IMAGE_URL_PATH]) {
-                    [self.currentChannel.imageUrlArray addObject:processedText];
+                    self.currentChannel.favIconURL = processedText;
                     processed = YES;
                 }
 

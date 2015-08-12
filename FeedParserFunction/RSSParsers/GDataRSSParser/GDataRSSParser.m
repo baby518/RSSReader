@@ -134,7 +134,7 @@
     for (GDataXMLElement *image in images) {
         if (image != nil) {
             NSString *imageURL = [[image elementsForName:ELEMENT_IMAGE_URL][0] stringValue];
-            [parentChannel.imageUrlArray addObject:imageURL];
+            parentChannel.favIconURL = imageURL;
         }
     }
 }

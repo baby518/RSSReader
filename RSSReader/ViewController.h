@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 @property (weak) IBOutlet NSTextField *channelDescriptionTextField;
 @property (weak) IBOutlet NSTextField *channelLanguageTextField;
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
+@property (weak) IBOutlet NSImageView *channelFavIconImageView;
 @property (weak) IBOutlet NSButton *channelLinkButton;
 @property (weak) IBOutlet NSPopUpButton *xmlSourcePopup;
 @property (weak) IBOutlet NSPopUpButton *elementStringStylePopUp;
