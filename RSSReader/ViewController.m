@@ -9,6 +9,17 @@
 #import "ViewController.h"
 #import "NSDate+helper.h"
 #import "NSString+helper.h"
+#import "BaseFMDBUtil.h"
+#import "PresetFMDBUtil.h"
+#import "UserFMDBUtil.h"
+
+@interface ViewController ()
+
+@property (nonatomic, strong) PresetFMDBUtil *presetDB;
+@property (nonatomic, strong) UserFMDBUtil *userDB;
+@property (nonatomic, strong) NSString *userDocFolder;
+
+@end
 
 @implementation ViewController
 
@@ -26,6 +37,28 @@
 
     self.feedItemsTableView.delegate = self;
     self.feedItemsTableView.dataSource = self;
+    
+    [self initFMDB];
+}
+
+- (void) initFMDB {
+    // create user DocumentDirectory.
+    NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *appFolder = @"RSSReader";
+    _userDocFolder = [NSString stringWithFormat:@"%@/%@", docsPath, appFolder];
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    [fm createDirectoryAtPath:self.userDocFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSString *presetDBPath = [[NSBundle mainBundle] pathForResource:@"preset_database" ofType:@"sqlite3"];
+    if (presetDBPath != nil) {
+        _presetDB = [[PresetFMDBUtil alloc] initWithDBPath:presetDBPath];
+    }
+    
+    NSString *userFeedPath = [NSString stringWithFormat:@"%@/%@", self.userDocFolder, @"userFeeds.sqlite3"];
+    if (userFeedPath != nil) {
+        _userDB = [[UserFMDBUtil alloc] initWithDBPath:userFeedPath];
+    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -47,7 +80,7 @@
         [self.openLocalFileButton setEnabled:NO];
         [self.loadUrlButton setEnabled:YES];
         [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:@"http://www.cnbeta.com"];
+        [self.filePathTextField setStringValue:@"http://rss.cnbeta.com/rss"];
 //        [self.filePathTextField setStringValue:@"http://192.168.2.2/qq_web_2312.xml"];
     }
 }
@@ -57,6 +90,14 @@
     // delete whiteSpace and new line.
     NSString *urlString = [self.filePathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSURL *feedURL = [NSURL URLWithString:urlString];
+
+    // check it in preset database.
+    if (self.presetDB != nil) {
+        RSSChannelElement *result = [self.presetDB getChannelFromURL:urlString];
+        if (result != nil) {
+            NSLog(@"this feed is in preset");
+        }
+    }
 
 //    NSError *urlError = nil;
 //    _feedParser = [[FeedParser alloc] initWithURL:feedURL];
@@ -108,7 +149,7 @@
     }
 }
 
-- (void) startParse {
+- (void)startParse {
     if (_feedParser != nil) {
         [_feedParser stopParser];
     }
@@ -209,6 +250,12 @@
         _currentChannel = ((RSSChannelElement *) element);
         _numberOfRows = _currentChannel.itemsOfChannel.count;
         NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfRows);
+
+        // add it in user database.
+        // maybe it is stored in database already.
+        if (self.userDB != nil) {
+            [self.userDB updateChannelElement:self.currentChannel];
+        }
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
     }

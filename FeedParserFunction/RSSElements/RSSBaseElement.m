@@ -52,7 +52,6 @@
             _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.favIconURL]];
         }
     }
-    NSLog(@"favIconData return %@", _favIconData);
     return _favIconData;
 }
 
@@ -76,6 +75,7 @@
     [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
     [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];
     [description appendFormat:@", imageCount=%lu", self.imageUrlArray.count];
+    [description appendFormat:@", favIconURL=%@", self.favIconURL];
     [description appendString:@">"];
     return description;
 }

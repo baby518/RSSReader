@@ -8,10 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		6C77BDA813B67BF10EBDBA2D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1EDD2364FC75E9437DFEA2 /* libPods.a */; };
+		A8E2BCFD5F88C1FF30006D1D /* preset_database.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */; };
 		D42BF8191B55636D0004210D /* HTMLSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = D42BF8181B55636D0004210D /* HTMLSchema.m */; };
 		D43DA9771B56CA230064710E /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9721B56CA230064710E /* TFHpple.m */; };
 		D43DA9781B56CA230064710E /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9741B56CA230064710E /* TFHppleElement.m */; };
 		D43DA9791B56CA230064710E /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9761B56CA230064710E /* XPathQuery.m */; };
+		D44905111B7BB56D00B3F58E /* BaseFMDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D44905091B7BB56D00B3F58E /* BaseFMDBUtil.m */; };
+		D44905121B7BB56D00B3F58E /* PresetFMDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D449050B1B7BB56D00B3F58E /* PresetFMDBUtil.m */; };
+		D44905131B7BB56D00B3F58E /* UserFMDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D449050D1B7BB56D00B3F58E /* UserFMDBUtil.m */; };
+		D44905141B7BB56D00B3F58E /* ImageBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = D44905101B7BB56D00B3F58E /* ImageBase64.m */; };
+		D44905161B7BB63A00B3F58E /* libPods-FMDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D44905151B7BB63A00B3F58E /* libPods-FMDB.a */; };
 		D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4CEC7191A827AB300D0A87A /* libxml2.dylib */; };
 		D4DA8B8E1B3471B1000DC0E8 /* FeedParser.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4DA8B6B1B3471B1000DC0E8 /* FeedParser.strings */; };
 		D4DA8B8F1B3471B1000DC0E8 /* FeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DA8B6E1B3471B1000DC0E8 /* FeedParser.m */; };
@@ -38,6 +44,7 @@
 		1AACB82E3ADFF733BDAB1F59 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		7A5CAA8D8E6FF663CCC3E193 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8E1EDD2364FC75E9437DFEA2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file.sqlite3; path = preset_database.sqlite3; sourceTree = "<group>"; };
 		D42BF8171B55636D0004210D /* HTMLSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLSchema.h; sourceTree = "<group>"; };
 		D42BF8181B55636D0004210D /* HTMLSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLSchema.m; sourceTree = "<group>"; };
 		D43DA9711B56CA230064710E /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
@@ -46,6 +53,15 @@
 		D43DA9741B56CA230064710E /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
 		D43DA9751B56CA230064710E /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPathQuery.h; sourceTree = "<group>"; };
 		D43DA9761B56CA230064710E /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
+		D44905081B7BB56D00B3F58E /* BaseFMDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseFMDBUtil.h; sourceTree = "<group>"; };
+		D44905091B7BB56D00B3F58E /* BaseFMDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseFMDBUtil.m; sourceTree = "<group>"; };
+		D449050A1B7BB56D00B3F58E /* PresetFMDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresetFMDBUtil.h; sourceTree = "<group>"; };
+		D449050B1B7BB56D00B3F58E /* PresetFMDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresetFMDBUtil.m; sourceTree = "<group>"; };
+		D449050C1B7BB56D00B3F58E /* UserFMDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserFMDBUtil.h; sourceTree = "<group>"; };
+		D449050D1B7BB56D00B3F58E /* UserFMDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserFMDBUtil.m; sourceTree = "<group>"; };
+		D449050F1B7BB56D00B3F58E /* ImageBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageBase64.h; sourceTree = "<group>"; };
+		D44905101B7BB56D00B3F58E /* ImageBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageBase64.m; sourceTree = "<group>"; };
+		D44905151B7BB63A00B3F58E /* libPods-FMDB.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-FMDB.a"; path = "../../../../../Users/zhangchao/Library/Developer/Xcode/DerivedData/RSSReader-eervszdasslycrbjuznzfolwhhjt/Build/Products/Debug/libPods-FMDB.a"; sourceTree = "<group>"; };
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		D4DA8B6C1B3471B1000DC0E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/FeedParser.strings; sourceTree = "<group>"; };
 		D4DA8B6D1B3471B1000DC0E8 /* FeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedParser.h; sourceTree = "<group>"; };
@@ -92,6 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D44905161B7BB63A00B3F58E /* libPods-FMDB.a in Frameworks */,
 				D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */,
 				6C77BDA813B67BF10EBDBA2D /* libPods.a in Frameworks */,
 			);
@@ -112,9 +129,18 @@
 		A296EB70013019E3B0B897B3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D44905151B7BB63A00B3F58E /* libPods-FMDB.a */,
 				8E1EDD2364FC75E9437DFEA2 /* libPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A8E2B30AD3CCE8F314813A6D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		D42BF8161B55636D0004210D /* HTMLParser */ = {
@@ -146,6 +172,37 @@
 			);
 			name = hpple_HTMLParser;
 			path = hpple_HTMLParser/Pod/Classes;
+			sourceTree = "<group>";
+		};
+		D44905061B7BB56D00B3F58E /* FMDBUtil */ = {
+			isa = PBXGroup;
+			children = (
+				D44905071B7BB56D00B3F58E /* FMDB */,
+				D449050E1B7BB56D00B3F58E /* ImageUtil */,
+			);
+			path = FMDBUtil;
+			sourceTree = "<group>";
+		};
+		D44905071B7BB56D00B3F58E /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				D44905081B7BB56D00B3F58E /* BaseFMDBUtil.h */,
+				D44905091B7BB56D00B3F58E /* BaseFMDBUtil.m */,
+				D449050A1B7BB56D00B3F58E /* PresetFMDBUtil.h */,
+				D449050B1B7BB56D00B3F58E /* PresetFMDBUtil.m */,
+				D449050C1B7BB56D00B3F58E /* UserFMDBUtil.h */,
+				D449050D1B7BB56D00B3F58E /* UserFMDBUtil.m */,
+			);
+			path = FMDB;
+			sourceTree = "<group>";
+		};
+		D449050E1B7BB56D00B3F58E /* ImageUtil */ = {
+			isa = PBXGroup;
+			children = (
+				D449050F1B7BB56D00B3F58E /* ImageBase64.h */,
+				D44905101B7BB56D00B3F58E /* ImageBase64.m */,
+			);
+			path = ImageUtil;
 			sourceTree = "<group>";
 		};
 		D4DA8B6A1B3471B1000DC0E8 /* FeedParserFunction */ = {
@@ -227,6 +284,7 @@
 		D4FA67241A8133A900265869 = {
 			isa = PBXGroup;
 			children = (
+				D44905061B7BB56D00B3F58E /* FMDBUtil */,
 				D4309AE71B5427BB00AF2E93 /* References */,
 				D4DA8B6A1B3471B1000DC0E8 /* FeedParserFunction */,
 				D4CEC7191A827AB300D0A87A /* libxml2.dylib */,
@@ -234,6 +292,7 @@
 				D4FA672E1A8133A900265869 /* Products */,
 				417C656FF10D67F80C1C5E9F /* Pods */,
 				A296EB70013019E3B0B897B3 /* Frameworks */,
+				A8E2B30AD3CCE8F314813A6D /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -331,6 +390,7 @@
 				D4FA673B1A8133A900265869 /* Images.xcassets in Resources */,
 				D4DA8B8E1B3471B1000DC0E8 /* FeedParser.strings in Resources */,
 				D4FA673E1A8133A900265869 /* Main.storyboard in Resources */,
+				A8E2BCFD5F88C1FF30006D1D /* preset_database.sqlite3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,6 +434,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D44905141B7BB56D00B3F58E /* ImageBase64.m in Sources */,
 				D4DA8B991B3471B1000DC0E8 /* NSRSSParser.m in Sources */,
 				D4DA8B931B3471B1000DC0E8 /* RSSBaseElement.m in Sources */,
 				D4DA8B8F1B3471B1000DC0E8 /* FeedParser.m in Sources */,
@@ -385,15 +446,18 @@
 				D4DA8B941B3471B1000DC0E8 /* RSSChannelElement.m in Sources */,
 				D4DA8B9B1B3471B1000DC0E8 /* XMLHelper.m in Sources */,
 				D42BF8191B55636D0004210D /* HTMLSchema.m in Sources */,
+				D44905121B7BB56D00B3F58E /* PresetFMDBUtil.m in Sources */,
 				D43DA9771B56CA230064710E /* TFHpple.m in Sources */,
 				D4DA8B9A1B3471B1000DC0E8 /* RSSParser.m in Sources */,
 				D4DA8B971B3471B1000DC0E8 /* GDataRSSParser.m in Sources */,
+				D44905111B7BB56D00B3F58E /* BaseFMDBUtil.m in Sources */,
 				D4DA8B911B3471B1000DC0E8 /* NSString+helper.m in Sources */,
 				D4DA8B961B3471B1000DC0E8 /* RSSSchema.m in Sources */,
 				D4DA8B951B3471B1000DC0E8 /* RSSItemElement.m in Sources */,
 				D4FA67361A8133A900265869 /* main.m in Sources */,
 				D4FA67341A8133A900265869 /* AppDelegate.m in Sources */,
 				D4DA8B921B3471B1000DC0E8 /* AtomSchema.m in Sources */,
+				D44905131B7BB56D00B3F58E /* UserFMDBUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,7 +573,14 @@
 				);
 				INFOPLIST_FILE = RSSReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_LDFLAGS = "-lxml2";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/RSSReader-eervszdasslycrbjuznzfolwhhjt/Build/Products/Debug",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lxml2",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -527,7 +598,14 @@
 				);
 				INFOPLIST_FILE = RSSReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_LDFLAGS = "-lxml2";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/RSSReader-eervszdasslycrbjuznzfolwhhjt/Build/Products/Debug",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lxml2",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
