@@ -9,6 +9,7 @@
 #import "RSSBaseElement.h"
 #import "RSSSchema.h"
 #import "AtomSchema.h"
+#import "NSDate+helper.h"
 
 @implementation RSSBaseElement
 
@@ -63,6 +64,11 @@
             _pubDateOfElement = [AtomSchema convertString2Date:_pubDateStringOfElement];
         }
     }
+}
+
+- (void)setPubDateOfElement:(NSDate *)pubDateOfElement {
+    _pubDateOfElement = pubDateOfElement;
+    _pubDateStringOfElement = [_pubDateOfElement convertToString];
 }
 
 - (NSString *)description {

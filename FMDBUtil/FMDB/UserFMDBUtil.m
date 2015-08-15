@@ -5,7 +5,6 @@
 
 #import "UserFMDBUtil.h"
 #import "FMDatabaseAdditions.h"
-#import "ImageBase64.h"
 
 NSString * const USER_FEED_TABLE = @"feed_channels";
 
@@ -18,7 +17,7 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
     if (self) {
         // create tables if not exist.
         if (![self isTableExist:[self getFeedTableName]]) {
-            NSString *sql = [NSString stringWithFormat:@"CREATE TABLE %@ (feedTitle TEXT, feedURL TEXT UNIQUE, category TEXT, starred BOOLEAN, favicon TEXT, lastUpdate INTEGER)", [self getFeedTableName]];
+            NSString *sql = [NSString stringWithFormat:@"CREATE TABLE %@ (feedTitle TEXT, feedURL TEXT UNIQUE, category TEXT, starred BOOLEAN, lastUpdate INTEGER, favicon TEXT)", [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
     }
@@ -52,9 +51,10 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
             } else if ([key isEqualToString:@"favicon"]) {
                 // base64 string.
                 NSString *base64String = [NSString stringWithFormat:@"%@", dic[key]];
-                element.favIconData = [ImageBase64 decodeBase64:base64String];
+                element.favIconData = [self decodeBase64:base64String];
             } else if ([key isEqualToString:@"lastUpdate"]) {
-                // TODO need convert
+                NSInteger intValue = [dic[key] integerValue];
+                element.pubDateOfElement = [self decodeDate:intValue];
             }
         }
     }
@@ -71,9 +71,8 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
     NSString *name = element.titleOfElement;
     BOOL starred = element.starred;
     NSString *category = element.categoryOfElement;
-    // TODO convert lastUpdate
-    NSInteger lastUpdate = 0;//element.pubDateOfElement;
-    NSString *faviconBase64 = [ImageBase64 encodeBase64:element.favIconData];
+    NSInteger lastUpdate = [self encodeDate:element.pubDateOfElement];
+    NSString *faviconBase64 = [self encodeBase64:element.favIconData];
 
     NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@ (feedTitle, feedURL, category, starred, favicon, lastUpdate) VALUES ('%@', '%@', '%@', '%d', '%@', '%ld')", [self getFeedTableName], name, element.feedURL.absoluteString, category, starred ? 1 : 0, faviconBase64, lastUpdate];
     BOOL result = [dataBase executeUpdate:sql];
@@ -125,9 +124,8 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
     NSString *name = element.titleOfElement;
     BOOL starred = element.starred;
     NSString *category = element.categoryOfElement;
-    // TODO convert lastUpdate
-    NSInteger lastUpdate = 0;//element.pubDateOfElement;
-    NSString *faviconBase64 = [ImageBase64 encodeBase64:element.favIconData];
+    NSInteger lastUpdate = [self encodeDate:element.pubDateOfElement];
+    NSString *faviconBase64 = [self encodeBase64:element.favIconData];
 
     NSString *sql = [NSString stringWithFormat:
             @"UPDATE %@ SET "

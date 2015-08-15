@@ -35,4 +35,11 @@
 - (NSArray *)getAllCategories;
 - (NSArray *)getChannelsInCategory:(NSString *)category;
 - (RSSChannelElement *)getChannelFromURL:(NSString *)url;
+
+// other util functions
+- (NSString *)encodeBase64:(NSData *)imageData;
+- (NSData *)decodeBase64:(NSString *)base64String;
+
+- (NSInteger)encodeDate:(NSDate *)date;
+- (NSDate *)decodeDate:(NSInteger)dateValue;
 @end

@@ -9,6 +9,7 @@
 #import "BaseFMDBUtil.h"
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
+#import "ImageBase64.h"
 
 @interface BaseFMDBUtil ()
 @end
@@ -125,4 +126,23 @@
     return element;
 }
 
+
+// other util functions
+- (NSString *)encodeBase64:(NSData *)imageData {
+    return [ImageBase64 encodeBase64:imageData];
+}
+
+- (NSData *)decodeBase64:(NSString *)base64String {
+    return [ImageBase64 decodeBase64:base64String];
+}
+
+- (NSInteger)encodeDate:(NSDate *)date {
+    NSTimeInterval interval = [date timeIntervalSince1970];
+    return (NSInteger) interval;
+}
+
+- (NSDate *)decodeDate:(NSInteger)dateValue {
+    NSDate *result = [NSDate dateWithTimeIntervalSince1970:dateValue];
+    return result;
+}
 @end
