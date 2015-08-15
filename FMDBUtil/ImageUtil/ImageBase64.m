@@ -11,6 +11,7 @@
 }
 
 + (NSString *)encodeBase64:(NSData *)imageData {
+    if (imageData == nil) return nil;
     NSString *base64String = [NSString stringWithFormat:@"data:image/x-icon;base64,%@", [imageData base64Encoding]];
     return base64String;
 }
