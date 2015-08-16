@@ -17,7 +17,7 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
     if (self) {
         // create tables if not exist.
         if (![self isTableExist:[self getFeedTableName]]) {
-            NSString *sql = [NSString stringWithFormat:@"CREATE TABLE %@ (feedTitle TEXT, feedURL TEXT UNIQUE, category TEXT, starred BOOLEAN, lastUpdate INTEGER, favicon TEXT)", [self getFeedTableName]];
+            NSString *sql = [NSString stringWithFormat:@"CREATE TABLE %@ (feedURL TEXT UNIQUE, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN, lastUpdate INTEGER, favicon TEXT)", [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
     }
@@ -32,27 +32,11 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
 /** override */
 - (RSSChannelElement *)getChannelFromDictionary:(NSDictionary *)dic {
     NSArray *keys = [dic allKeys];
-    RSSChannelElement *element;
+    RSSChannelElement *element = [super getChannelFromDictionary:dic];
 
-    if ([keys containsObject:@"feedURL"]) {
-        element = [[RSSChannelElement alloc] initWithURL:[NSURL URLWithString:dic[@"feedURL"]]];
-    }
     if (element != nil) {
         for (NSString *key in keys) {
-//            NSLog(@"query channels key : %@", key);
-//            NSLog(@"query channels value : %@", dic[key]);
-            if ([key isEqualToString:@"feedTitle"]) {
-                element.titleOfElement = dic[key];
-            } else if ([key isEqualToString:@"category"]) {
-                element.categoryOfElement = dic[key];
-            } else if ([key isEqualToString:@"starred"]) {
-                NSString *starred = [NSString stringWithFormat:@"%@", dic[key]];
-                element.starred = [starred isEqualToString:@"1"];
-            } else if ([key isEqualToString:@"favicon"]) {
-                // base64 string.
-                NSString *base64String = [NSString stringWithFormat:@"%@", dic[key]];
-                element.favIconData = [self decodeBase64:base64String];
-            } else if ([key isEqualToString:@"lastUpdate"]) {
+            if ([key isEqualToString:@"lastUpdate"]) {
                 NSInteger intValue = [dic[key] integerValue];
                 element.pubDateOfElement = [self decodeDate:intValue];
             }
@@ -68,13 +52,14 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
     if (element == nil) {
         return NO;
     }
-    NSString *name = element.titleOfElement;
+    NSString *title = element.titleOfElement;
+    NSString *description = element.descriptionOfElement;
     BOOL starred = element.starred;
     NSString *category = element.categoryOfElement;
     NSInteger lastUpdate = [self encodeDate:element.pubDateOfElement];
     NSString *faviconBase64 = [self encodeBase64:element.favIconData];
 
-    NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@ (feedTitle, feedURL, category, starred, favicon, lastUpdate) VALUES ('%@', '%@', '%@', '%d', '%@', '%ld')", [self getFeedTableName], name, element.feedURL.absoluteString, category, starred ? 1 : 0, faviconBase64, lastUpdate];
+    NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@ (feedURL, feedTitle, description, category, starred, favicon, lastUpdate) VALUES ('%@', '%@', '%@', '%@', '%d', '%@', '%ld')", [self getFeedTableName], element.feedURL.absoluteString, title, description, category, starred ? 1 : 0, faviconBase64, lastUpdate];
     BOOL result = [dataBase executeUpdate:sql];
     return result;
 }
@@ -121,7 +106,8 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
         return [self addChannelElement:element];
     }
 
-    NSString *name = element.titleOfElement;
+    NSString *title = element.titleOfElement;
+    NSString *description = element.descriptionOfElement;
     BOOL starred = element.starred;
     NSString *category = element.categoryOfElement;
     NSInteger lastUpdate = [self encodeDate:element.pubDateOfElement];
@@ -130,13 +116,14 @@ NSString * const USER_FEED_TABLE = @"feed_channels";
     NSString *sql = [NSString stringWithFormat:
             @"UPDATE %@ SET "
                     "feedTitle = '%@', "
+                    "description = '%@', "
                     "starred = '%d', "
                     "category = '%@', "
                     "favicon = '%@', "
                     "lastUpdate = '%ld' "
                     "WHERE feedURL = '%@'",
-                    [self getFeedTableName], name, starred ? 1 : 0, category,
-                    faviconBase64, lastUpdate, element.feedURL.absoluteString];
+            [self getFeedTableName], title, description, starred ? 1 : 0, category,
+            faviconBase64, lastUpdate, element.feedURL.absoluteString];
     BOOL result = [dataBase executeUpdate:sql];
     return result;
 }

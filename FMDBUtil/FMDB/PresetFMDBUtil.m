@@ -21,27 +21,10 @@ NSString * const PRESET_FEED_TABLE = @"preset_feed_channels";
 /** override */
 - (RSSChannelElement *)getChannelFromDictionary:(NSDictionary *)dic {
     NSArray *keys = [dic allKeys];
-    RSSChannelElement *element;
+    RSSChannelElement *element = [super getChannelFromDictionary:dic];
 
-    if ([keys containsObject:@"feedURL"]) {
-        element = [[RSSChannelElement alloc] initWithURL:[NSURL URLWithString:dic[@"feedURL"]]];
-    }
     if (element != nil) {
         for (NSString *key in keys) {
-//            NSLog(@"query channels key : %@", key);
-//            NSLog(@"query channels value : %@", dic[key]);
-            if ([key isEqualToString:@"feedTitle"]) {
-                element.titleOfElement = dic[key];
-            } else if ([key isEqualToString:@"category"]) {
-                element.categoryOfElement = dic[key];
-            } else if ([key isEqualToString:@"starred"]) {
-                NSString *starred = [NSString stringWithFormat:@"%@", dic[key]];
-                element.starred = [starred isEqualToString:@"1"];
-            } else if ([key isEqualToString:@"favicon"]) {
-                // base64 string.
-                NSString *base64String = [NSString stringWithFormat:@"%@", dic[key]];
-                element.favIconData = [ImageBase64 decodeBase64:base64String];
-            }
         }
     }
     return element;

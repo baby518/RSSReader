@@ -122,6 +122,24 @@
     if ([keys containsObject:@"feedURL"]) {
         element = [[RSSChannelElement alloc] initWithURL:[NSURL URLWithString:dic[@"feedURL"]]];
     }
+    if (element != nil) {
+        for (NSString *key in keys) {
+            if ([key isEqualToString:@"feedTitle"]) {
+                element.titleOfElement = dic[key];
+            } else if ([key isEqualToString:@"description"]) {
+                element.descriptionOfElement = dic[key];
+            } else if ([key isEqualToString:@"category"]) {
+                element.categoryOfElement = dic[key];
+            } else if ([key isEqualToString:@"starred"]) {
+                NSString *starred = [NSString stringWithFormat:@"%@", dic[key]];
+                element.starred = [starred isEqualToString:@"1"];
+            } else if ([key isEqualToString:@"favicon"]) {
+                // base64 string.
+                NSString *base64String = [NSString stringWithFormat:@"%@", dic[key]];
+                element.favIconData = [ImageBase64 decodeBase64:base64String];
+            }
+        }
+    }
     // complete element's property by child's override.
     return element;
 }

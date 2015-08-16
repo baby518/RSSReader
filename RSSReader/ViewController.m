@@ -89,15 +89,25 @@
     // TODO load Feed data and save data in self.data
     // delete whiteSpace and new line.
     NSString *urlString = [self.filePathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSURL *feedURL = [NSURL URLWithString:urlString];
 
+    // TODO just for test ++++++
     // check it in preset database.
     if (self.presetDB != nil) {
-        RSSChannelElement *result = [self.presetDB getChannelFromURL:urlString];
-        if (result != nil) {
-            NSLog(@"this feed is in preset");
-        }
     }
+
+//    if (self.userDB != nil) {
+//        RSSChannelElement *result = [self.userDB getChannelFromURL:@"http://www.ithome.com/rss"];
+//        if (result != nil) {
+//            NSLog(@"query result %@", result.description);
+//        }
+//    }
+    // just for test ------
+
+    [self startParserWithURL:urlString];
+}
+
+- (void)startParserWithURL:(NSString *)urlString {
+    NSURL *feedURL = [NSURL URLWithString:urlString];
 
 //    NSError *urlError = nil;
 //    _feedParser = [[FeedParser alloc] initWithURL:feedURL];
@@ -114,6 +124,8 @@
     [self.feedParser startRequestAsync:^(NSError *error) {
         if (error == nil) {
             [weakSelf startParser];
+        } else {
+            [self parseCompleted:NO];
         }
     }];
 }
@@ -267,7 +279,7 @@
 }
 
 - (void)parseCompleted:(BOOL)completed {
-
+    NSLog(@"parseCompleted %ld", completed);
 }
 
 

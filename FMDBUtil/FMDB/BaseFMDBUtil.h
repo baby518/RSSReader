@@ -36,6 +36,8 @@
 - (NSArray *)getChannelsInCategory:(NSString *)category;
 - (RSSChannelElement *)getChannelFromURL:(NSString *)url;
 
+- (RSSChannelElement *)getChannelFromDictionary:(NSDictionary *)dic;
+
 // other util functions
 - (NSString *)encodeBase64:(NSData *)imageData;
 - (NSData *)decodeBase64:(NSString *)base64String;
