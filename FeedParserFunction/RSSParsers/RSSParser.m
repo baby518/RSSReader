@@ -8,6 +8,7 @@
 
 #import "RSSParser.h"
 #import "XMLHelper.h"
+#import "NSString+helper.h"
 
 #pragma mark RSSParser (private)
 @interface RSSParser ()
@@ -20,19 +21,22 @@
         unsigned long size = [data length];
         LOGD(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
 
-        if ([XMLHelper getXMLEncodingFromHeaderInData:data] == XMLEncodingTypeGB2312) {
-            NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            if (string != nil) {
+        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (string != nil) {
+            if ([XMLHelper getXMLEncodingFromHeaderInData:data] == XMLEncodingTypeGB2312) {
+                // change encode to utf-8
                 string = [string stringByReplacingOccurrencesOfString:@"\"gb2312\""
                                                            withString:@"\"utf-8\""
                                                               options:NSCaseInsensitiveSearch
                                                                 range:NSMakeRange(0, 40)];
+            }
+            if (string != nil) {
+                // remove ascii control character
+                string = [NSString removeASCIIControl:string];
                 _xmlData = [string dataUsingEncoding:NSUTF8StringEncoding];
             } else {
                 _xmlData = data;
             }
-        } else {
-            _xmlData = data;
         }
     }
     return self;

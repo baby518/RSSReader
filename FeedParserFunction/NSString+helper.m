@@ -49,17 +49,36 @@
 }
 
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html {
-    return [NSString removeHTMLLabelAndWhitespace:html maxLength:html.length];;
+    return [NSString removeHTMLLabelAndWhitespace:html maxLength:html.length];
 }
 
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength {
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     // delete whitespace and newLine of head and foot;
     NSString *result = [[NSString removeHTMLLabel:html maxLength:maxLength] stringByTrimmingCharactersInSet:whitespace];
-    // delete newLine of body.
-    result = [result stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+
+    // delete repeat newLine of body.
+    NSRegularExpression *regular;
+    regular = [NSRegularExpression regularExpressionWithPattern:@"\n{1,}" options:0 error:nil];
+    result = [regular stringByReplacingMatchesInString:result options:0
+                                                 range:NSMakeRange(0, result.length) withTemplate:@"\n"];
+//    result = [result stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     // delete repeat whitespace of body.
-    result = [result stringByReplacingOccurrencesOfString:@"   " withString:@" "];
+    regular = [NSRegularExpression regularExpressionWithPattern:@" {1,}" options:0 error:nil];
+    result = [regular stringByReplacingMatchesInString:result options:0
+                                                 range:NSMakeRange(0, result.length) withTemplate:@" "];
+//    result = [result stringByReplacingOccurrencesOfString:@"   " withString:@" "];
     return result;
+}
+
++ (NSString *)removeASCIIControl:(NSString *)source {
+    // \x00-\x1F is ASCII Control Value.
+    // \x09 is 'Tab'
+    // \x0A is '\n'
+    NSRegularExpression *regular =
+            [NSRegularExpression regularExpressionWithPattern:@"[\x00-\x08]|[\x0B-\x1F]" options:0 error:nil];
+    source = [regular stringByReplacingMatchesInString:source options:0
+                                                 range:NSMakeRange(0, source.length) withTemplate:@""];
+    return source;
 }
 @end

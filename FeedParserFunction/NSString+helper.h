@@ -11,4 +11,6 @@
 + (NSString *)removeHTMLLabel:(NSString *)html maxLength:(NSUInteger)targetLength;
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html;
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength;
+
++ (NSString *)removeASCIIControl:(NSString *)source;
 @end
