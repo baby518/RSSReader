@@ -239,7 +239,7 @@
 
 #pragma mark FeedParser (private)
 
-- (void) initializeData:(NSData *)data {
+- (void)initializeData:(NSData *)data {
     unsigned long size = [data length];
     LOGD(@"initializeData size : %lu Byte, %lu KB", size, size / 1024);
     _xmlData = data;

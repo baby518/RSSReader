@@ -11,7 +11,9 @@
 #import "NSString+helper.h"
 
 #pragma mark RSSParser (private)
+static NSInteger RETRY_TIME_MAX = 1;
 @interface RSSParser ()
+@property (nonatomic, assign) NSInteger retryTime;
 @end
 
 @implementation RSSParser
@@ -21,25 +23,33 @@
         unsigned long size = [data length];
         LOGD(@"initWithData size : %lu Byte, %lu KB", size, size / 1024);
 
-        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        if (string != nil) {
-            if ([XMLHelper getXMLEncodingFromHeaderInData:data] == XMLEncodingTypeGB2312) {
-                // change encode to utf-8
-                string = [string stringByReplacingOccurrencesOfString:@"\"gb2312\""
-                                                           withString:@"\"utf-8\""
-                                                              options:NSCaseInsensitiveSearch
-                                                                range:NSMakeRange(0, 40)];
-            }
-            if (string != nil) {
-                // remove ascii control character
-                string = [NSString removeASCIIControl:string];
-                _xmlData = [string dataUsingEncoding:NSUTF8StringEncoding];
-            } else {
-                _xmlData = data;
-            }
-        }
+        _retryTime = 0;
+        _xmlData = [self convertData:data removeASCIIFunctionCharacter:NO];
     }
     return self;
+}
+
+- (NSData *)convertData:(NSData *)data removeASCIIFunctionCharacter:(BOOL)remove {
+    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (string != nil) {
+        if ([XMLHelper getXMLEncodingFromHeaderInData:data] == XMLEncodingTypeGB2312) {
+            // change encode to utf-8
+            string = [string stringByReplacingOccurrencesOfString:@"\"gb2312\""
+                                                       withString:@"\"utf-8\""
+                                                          options:NSCaseInsensitiveSearch
+                                                            range:NSMakeRange(0, MIN(string.length, 40))];
+        }
+        if (string != nil) {
+            if (remove) {
+                // remove ascii control character
+                LOGE(@"remove ASCII Control from string");
+                string = [NSString removeASCIIFunctionCharacter:string];
+            }
+            return [string dataUsingEncoding:NSUTF8StringEncoding];
+        }
+        return data;
+    }
+    return nil;
 }
 
 - (void)setFilterArray:(NSArray *)array {
@@ -92,8 +102,17 @@
 
 - (void)postErrorOccurred:(NSError *)error {
     [self stopParser];
-    if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parseErrorOccurred:)]) {
-        [self.delegate parseErrorOccurred:error];
+    LOGE(@"postErrorOccurred , %@", error.description);
+
+    if (self.retryTime < RETRY_TIME_MAX) {
+        _xmlData = [self convertData:_xmlData removeASCIIFunctionCharacter:YES];
+        [self startParserWithStyle:xmlElementStringStyle];
+        self.retryTime ++;
+    } else {
+        _retryTime = 0;
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parseErrorOccurred:)]) {
+            [self.delegate parseErrorOccurred:error];
+        }
     }
 }
 

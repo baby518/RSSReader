@@ -71,8 +71,8 @@
     return result;
 }
 
-+ (NSString *)removeASCIIControl:(NSString *)source {
-    // \x00-\x1F is ASCII Control Value.
++ (NSString *)removeASCIIFunctionCharacter:(NSString *)source {
+    // \x00-\x1F is ASCII Function Character
     // \x09 is 'Tab'
     // \x0A is '\n'
     NSRegularExpression *regular =

@@ -12,5 +12,5 @@
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html;
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength;
 
-+ (NSString *)removeASCIIControl:(NSString *)source;
++ (NSString *)removeASCIIFunctionCharacter:(NSString *)source;
 @end
