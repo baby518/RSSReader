@@ -48,7 +48,6 @@
 
 - (NSData *)favIconData {
     if (_favIconData == nil) {
-        NSLog(@"favIconData favIconURL %@", self.favIconURL);
         if (self.favIconURL != nil) {
             _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.favIconURL]];
         }

@@ -58,4 +58,5 @@ extern int const MAX_ELEMENT_COUNTS;
 }
 /** convert pubDate String to NSDate. */
 + (NSDate *)convertString2Date:(NSString *)string;
++ (NSDate *)convertString2Date:(NSString *)string format:(NSString *)formatString;
 @end

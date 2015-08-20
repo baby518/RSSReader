@@ -57,18 +57,28 @@ int const MAX_ELEMENT_COUNTS                    = 100;
 @implementation RSSSchema
 + (NSDate *)convertString2Date:(NSString *)string {
     if (string == nil) return nil;
+
+    NSDate *result = [RSSSchema convertString2Date:string format:@"EEE, dd MMM yyyy HH:mm:ss"];
+    if (result == nil) {
+        // retry other format
+        result = [RSSSchema convertString2Date:string format:@"yyyy-MM-dd HH:mm:ss"];
+    }
+    return result;
+}
+
++ (NSDate *)convertString2Date:(NSString *)string format:(NSString *)formatString {
+    if (string == nil) return nil;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+
+    // some end with 'Z', some end with 'CST'
     //Tue, 03 Feb 2015 15:57:37 GMT
     //Thu, 05 Feb 2015 09:00:00 -0500
-    //@"EEE, dd MMM yyyy HH:mm:ss Z"
-    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss Z"];
-
+    [dateFormatter setDateFormat:[NSString stringWithFormat:@"%@ Z", formatString]];
     NSDate *result = [dateFormatter dateFromString:string];
-    
     if (result == nil) {
         // Sat, 30 May 2015 18:48:42 CST
-        [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss 'CST'"];
+        [dateFormatter setDateFormat:[NSString stringWithFormat:@"%@ 'CST'", formatString]];
         result = [dateFormatter dateFromString:string];
     }
     return result;
