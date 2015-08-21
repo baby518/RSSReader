@@ -30,6 +30,11 @@ static PresetFMDBUtil *presetDBUtil = nil;
     return self;
 }
 
+- (void)closeDB {
+    [super closeDB];
+    presetDBUtil = nil;
+}
+
 /** override */
 - (NSString *)getFeedTableName {
     return PRESET_FEED_TABLE;

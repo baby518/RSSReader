@@ -44,6 +44,11 @@ static UserFMDBUtil *userDBUtil = nil;
     return self;
 }
 
+- (void)closeDB {
+    [super closeDB];
+    userDBUtil = nil;
+}
+
 /** override */
 - (NSString *)getFeedTableName {
     return USER_FEED_TABLE;

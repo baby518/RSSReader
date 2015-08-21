@@ -42,20 +42,22 @@
 
 - (void)initFMDB {
     _presetDB = [PresetFMDBUtil getInstance];
-//    if (self.presetDB != nil) {
-//        NSArray *categoryArray = [self.presetDB getAllCategories];
-//        for (NSString *category in categoryArray) {
-//            NSLog(@"presetDB categoryArray : %@", category);
-//        };
-//    }
+    if (self.presetDB != nil) {
+        NSArray *categoryArray = [self.presetDB getAllCategories];
+        for (NSString *category in categoryArray) {
+            NSLog(@"presetDB categoryArray : %@", category);
+        };
+    }
+    [_presetDB closeDB];
 
     _userDB = [UserFMDBUtil getInstance];
-//    if (self.userDB != nil) {
-//        NSArray *categoryArray = [self.userDB getAllCategories];
-//        for (NSString *category in categoryArray) {
-//            NSLog(@"userDB categoryArray : %@", category);
-//        };
-//    }
+    if (self.userDB != nil) {
+        NSArray *categoryArray = [self.userDB getAllCategories];
+        for (NSString *category in categoryArray) {
+            NSLog(@"userDB categoryArray : %@", category);
+        };
+    }
+    [_userDB closeDB];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
