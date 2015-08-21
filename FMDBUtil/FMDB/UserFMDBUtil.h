@@ -8,6 +8,9 @@
 
 /** add update and query functions. */
 @interface UserFMDBUtil : BaseFMDBUtil
+
++ (UserFMDBUtil *)getInstance;
+
 //add
 - (BOOL)addChannelElement:(RSSChannelElement *)element;
 

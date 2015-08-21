@@ -5,10 +5,29 @@
 
 #import "PresetFMDBUtil.h"
 
-NSString * const PRESET_FEED_TABLE = @"preset_feed_channels";
+NSString *const PRESET_FEED_TABLE = @"preset_feed_channels";
+static PresetFMDBUtil *presetDBUtil = nil;
+
+@interface PresetFMDBUtil ()
+- (instancetype)initWithPresetDBPath:(NSString *)path;
+@end
 
 @implementation PresetFMDBUtil {
+}
 
++ (PresetFMDBUtil *)getInstance {
+    if (presetDBUtil == nil) {
+        NSString *presetDBPath = [[NSBundle mainBundle] pathForResource:@"preset_database" ofType:@"sqlite3"];
+        presetDBUtil = [[PresetFMDBUtil alloc] initWithPresetDBPath:presetDBPath];
+    }
+    return presetDBUtil;
+}
+
+- (instancetype)initWithPresetDBPath:(NSString *)path {
+    self = [super initWithDBPath:path];
+    if (self) {
+    }
+    return self;
 }
 
 /** override */

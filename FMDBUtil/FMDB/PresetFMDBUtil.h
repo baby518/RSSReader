@@ -7,4 +7,5 @@
 #import "BaseFMDBUtil.h"
 
 @interface PresetFMDBUtil : BaseFMDBUtil
++ (PresetFMDBUtil *)getInstance;
 @end

@@ -17,7 +17,6 @@
 
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
-@property (nonatomic, strong) NSString *userDocFolder;
 
 @end
 
@@ -41,24 +40,22 @@
     [self initFMDB];
 }
 
-- (void) initFMDB {
-    // create user DocumentDirectory.
-    NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    NSString *appFolder = @"RSSReader";
-    _userDocFolder = [NSString stringWithFormat:@"%@/%@", docsPath, appFolder];
-    
-    NSFileManager *fm = [NSFileManager defaultManager];
-    [fm createDirectoryAtPath:self.userDocFolder withIntermediateDirectories:YES attributes:nil error:nil];
-    
-    NSString *presetDBPath = [[NSBundle mainBundle] pathForResource:@"preset_database" ofType:@"sqlite3"];
-    if (presetDBPath != nil) {
-        _presetDB = [[PresetFMDBUtil alloc] initWithDBPath:presetDBPath];
-    }
-    
-    NSString *userFeedPath = [NSString stringWithFormat:@"%@/%@", self.userDocFolder, @"userFeeds.sqlite3"];
-    if (userFeedPath != nil) {
-        _userDB = [[UserFMDBUtil alloc] initWithDBPath:userFeedPath];
-    }
+- (void)initFMDB {
+    _presetDB = [PresetFMDBUtil getInstance];
+//    if (self.presetDB != nil) {
+//        NSArray *categoryArray = [self.presetDB getAllCategories];
+//        for (NSString *category in categoryArray) {
+//            NSLog(@"presetDB categoryArray : %@", category);
+//        };
+//    }
+
+    _userDB = [UserFMDBUtil getInstance];
+//    if (self.userDB != nil) {
+//        NSArray *categoryArray = [self.userDB getAllCategories];
+//        for (NSString *category in categoryArray) {
+//            NSLog(@"userDB categoryArray : %@", category);
+//        };
+//    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {

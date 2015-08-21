@@ -6,13 +6,33 @@
 #import "UserFMDBUtil.h"
 #import "FMDatabaseAdditions.h"
 
-NSString * const USER_FEED_TABLE = @"feed_channels";
+NSString *const USER_FEED_TABLE = @"feed_channels";
+static UserFMDBUtil *userDBUtil = nil;
+
+@interface UserFMDBUtil ()
+- (instancetype)initWithUserDBPath:(NSString *)path;
+@end
 
 @implementation UserFMDBUtil {
-
 }
 
-- (instancetype)initWithDBPath:(NSString *)path {
++ (UserFMDBUtil *)getInstance {
+    if (userDBUtil == nil) {
+        NSString *docsPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+        NSString *appFolder = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
+        NSString *userDocFolder = [NSString stringWithFormat:@"%@/%@", docsPath, appFolder];
+
+        NSFileManager *fm = [NSFileManager defaultManager];
+        [fm createDirectoryAtPath:userDocFolder withIntermediateDirectories:YES attributes:nil error:nil];
+        NSString *userFeedPath = [NSString stringWithFormat:@"%@/%@", userDocFolder, @"user_database.sqlite3"];
+        if (userFeedPath != nil) {
+            userDBUtil = [[UserFMDBUtil alloc] initWithUserDBPath:userFeedPath];
+        }
+    }
+    return userDBUtil;
+}
+
+- (instancetype)initWithUserDBPath:(NSString *)path {
     self = [super initWithDBPath:path];
     if (self) {
         // create tables if not exist.
