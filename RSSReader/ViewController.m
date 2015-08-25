@@ -13,6 +13,8 @@
 #import "PresetFMDBUtil.h"
 #import "UserFMDBUtil.h"
 
+static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
+
 @interface ViewController ()
 
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
@@ -42,12 +44,12 @@
 
 - (void)initFMDB {
     _presetDB = [PresetFMDBUtil getInstance];
-    if (self.presetDB != nil) {
-        NSArray *categoryArray = [self.presetDB getAllCategories];
-        for (NSString *category in categoryArray) {
-            NSLog(@"presetDB categoryArray : %@", category);
-        };
-    }
+//    if (self.presetDB != nil) {
+//        NSArray *categoryArray = [self.presetDB getAllCategories];
+//        for (NSString *category in categoryArray) {
+//            NSLog(@"presetDB categoryArray : %@", category);
+//        };
+//    }
     [_presetDB closeDB];
 
     _userDB = [UserFMDBUtil getInstance];
@@ -79,8 +81,7 @@
         [self.openLocalFileButton setEnabled:NO];
         [self.loadUrlButton setEnabled:YES];
         [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:@"http://rss.cnbeta.com/rss"];
-//        [self.filePathTextField setStringValue:@"http://192.168.2.2/qq_web_2312.xml"];
+        [self.filePathTextField setStringValue:defaultFeedURL];
     }
 }
 

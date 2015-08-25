@@ -106,8 +106,8 @@ static NSInteger RETRY_TIME_MAX = 1;
 
     if (self.retryTime < RETRY_TIME_MAX) {
         _xmlData = [self convertData:_xmlData removeASCIIFunctionCharacter:YES];
-        [self startParserWithStyle:xmlElementStringStyle];
         self.retryTime ++;
+        [self startParserWithStyle:xmlElementStringStyle];
     } else {
         _retryTime = 0;
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(parseErrorOccurred:)]) {
