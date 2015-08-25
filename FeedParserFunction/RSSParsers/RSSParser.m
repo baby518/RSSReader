@@ -31,10 +31,21 @@ static NSInteger RETRY_TIME_MAX = 1;
 
 - (NSData *)convertData:(NSData *)data removeASCIIFunctionCharacter:(BOOL)remove {
     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (string == nil) {
+        NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+        string = [[NSString alloc] initWithData:data encoding:encoding];
+    }
     if (string != nil) {
-        if ([XMLHelper getXMLEncodingFromHeaderInData:data] == XMLEncodingTypeGB2312) {
+        XMLEncodingType encodingType = [XMLHelper getXMLEncodingFromHeaderInString:string];
+        if (encodingType == XMLEncodingTypeGB2312) {
             // change encode to utf-8
             string = [string stringByReplacingOccurrencesOfString:@"\"gb2312\""
+                                                       withString:@"\"utf-8\""
+                                                          options:NSCaseInsensitiveSearch
+                                                            range:NSMakeRange(0, MIN(string.length, 40))];
+        } else if (encodingType == XMLEncodingTypeGBK) {
+            // change encode to utf-8
+            string = [string stringByReplacingOccurrencesOfString:@"\"gbk\""
                                                        withString:@"\"utf-8\""
                                                           options:NSCaseInsensitiveSearch
                                                             range:NSMakeRange(0, MIN(string.length, 40))];

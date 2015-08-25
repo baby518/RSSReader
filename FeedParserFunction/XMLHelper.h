@@ -8,6 +8,7 @@ typedef NS_ENUM(NSInteger, XMLEncodingType) {
     XMLEncodingTypeUnknown = 0,
     XMLEncodingTypeUTF8    = 1,
     XMLEncodingTypeGB2312  = 2,
+    XMLEncodingTypeGBK     = 3,
 };
 @interface XMLHelper : NSObject
 /** get XML Encoding From xml file's Header */
