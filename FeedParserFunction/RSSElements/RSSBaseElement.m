@@ -50,6 +50,13 @@
     if (_favIconData == nil) {
         if (self.favIconURL != nil) {
             _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.favIconURL]];
+        } else {
+            NSURL *url = [NSURL URLWithString:self.linkOfElement];
+            NSString *imageUrlString = [NSString stringWithFormat:@"%@://%@/favicon.ico", url.scheme, url.host];
+            _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrlString]];
+            if (_favIconData != nil) {
+                _favIconURL = imageUrlString;
+            }
         }
     }
     return _favIconData;
