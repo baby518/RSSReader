@@ -265,9 +265,11 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 
         // add it in user database.
         // maybe it is stored in database already.
+        _userDB = [UserFMDBUtil getInstance];
         if (self.userDB != nil) {
             [self.userDB updateChannelElement:self.currentChannel];
         }
+        [_userDB closeDB];
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
     }

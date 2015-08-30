@@ -37,7 +37,9 @@ static UserFMDBUtil *userDBUtil = nil;
     if (self) {
         // create tables if not exist.
         if (![self isTableExist:[self getFeedTableName]]) {
-            NSString *sql = [NSString stringWithFormat:@"CREATE TABLE %@ (feedURL TEXT UNIQUE, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN, lastUpdate INTEGER, favicon TEXT)", [self getFeedTableName]];
+            NSString *sql = [NSString stringWithFormat:
+                    @"CREATE TABLE %@ (feedURL TEXT UNIQUE, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN DEFAULT(0), lastUpdate INTEGER DEFAULT(0), favicon TEXT)",
+                    [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
     }
