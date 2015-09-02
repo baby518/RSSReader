@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		6C77BDA813B67BF10EBDBA2D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1EDD2364FC75E9437DFEA2 /* libPods.a */; };
 		A8E2BCFD5F88C1FF30006D1D /* preset_database.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */; };
+		D405BEBA1B97403A00D48AAF /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D405BEB91B97403A00D48AAF /* ViewController.xib */; };
+		D405BEBE1B97406900D48AAF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D405BEBC1B97406900D48AAF /* MainMenu.xib */; };
 		D42BF8191B55636D0004210D /* HTMLSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = D42BF8181B55636D0004210D /* HTMLSchema.m */; };
 		D43DA9771B56CA230064710E /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9721B56CA230064710E /* TFHpple.m */; };
 		D43DA9781B56CA230064710E /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D43DA9741B56CA230064710E /* TFHppleElement.m */; };
@@ -36,7 +38,6 @@
 		D4FA67361A8133A900265869 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4FA67351A8133A900265869 /* main.m */; };
 		D4FA67391A8133A900265869 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4FA67381A8133A900265869 /* ViewController.m */; };
 		D4FA673B1A8133A900265869 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4FA673A1A8133A900265869 /* Images.xcassets */; };
-		D4FA673E1A8133A900265869 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4FA673C1A8133A900265869 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,8 @@
 		7A5CAA8D8E6FF663CCC3E193 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8E1EDD2364FC75E9437DFEA2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file.sqlite3; path = preset_database.sqlite3; sourceTree = "<group>"; };
+		D405BEB91B97403A00D48AAF /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
+		D405BEBD1B97406900D48AAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MainMenu.xib; sourceTree = "<group>"; };
 		D42BF8171B55636D0004210D /* HTMLSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLSchema.h; sourceTree = "<group>"; };
 		D42BF8181B55636D0004210D /* HTMLSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLSchema.m; sourceTree = "<group>"; };
 		D43DA9711B56CA230064710E /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
@@ -98,7 +101,6 @@
 		D4FA67371A8133A900265869 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		D4FA67381A8133A900265869 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		D4FA673A1A8133A900265869 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		D4FA673D1A8133A900265869 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +128,6 @@
 		A296EB70013019E3B0B897B3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D44905151B7BB63A00B3F58E /* libPods-FMDB.a */,
 				8E1EDD2364FC75E9437DFEA2 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -308,8 +309,9 @@
 				D4FA67331A8133A900265869 /* AppDelegate.m */,
 				D4FA67371A8133A900265869 /* ViewController.h */,
 				D4FA67381A8133A900265869 /* ViewController.m */,
+				D405BEB91B97403A00D48AAF /* ViewController.xib */,
 				D4FA673A1A8133A900265869 /* Images.xcassets */,
-				D4FA673C1A8133A900265869 /* Main.storyboard */,
+				D405BEBC1B97406900D48AAF /* MainMenu.xib */,
 				D4FA67301A8133A900265869 /* Supporting Files */,
 			);
 			path = RSSReader;
@@ -384,9 +386,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D405BEBA1B97403A00D48AAF /* ViewController.xib in Resources */,
+				D405BEBE1B97406900D48AAF /* MainMenu.xib in Resources */,
 				D4FA673B1A8133A900265869 /* Images.xcassets in Resources */,
 				D4DA8B8E1B3471B1000DC0E8 /* FeedParser.strings in Resources */,
-				D4FA673E1A8133A900265869 /* Main.storyboard in Resources */,
 				A8E2BCFD5F88C1FF30006D1D /* preset_database.sqlite3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -461,6 +464,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		D405BEBC1B97406900D48AAF /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D405BEBD1B97406900D48AAF /* Base */,
+			);
+			name = MainMenu.xib;
+			path = Base.lproj;
+			sourceTree = "<group>";
+		};
 		D4DA8B6B1B3471B1000DC0E8 /* FeedParser.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -468,14 +480,6 @@
 				D4DA8B8D1B3471B1000DC0E8 /* zh-Hans */,
 			);
 			name = FeedParser.strings;
-			sourceTree = "<group>";
-		};
-		D4FA673C1A8133A900265869 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D4FA673D1A8133A900265869 /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -576,6 +580,7 @@
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.9;
 			};
 			name = Debug;
 		};
@@ -598,6 +603,7 @@
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.9;
 			};
 			name = Release;
 		};

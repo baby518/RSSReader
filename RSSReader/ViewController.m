@@ -24,8 +24,9 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+/** use viewDidLoad on OSX 10.10 + */
+- (void)loadView {
+    [super loadView];
     
     _numberOfRows = 0;
 
@@ -150,7 +151,7 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 }
 
 - (IBAction)didChannelLinkClicked:(NSButton *)sender {
-    NSString *urlString = [_channelLinkButton accessibilityValueDescription];
+    NSString *urlString = self.currentChannel.linkOfElement;
     [self openURL:urlString];
 }
 
@@ -218,7 +219,6 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     [self removeAllObjectsOfTable];
     [_channelTitleTextField setStringValue:@""];
     [_channelLinkTextField setStringValue:@""];
-    [_channelLinkButton setAccessibilityValueDescription:@""];
     [_channelDescriptionTextField setStringValue:@""];
     [_channelPubDateTextField setStringValue:@""];
     [_channelLanguageTextField setStringValue:@""];
@@ -233,7 +233,6 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     }
     if ([element isKindOfClass:[RSSChannelElement class]]) {
         [_channelLinkTextField setStringValue:element.linkOfElement];
-        [_channelLinkButton setAccessibilityValueDescription:element.linkOfElement];
         [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
         [_channelFavIconImageView setImage:[[NSImage alloc] initWithData:element.favIconData]];
 

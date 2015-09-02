@@ -73,7 +73,11 @@ static NSInteger RETRY_TIME_MAX = 1;
     // if itemTitle contain filter's key, ignore this item.
     BOOL needReturn = NO;
     for (NSObject *keyString in self.filterKeyArray) {
-        if ([keyString isKindOfClass:[NSString class]] && [string containsString:(NSString *) keyString]) {
+        // osx 10.9 has not define "containsString"
+        //            if ([string containsString:(NSString *) keyString]) {
+        //                needReturn = YES;
+        //            }
+        if ([string rangeOfString:(NSString *) keyString].location != NSNotFound) {
             needReturn = YES;
         }
         if (needReturn) {
