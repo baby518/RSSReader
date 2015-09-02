@@ -17,7 +17,6 @@
 		D44905121B7BB56D00B3F58E /* PresetFMDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D449050B1B7BB56D00B3F58E /* PresetFMDBUtil.m */; };
 		D44905131B7BB56D00B3F58E /* UserFMDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D449050D1B7BB56D00B3F58E /* UserFMDBUtil.m */; };
 		D44905141B7BB56D00B3F58E /* ImageBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = D44905101B7BB56D00B3F58E /* ImageBase64.m */; };
-		D44905161B7BB63A00B3F58E /* libPods-FMDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D44905151B7BB63A00B3F58E /* libPods-FMDB.a */; };
 		D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4CEC7191A827AB300D0A87A /* libxml2.dylib */; };
 		D4DA8B8E1B3471B1000DC0E8 /* FeedParser.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4DA8B6B1B3471B1000DC0E8 /* FeedParser.strings */; };
 		D4DA8B8F1B3471B1000DC0E8 /* FeedParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DA8B6E1B3471B1000DC0E8 /* FeedParser.m */; };
@@ -61,7 +60,6 @@
 		D449050D1B7BB56D00B3F58E /* UserFMDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserFMDBUtil.m; sourceTree = "<group>"; };
 		D449050F1B7BB56D00B3F58E /* ImageBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageBase64.h; sourceTree = "<group>"; };
 		D44905101B7BB56D00B3F58E /* ImageBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageBase64.m; sourceTree = "<group>"; };
-		D44905151B7BB63A00B3F58E /* libPods-FMDB.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-FMDB.a"; path = "../../../../../Users/zhangchao/Library/Developer/Xcode/DerivedData/RSSReader-eervszdasslycrbjuznzfolwhhjt/Build/Products/Debug/libPods-FMDB.a"; sourceTree = "<group>"; };
 		D4CEC7191A827AB300D0A87A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		D4DA8B6C1B3471B1000DC0E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/FeedParser.strings; sourceTree = "<group>"; };
 		D4DA8B6D1B3471B1000DC0E8 /* FeedParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedParser.h; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D44905161B7BB63A00B3F58E /* libPods-FMDB.a in Frameworks */,
 				D4CEC71A1A827AB300D0A87A /* libxml2.dylib in Frameworks */,
 				6C77BDA813B67BF10EBDBA2D /* libPods.a in Frameworks */,
 			);
@@ -573,10 +570,7 @@
 				);
 				INFOPLIST_FILE = RSSReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/RSSReader-eervszdasslycrbjuznzfolwhhjt/Build/Products/Debug",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lxml2",
@@ -598,10 +592,7 @@
 				);
 				INFOPLIST_FILE = RSSReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/RSSReader-eervszdasslycrbjuznzfolwhhjt/Build/Products/Debug",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lxml2",
