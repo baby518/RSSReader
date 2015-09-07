@@ -7,6 +7,7 @@
 #import "FMDatabaseAdditions.h"
 
 NSString *const USER_FEED_TABLE = @"feed_channels";
+NSString *const USER_FEED_CATEGORY_TABLE = @"feed_category";
 static UserFMDBUtil *userDBUtil = nil;
 
 @interface UserFMDBUtil ()
@@ -36,12 +37,37 @@ static UserFMDBUtil *userDBUtil = nil;
     self = [super initWithDBPath:path];
     if (self) {
         // create tables if not exist.
+        if (![self isTableExist:[self getFeedCategoryTableName]]) {
+            NSString *sql = [NSString stringWithFormat:
+                    @"CREATE TABLE %@ (name TEXT PRIMARY KEY)",
+                    [self getFeedCategoryTableName]];
+            [dataBase executeUpdate:sql];
+        }
+
         if (![self isTableExist:[self getFeedTableName]]) {
             NSString *sql = [NSString stringWithFormat:
                     @"CREATE TABLE %@ (feedURL TEXT UNIQUE, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN DEFAULT(0), lastUpdate INTEGER DEFAULT(0), favicon TEXT)",
                     [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
+
+        // create Triggers
+        // When insert or update a new channel, add its category into "feed_category"
+        NSString *sql = [NSString stringWithFormat:
+                @"CREATE TRIGGER add_feed_category AFTER INSERT ON %@ \n"
+                        "BEGIN \n"
+                        "INSERT or IGNORE INTO %@ (name) VALUES (new.category);\n"
+                        "END;",
+                [self getFeedTableName], [self getFeedCategoryTableName]];
+        [dataBase executeUpdate:sql];
+
+        sql = [NSString stringWithFormat:
+                @"CREATE TRIGGER update_feed_category AFTER UPDATE ON %@ \n"
+                        "BEGIN \n"
+                        "INSERT or IGNORE INTO %@ (name) VALUES (new.category);\n"
+                        "END;",
+                [self getFeedTableName], [self getFeedCategoryTableName]];
+        [dataBase executeUpdate:sql];
     }
     return self;
 }
@@ -70,6 +96,10 @@ static UserFMDBUtil *userDBUtil = nil;
         }
     }
     return element;
+}
+
+- (NSString *)getFeedCategoryTableName {
+    return USER_FEED_CATEGORY_TABLE;
 }
 
 - (BOOL)addChannelElement:(RSSChannelElement *)element {
