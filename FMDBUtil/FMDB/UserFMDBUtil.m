@@ -80,7 +80,7 @@ static UserFMDBUtil *userDBUtil = nil;
                     @"CREATE TRIGGER remove_feed_category AFTER DELETE ON %@ \n"
                             "WHEN (SELECT count(*) from %@ where category=old.category)<=0 \n"
                             "BEGIN \n"
-                            "INSERT or IGNORE INTO %@ (category) VALUES (new.category);\n"
+                            "DELETE FROM %@ WHERE category = old.category;\n"
                             "END;",
                     [self getFeedTableName], [self getFeedTableName], [self getFeedCategoryTableName]];
             [dataBase executeUpdate:sql];
