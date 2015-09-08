@@ -28,6 +28,7 @@
 - (NSString *)getFeedTableName;
 
 - (BOOL)isTableExist:(NSString *)tableName;
+- (BOOL)isTriggerExist:(NSString *)triggerName;
 
 // query
 - (NSArray *)getAllFeedChannels;

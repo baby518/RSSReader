@@ -39,7 +39,7 @@ static UserFMDBUtil *userDBUtil = nil;
         // create tables if not exist.
         if (![self isTableExist:[self getFeedCategoryTableName]]) {
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TABLE %@ (name TEXT PRIMARY KEY)",
+                    @"CREATE TABLE %@ (category TEXT PRIMARY KEY)",
                     [self getFeedCategoryTableName]];
             [dataBase executeUpdate:sql];
         }
@@ -52,22 +52,39 @@ static UserFMDBUtil *userDBUtil = nil;
         }
 
         // create Triggers
-        // When insert or update a new channel, add its category into "feed_category"
-        NSString *sql = [NSString stringWithFormat:
-                @"CREATE TRIGGER add_feed_category AFTER INSERT ON %@ \n"
-                        "BEGIN \n"
-                        "INSERT or IGNORE INTO %@ (name) VALUES (new.category);\n"
-                        "END;",
-                [self getFeedTableName], [self getFeedCategoryTableName]];
-        [dataBase executeUpdate:sql];
+        if (![self isTriggerExist:@"add_feed_category"]) {
+            // When insert or update a new channel, add its category into "feed_category"
+            NSString *sql = [NSString stringWithFormat:
+                    @"CREATE TRIGGER add_feed_category AFTER INSERT ON %@ \n"
+                            "BEGIN \n"
+                            "INSERT or IGNORE INTO %@ (category) VALUES (new.category);\n"
+                            "END;",
+                    [self getFeedTableName], [self getFeedCategoryTableName]];
+            [dataBase executeUpdate:sql];
+        }
 
-        sql = [NSString stringWithFormat:
-                @"CREATE TRIGGER update_feed_category AFTER UPDATE ON %@ \n"
-                        "BEGIN \n"
-                        "INSERT or IGNORE INTO %@ (name) VALUES (new.category);\n"
-                        "END;",
-                [self getFeedTableName], [self getFeedCategoryTableName]];
-        [dataBase executeUpdate:sql];
+        if (![self isTriggerExist:@"update_feed_category"]) {
+            // When update a channel, add its category into "feed_category"
+            NSString *sql = [NSString stringWithFormat:
+                    @"CREATE TRIGGER update_feed_category AFTER UPDATE ON %@ \n"
+                            "BEGIN \n"
+                            "INSERT or IGNORE INTO %@ (category) VALUES (new.category);\n"
+                            "END;",
+                    [self getFeedTableName], [self getFeedCategoryTableName]];
+            [dataBase executeUpdate:sql];
+        }
+
+        if (![self isTriggerExist:@"remove_feed_category"]) {
+            // When delete a channel, remove it's category from "feed_category" if it not exist in "feed_channel" any more.
+            NSString *sql = [NSString stringWithFormat:
+                    @"CREATE TRIGGER remove_feed_category AFTER DELETE ON %@ \n"
+                            "WHEN (SELECT count(*) from %@ where category=old.category)<=0 \n"
+                            "BEGIN \n"
+                            "INSERT or IGNORE INTO %@ (category) VALUES (new.category);\n"
+                            "END;",
+                    [self getFeedTableName], [self getFeedTableName], [self getFeedCategoryTableName]];
+            [dataBase executeUpdate:sql];
+        }
     }
     return self;
 }
@@ -96,6 +113,21 @@ static UserFMDBUtil *userDBUtil = nil;
         }
     }
     return element;
+}
+
+/** override */
+- (NSArray *)getAllCategories {
+    if (!databaseIsReady) {
+        return nil;
+    }
+    NSString *sql = [NSString stringWithFormat:@"SELECT DISTINCT category FROM %@", [self getFeedCategoryTableName]];
+    FMResultSet *resultSet = [dataBase executeQuery:sql];
+    NSMutableArray *categoryArray = [NSMutableArray array];
+    while ([resultSet next]) {
+        NSString *str  = [resultSet stringForColumn:@"category"];
+        [categoryArray addObject:str];
+    }
+    return categoryArray;
 }
 
 - (NSString *)getFeedCategoryTableName {

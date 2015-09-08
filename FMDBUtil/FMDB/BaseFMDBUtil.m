@@ -45,12 +45,29 @@
     if (!databaseIsReady) {
         return NO;
     }
-    NSString *sql = [NSString stringWithFormat:@"select count(*) as 'count' from sqlite_master where type ='table' and name = '%@'", tableName];
+    NSString *sql = [NSString stringWithFormat:@"select count(*) as 'count' from sqlite_master \n"
+                                                       "where type ='table' and name = '%@'", tableName];
     FMResultSet *rs = [dataBase executeQuery:sql];
     while ([rs next]) {
         // just print out what we've got in a number of formats.
         NSInteger count = [rs intForColumn:@"count"];
         NSLog(@"table %@ exist ? %@", tableName, count > 0 ? @"true" : @"false");
+        return count > 0;
+    }
+    return NO;
+}
+
+- (BOOL)isTriggerExist:(NSString *)triggerName {
+    if (!databaseIsReady) {
+        return NO;
+    }
+    NSString *sql = [NSString stringWithFormat:@"select count(*) as 'count' from sqlite_master \n"
+                                                       "where type ='trigger' and name = '%@'", triggerName];
+    FMResultSet *rs = [dataBase executeQuery:sql];
+    while ([rs next]) {
+        // just print out what we've got in a number of formats.
+        NSInteger count = [rs intForColumn:@"count"];
+        NSLog(@"triggerName %@ exist ? %@", triggerName, count > 0 ? @"true" : @"false");
         return count > 0;
     }
     return NO;

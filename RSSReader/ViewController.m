@@ -44,15 +44,6 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 }
 
 - (void)initFMDB {
-    _presetDB = [PresetFMDBUtil getInstance];
-//    if (self.presetDB != nil) {
-//        NSArray *categoryArray = [self.presetDB getAllCategories];
-//        for (NSString *category in categoryArray) {
-//            NSLog(@"presetDB categoryArray : %@", category);
-//        };
-//    }
-    [_presetDB closeDB];
-
     _userDB = [UserFMDBUtil getInstance];
     if (self.userDB != nil) {
         NSArray *categoryArray = [self.userDB getAllCategories];
@@ -232,6 +223,19 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
         return;
     }
     if ([element isKindOfClass:[RSSChannelElement class]]) {
+        // search it in preset database first
+        _presetDB = [PresetFMDBUtil getInstance];
+        if (self.presetDB != nil) {
+            RSSChannelElement *temp = [self.presetDB getChannelFromURL:element.feedURL.absoluteString];
+            if (temp != nil) {
+                element.categoryOfElement = temp.categoryOfElement;
+                if (temp.favIconData != nil) {
+                    element.favIconData = temp.favIconData;
+                }
+            }
+        }
+        [_presetDB closeDB];
+
         [_channelLinkTextField setStringValue:element.linkOfElement];
         [_channelLanguageTextField setStringValue:((RSSChannelElement *)element).languageOfChannel];
         [_channelFavIconImageView setImage:[[NSImage alloc] initWithData:element.favIconData]];
