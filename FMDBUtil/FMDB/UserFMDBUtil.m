@@ -63,10 +63,22 @@ static UserFMDBUtil *userDBUtil = nil;
             [dataBase executeUpdate:sql];
         }
 
-        if (![self isTriggerExist:@"update_feed_category"]) {
-            // When update a channel, add its category into "feed_category"
+        if (![self isTriggerExist:@"remove_feed_category"]) {
+            // When delete a channel, remove it's category from "feed_category" if it not exist in "feed_channel" any more.
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TRIGGER update_feed_category AFTER UPDATE ON %@ \n"
+                    @"CREATE TRIGGER remove_feed_category AFTER DELETE ON %@ \n"
+                            "WHEN (SELECT count(*) from %@ where category=old.category)<=0 \n"
+                            "BEGIN \n"
+                            "DELETE FROM %@ WHERE category = old.category;\n"
+                            "END;",
+                    [self getFeedTableName], [self getFeedTableName], [self getFeedCategoryTableName]];
+            [dataBase executeUpdate:sql];
+        }
+
+        if (![self isTriggerExist:@"update_feed_category_add"]) {
+            // When update a channel, add its category into "feed_category", as same as add_feed_category
+            NSString *sql = [NSString stringWithFormat:
+                    @"CREATE TRIGGER update_feed_category_add AFTER UPDATE ON %@ \n"
                             "BEGIN \n"
                             "INSERT or IGNORE INTO %@ (category) VALUES (new.category);\n"
                             "END;",
@@ -74,10 +86,10 @@ static UserFMDBUtil *userDBUtil = nil;
             [dataBase executeUpdate:sql];
         }
 
-        if (![self isTriggerExist:@"remove_feed_category"]) {
-            // When delete a channel, remove it's category from "feed_category" if it not exist in "feed_channel" any more.
+        if (![self isTriggerExist:@"update_feed_category_remove"]) {
+            // When update a channel, remove old category, as same as remove_feed_category
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TRIGGER remove_feed_category AFTER DELETE ON %@ \n"
+                    @"CREATE TRIGGER update_feed_category_remove AFTER UPDATE ON %@ \n"
                             "WHEN (SELECT count(*) from %@ where category=old.category)<=0 \n"
                             "BEGIN \n"
                             "DELETE FROM %@ WHERE category = old.category;\n"
