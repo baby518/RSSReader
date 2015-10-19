@@ -12,7 +12,12 @@
 
 + (NSString *)encodeBase64:(NSData *)imageData {
     if (imageData == nil) return nil;
-    NSString *base64String = [NSString stringWithFormat:@"data:image/x-icon;base64,%@", [imageData base64Encoding]];
+    NSString *base64String;
+    if ([imageData respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
+        base64String = [NSString stringWithFormat:@"data:image/x-icon;base64,%@", [imageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]];
+    } else {
+        base64String = [NSString stringWithFormat:@"data:image/x-icon;base64,%@", [imageData base64Encoding]];
+    }
     return base64String;
 }
 
