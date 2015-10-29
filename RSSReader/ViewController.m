@@ -30,12 +30,10 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     
     _numberOfRows = 0;
 
-    [_xmlSourcePopup addItemsWithTitles:XMLSourceArrays];
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
-    // Do any additional setup after loading the view.
-    XMLSource source = (XMLSource) [_xmlSourcePopup indexOfSelectedItem];
-    [self checkXmlSourceChoose:source];
+
+    [self initTabContent];
 
     self.feedItemsTableView.delegate = self;
     self.feedItemsTableView.dataSource = self;
@@ -60,28 +58,25 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     // Update the view, if already loaded.
 }
 
-- (void)checkXmlSourceChoose:(XMLSource)source {
-    NSLog(@"checkXmlSourceChoose index : %d", (int) [_xmlSourcePopup indexOfSelectedItem]);
-    if (source == XMLSourceLocalFile) {
-        // disable sth.
-        [self.loadUrlButton setEnabled:NO];
-        [self.openLocalFileButton setEnabled:YES];
-        [self.filePathTextField setEditable:NO];
-        [self.filePathTextField setStringValue:@""];
-    } else if (source == XMLSourceURL) {
-        // disable sth.
-        [self.openLocalFileButton setEnabled:NO];
-        [self.loadUrlButton setEnabled:YES];
-        [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:defaultFeedURL];
-    }
+- (void)initTabContent {
+    // local tab
+    [self.openLocalFileButton setEnabled:YES];
+    [self.localPathTextField setEditable:NO];
+    [self.localPathTextField setStringValue:@""];
+    
+    // web tab
+    [self.loadWebUrlButton setEnabled:YES];
+    [self.webPathTextField setEditable:YES];
+    [self.webPathTextField setStringValue:defaultFeedURL];
+    
 }
 
 - (IBAction)loadUrlButtonPressed:(NSButton *)sender {
     // TODO load Feed data and save data in self.data
     // delete whiteSpace and new line.
-    NSString *urlString = [self.filePathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
+    NSString *urlString = [self.webPathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
     // TODO just for test ++++++
     // check it in preset database.
     if (self.presetDB != nil) {
@@ -122,17 +117,13 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     }];
 }
 
-- (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender {
-    XMLSource source = (XMLSource) [_xmlSourcePopup indexOfSelectedItem];
-    [self checkXmlSourceChoose:source];
-}
-
 - (IBAction)openFileButtonPressed:(NSButton *)sender {
     NSLog(@"Button CLicked.");
     
     NSString *path = [self getFilePathFromDialog];
     // show path in Text Field.
-    [_filePathTextField setStringValue:(path != nil) ? path : @""];
+    [_localPathTextField setStringValue:(path != nil) ? path : @""];
+    
     if (path != nil) [self clearUIContents];
     
     _data = [self loadDataFromFile:path];

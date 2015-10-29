@@ -23,23 +23,23 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 @property (nonatomic, assign, readonly) long numberOfRows;
 @property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
 
-@property (weak) IBOutlet NSTextField *filePathTextField;
+@property (weak) IBOutlet NSTextField *localPathTextField;
+@property (weak) IBOutlet NSTextField *webPathTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
 @property (weak) IBOutlet NSTextField *channelLinkTextField;
 @property (weak) IBOutlet NSTextField *channelDescriptionTextField;
 @property (weak) IBOutlet NSTextField *channelLanguageTextField;
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
 @property (weak) IBOutlet NSButton *channelFavIconImageView;
-@property (weak) IBOutlet NSPopUpButton *xmlSourcePopup;
 @property (weak) IBOutlet NSPopUpButton *elementStringStylePopUp;
 @property (weak) IBOutlet NSPopUpButton *parseEnginePopup;
 @property (weak) IBOutlet NSButton *useHTMLLabelCheckBox;
 @property (weak) IBOutlet NSButton *openLocalFileButton;
-@property (weak) IBOutlet NSButton *loadUrlButton;
+@property (weak) IBOutlet NSButton *loadWebUrlButton;
 @property (weak) IBOutlet NSTableView *feedItemsTableView;
-@property (strong) IBOutlet NSButton *stopParserButton;
+@property (strong) IBOutlet NSButton *stopLocalParserButton;
+@property (strong) IBOutlet NSButton *stopWebParserButton;
 
-- (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender;
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)loadUrlButtonPressed:(NSButton *)sender;
 - (IBAction)didChannelLinkClicked:(NSButton *)sender;
