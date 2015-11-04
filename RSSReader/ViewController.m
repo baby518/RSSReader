@@ -12,8 +12,9 @@
 #import "BaseFMDBUtil.h"
 #import "PresetFMDBUtil.h"
 #import "UserFMDBUtil.h"
+#import "AppDelegate.h"
 
-static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
+//@protocol OpenUrlSheetDelegate;
 
 @interface ViewController ()
 
@@ -61,22 +62,15 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 - (void)initTabContent {
     // local tab
     [self.openLocalFileButton setEnabled:YES];
-    [self.localPathTextField setEditable:NO];
-    [self.localPathTextField setStringValue:@""];
     
     // web tab
     [self.loadWebUrlButton setEnabled:YES];
-    [self.webPathTextField setEditable:YES];
-    [self.webPathTextField setStringValue:defaultFeedURL];
-    
 }
 
-- (IBAction)loadUrlButtonPressed:(NSButton *)sender {
-    // TODO load Feed data and save data in self.data
+- (void)startParserWithString:(NSString *)inputString {
     // delete whiteSpace and new line.
+    NSString *urlString = [inputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-    NSString *urlString = [self.webPathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    
     // TODO just for test ++++++
     // check it in preset database.
     if (self.presetDB != nil) {
@@ -90,12 +84,11 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 //    }
     // just for test ------
 
-    [self startParserWithURL:urlString];
+    NSURL *feedURL = [NSURL URLWithString:urlString];
+    [self startParserWithURL:feedURL];
 }
 
-- (void)startParserWithURL:(NSString *)urlString {
-    NSURL *feedURL = [NSURL URLWithString:urlString];
-
+- (void)startParserWithURL:(NSURL *)feedURL {
 //    NSError *urlError = nil;
 //    _feedParser = [[FeedParser alloc] initWithURL:feedURL];
 //    [_feedParser startRequestSync:&urlError];
@@ -104,6 +97,8 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 //    _data = [_feedParser.xmlData copy];
 //
 //    [_startParseButton setEnabled:(_data != nil)];
+
+    [_feedUrlTextField setStringValue:(feedURL != nil) ? feedURL.absoluteString : @""];
 
     _feedParser = [[FeedParser alloc] initWithURL:feedURL];
     _feedParser.delegate = self;
@@ -117,12 +112,23 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     }];
 }
 
+- (IBAction)loadUrlButtonPressed:(NSButton *)sender {
+    if (self.urlSheetDelegate != nil) {
+        [self.urlSheetDelegate beginOpenUrlSheet:^(NSModalResponse returnCode, NSString *resultUrl) {
+            NSLog(@"OpenUrlSheet return %ld, %@", returnCode, resultUrl);
+            if (returnCode == NSModalResponseOK) {
+                [self startParserWithString:resultUrl];
+            }
+        }];
+    }
+}
+
 - (IBAction)openFileButtonPressed:(NSButton *)sender {
-    NSLog(@"Button CLicked.");
+    NSLog(@"Button Clicked.");
     
     NSString *path = [self getFilePathFromDialog];
     // show path in Text Field.
-    [_localPathTextField setStringValue:(path != nil) ? path : @""];
+    [_feedUrlTextField setStringValue:(path != nil) ? path : @""];
     
     if (path != nil) [self clearUIContents];
     
@@ -229,7 +235,10 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 
         [_channelLinkTextField setStringValue:element.linkOfElement];
         [_channelLanguageTextField setStringValue:((RSSChannelElement *) element).languageOfChannel];
+//        [_channelFavIconImageView.cell setImageScaling:NSImageScaleAxesIndependently];
         [_channelFavIconImageView setImage:[[NSImage alloc] initWithData:element.favIconData]];
+        _channelFavIconImageView.bordered = NO;
+        [self.channelFavIconImageView sizeToFit];
 
         if (_useHTMLLabelCheckBox.state == 0) {
             [_channelTitleTextField setStringValue:element.titleOfElement];

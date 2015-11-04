@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		184915081BE70AAE00D58440 /* OpenUrlWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 184915061BE70AAE00D58440 /* OpenUrlWindow.m */; };
+		184915091BE70AAE00D58440 /* OpenUrlWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 184915071BE70AAE00D58440 /* OpenUrlWindow.xib */; };
 		6C77BDA813B67BF10EBDBA2D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1EDD2364FC75E9437DFEA2 /* libPods.a */; };
 		A8E2BCFD5F88C1FF30006D1D /* preset_database.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */; };
 		D405BEBE1B97406900D48AAF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D405BEBC1B97406900D48AAF /* MainMenu.xib */; };
@@ -41,6 +43,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		184915051BE70AAE00D58440 /* OpenUrlWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUrlWindow.h; sourceTree = "<group>"; };
+		184915061BE70AAE00D58440 /* OpenUrlWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUrlWindow.m; sourceTree = "<group>"; };
+		184915071BE70AAE00D58440 /* OpenUrlWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenUrlWindow.xib; sourceTree = "<group>"; };
 		1AACB82E3ADFF733BDAB1F59 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		7A5CAA8D8E6FF663CCC3E193 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8E1EDD2364FC75E9437DFEA2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -308,6 +313,9 @@
 				D43B14B11B9EFFE4002DECC1 /* ViewController.h */,
 				D43B14B21B9EFFE4002DECC1 /* ViewController.m */,
 				D43B14B31B9EFFE4002DECC1 /* ViewController.xib */,
+				184915051BE70AAE00D58440 /* OpenUrlWindow.h */,
+				184915061BE70AAE00D58440 /* OpenUrlWindow.m */,
+				184915071BE70AAE00D58440 /* OpenUrlWindow.xib */,
 				D4FA67321A8133A900265869 /* AppDelegate.h */,
 				D4FA67331A8133A900265869 /* AppDelegate.m */,
 				D4FA673A1A8133A900265869 /* Images.xcassets */,
@@ -387,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D405BEBE1B97406900D48AAF /* MainMenu.xib in Resources */,
+				184915091BE70AAE00D58440 /* OpenUrlWindow.xib in Resources */,
 				D4FA673B1A8133A900265869 /* Images.xcassets in Resources */,
 				D4DA8B8E1B3471B1000DC0E8 /* FeedParser.strings in Resources */,
 				D43B14B51B9EFFE4002DECC1 /* ViewController.xib in Resources */,
@@ -438,6 +447,7 @@
 				D4DA8B991B3471B1000DC0E8 /* NSRSSParser.m in Sources */,
 				D4DA8B931B3471B1000DC0E8 /* RSSBaseElement.m in Sources */,
 				D4DA8B8F1B3471B1000DC0E8 /* FeedParser.m in Sources */,
+				184915081BE70AAE00D58440 /* OpenUrlWindow.m in Sources */,
 				D43DA9791B56CA230064710E /* XPathQuery.m in Sources */,
 				D4DA8B901B3471B1000DC0E8 /* NSDate+helper.m in Sources */,
 				D4DA8B981B3471B1000DC0E8 /* GDataXMLNode.m in Sources */,

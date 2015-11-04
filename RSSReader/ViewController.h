@@ -9,22 +9,17 @@
 #import <Cocoa/Cocoa.h>
 #import "FeedParser.h"
 
-typedef NS_ENUM(NSInteger, XMLSource) {
-    /** parse local file.*/
-    XMLSourceLocalFile = 0,
-    /** parse URL Feed.*/
-    XMLSourceURL = 1,
-};
-#define XMLSourceArrays @[@"LocalFile", @"URL"]
+@protocol OpenUrlSheetDelegate;
 
 @interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDataSource, NSTableViewDelegate>
+
+@property (nonatomic, weak) id <OpenUrlSheetDelegate> urlSheetDelegate;
 @property (nonatomic, strong, readonly) NSData *data;
 @property (nonatomic, strong, readonly) FeedParser *feedParser;
 @property (nonatomic, assign, readonly) long numberOfRows;
 @property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
 
-@property (weak) IBOutlet NSTextField *localPathTextField;
-@property (weak) IBOutlet NSTextField *webPathTextField;
+@property (weak) IBOutlet NSTextField *feedUrlTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
 @property (weak) IBOutlet NSTextField *channelLinkTextField;
 @property (weak) IBOutlet NSTextField *channelDescriptionTextField;
@@ -43,7 +38,7 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)loadUrlButtonPressed:(NSButton *)sender;
 - (IBAction)didChannelLinkClicked:(NSButton *)sender;
-- (void) startParse;
+- (void)startParse;
 - (IBAction)stopParser:(NSButton *)sender;
 
 - (NSString *)getFilePathFromDialog;
@@ -52,6 +47,5 @@ typedef NS_ENUM(NSInteger, XMLSource) {
 
 - (void)removeAllObjectsOfTable;
 - (void)clearUIContents;
-
 @end
 

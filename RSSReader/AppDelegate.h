@@ -8,7 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@protocol OpenUrlSheetDelegate <NSObject>
+- (void)beginOpenUrlSheet:(void (^)(NSModalResponse returnCode, NSString *resultUrl))handler;
+@end
+
+@interface AppDelegate : NSObject <NSApplicationDelegate, OpenUrlSheetDelegate>
 
 
 @end
