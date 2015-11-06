@@ -235,10 +235,14 @@
 
         [_channelLinkTextField setStringValue:element.linkOfElement];
         [_channelLanguageTextField setStringValue:((RSSChannelElement *) element).languageOfChannel];
-//        [_channelFavIconImageView.cell setImageScaling:NSImageScaleAxesIndependently];
-        [_channelFavIconImageView setImage:[[NSImage alloc] initWithData:element.favIconData]];
-        _channelFavIconImageView.bordered = NO;
-        [self.channelFavIconImageView sizeToFit];
+
+        NSImage *favicon = [[NSImage alloc] initWithData:element.favIconData];
+
+        // resize favicon
+        CGFloat scale = MIN(_channelFavIconImageView.bounds.size.width / favicon.size.width, _channelFavIconImageView.bounds.size.height / favicon.size.height);
+        favicon.size = NSMakeSize(favicon.size.width * scale, favicon.size.height * scale);
+
+        [_channelFavIconImageView.cell setImage:favicon];
 
         if (_useHTMLLabelCheckBox.state == 0) {
             [_channelTitleTextField setStringValue:element.titleOfElement];
