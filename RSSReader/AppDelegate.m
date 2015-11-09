@@ -26,9 +26,13 @@
     self.mainViewController.urlSheetDelegate = self;
 
     // 2. Add the view controller to the Window's content view
-    [self.window.contentView addSubview:self.mainViewController.view];
-    self.mainViewController.view.frame = ((NSView *) self.window.contentView).bounds;
+//    [self.window.contentView addSubview:self.mainViewController.view];
+//    self.mainViewController.view.frame = ((NSView *) self.window.contentView).bounds;
 //    [self.window setContentView:self.mainViewController.view];
+
+    [self.mainViewController.view removeFromSuperview];
+    [self.mainViewController.view setFrame:self.targetView.bounds];
+    [self.targetView addSubview:self.mainViewController.view];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

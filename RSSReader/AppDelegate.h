@@ -13,7 +13,6 @@
 @end
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, OpenUrlSheetDelegate>
-
+@property (weak) IBOutlet NSView *targetView;
 
 @end
-

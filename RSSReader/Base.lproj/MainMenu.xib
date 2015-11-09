@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="13F1134" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
     </dependencies>
     <objects>
@@ -14,6 +13,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
+                <outlet property="targetView" destination="0zx-5X-yYk" id="gKC-8F-JyG"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -675,6 +675,17 @@
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="710" height="524"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="0zx-5X-yYk">
+                        <rect key="frame" x="0.0" y="0.0" width="710" height="524"/>
+                    </customView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="0zx-5X-yYk" secondAttribute="trailing" id="3lt-5W-xAg"/>
+                    <constraint firstItem="0zx-5X-yYk" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="FYR-fE-VJP"/>
+                    <constraint firstAttribute="bottom" secondItem="0zx-5X-yYk" secondAttribute="bottom" id="bKG-ya-OyQ"/>
+                    <constraint firstItem="0zx-5X-yYk" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="nPU-By-xrM"/>
+                </constraints>
                 <animations/>
             </view>
         </window>
