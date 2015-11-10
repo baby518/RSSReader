@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		184915081BE70AAE00D58440 /* OpenUrlWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 184915061BE70AAE00D58440 /* OpenUrlWindow.m */; };
 		184915091BE70AAE00D58440 /* OpenUrlWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 184915071BE70AAE00D58440 /* OpenUrlWindow.xib */; };
+		184915761BF09FC900D58440 /* FeedItemTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 184915751BF09FC900D58440 /* FeedItemTableDelegate.m */; };
 		6C77BDA813B67BF10EBDBA2D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1EDD2364FC75E9437DFEA2 /* libPods.a */; };
 		A8E2BCFD5F88C1FF30006D1D /* preset_database.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = A8E2BE1C445C32B8CC33194D /* preset_database.sqlite3 */; };
 		D405BEBE1B97406900D48AAF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D405BEBC1B97406900D48AAF /* MainMenu.xib */; };
@@ -46,6 +47,8 @@
 		184915051BE70AAE00D58440 /* OpenUrlWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUrlWindow.h; sourceTree = "<group>"; };
 		184915061BE70AAE00D58440 /* OpenUrlWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUrlWindow.m; sourceTree = "<group>"; };
 		184915071BE70AAE00D58440 /* OpenUrlWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenUrlWindow.xib; sourceTree = "<group>"; };
+		184915741BF09FC900D58440 /* FeedItemTableDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedItemTableDelegate.h; sourceTree = "<group>"; };
+		184915751BF09FC900D58440 /* FeedItemTableDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedItemTableDelegate.m; sourceTree = "<group>"; };
 		1AACB82E3ADFF733BDAB1F59 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		7A5CAA8D8E6FF663CCC3E193 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8E1EDD2364FC75E9437DFEA2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +124,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		184915731BF09F4D00D58440 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				184915741BF09FC900D58440 /* FeedItemTableDelegate.h */,
+				184915751BF09FC900D58440 /* FeedItemTableDelegate.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		417C656FF10D67F80C1C5E9F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -310,6 +322,7 @@
 		D4FA672F1A8133A900265869 /* RSSReader */ = {
 			isa = PBXGroup;
 			children = (
+				184915731BF09F4D00D58440 /* Model */,
 				D43B14B11B9EFFE4002DECC1 /* ViewController.h */,
 				D43B14B21B9EFFE4002DECC1 /* ViewController.m */,
 				D43B14B31B9EFFE4002DECC1 /* ViewController.xib */,
@@ -461,6 +474,7 @@
 				D4DA8B971B3471B1000DC0E8 /* GDataRSSParser.m in Sources */,
 				D44905111B7BB56D00B3F58E /* BaseFMDBUtil.m in Sources */,
 				D4DA8B911B3471B1000DC0E8 /* NSString+helper.m in Sources */,
+				184915761BF09FC900D58440 /* FeedItemTableDelegate.m in Sources */,
 				D4DA8B961B3471B1000DC0E8 /* RSSSchema.m in Sources */,
 				D4DA8B951B3471B1000DC0E8 /* RSSItemElement.m in Sources */,
 				D4FA67361A8133A900265869 /* main.m in Sources */,

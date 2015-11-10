@@ -8,10 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "FeedParser.h"
+#import "FeedItemTableDelegate.h"
 
 @protocol OpenUrlSheetDelegate;
 
-@interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDataSource, NSTableViewDelegate>
+@interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDelegate, FeedChannelDelegate>
 
 @property (nonatomic, weak) id <OpenUrlSheetDelegate> urlSheetDelegate;
 @property (nonatomic, strong, readonly) NSData *data;

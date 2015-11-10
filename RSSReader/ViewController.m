@@ -8,19 +8,17 @@
 
 #import "ViewController.h"
 #import "NSDate+helper.h"
-#import "NSString+helper.h"
 #import "BaseFMDBUtil.h"
 #import "PresetFMDBUtil.h"
 #import "UserFMDBUtil.h"
 #import "AppDelegate.h"
 
-//@protocol OpenUrlSheetDelegate;
-
 @interface ViewController ()
 
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
-
+@property (weak) IBOutlet NSTableView *databaseTable;
+@property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
 @end
 
 @implementation ViewController
@@ -36,9 +34,11 @@
 
     [self initTabContent];
 
-    self.feedItemsTableView.delegate = self;
-    self.feedItemsTableView.dataSource = self;
-    
+    _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
+    NSLog(@"----- initWithChannelElement : %@", self.currentChannel);
+    self.feedItemsTableView.delegate = self.feedItemTableDelegate;
+    self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
+
     [self initFMDB];
 }
 
@@ -70,6 +70,10 @@
 - (void)startParserWithString:(NSString *)inputString {
     // delete whiteSpace and new line.
     NSString *urlString = [inputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if ([urlString isEqualToString:@""]) {
+        return;
+    }
 
     // TODO just for test ++++++
     // check it in preset database.
@@ -291,32 +295,8 @@
     NSLog(@"parseCompleted %ld", completed);
 }
 
-
-#pragma mark - NSTableViewDelegate
-- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSUInteger unsignedRow = (NSUInteger) row;
-    // Get a new ViewCell
-    NSTableCellView *cellView = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
-
-    if ([tableColumn.identifier isEqualToString:@"ItemID"]) {
-        [[cellView textField] setStringValue:[NSString stringWithFormat:@"%ld", unsignedRow + 1]];
-    } else if ([tableColumn.identifier isEqualToString:@"ItemDate"]) {
-        NSDate *pubDate = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).pubDateOfElement;
-        NSString *dateString = [pubDate convertToString];
-        if (dateString != nil) {
-            [[cellView textField] setStringValue:dateString];
-        }
-    } else if ([tableColumn.identifier isEqualToString:@"ItemTitle"]) {
-        NSString *title = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).titleOfElement;
-        [[cellView textField] setStringValue:title];
-    } else if ([tableColumn.identifier isEqualToString:@"ItemDescription"]) {
-        NSString *description = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).descriptionOfElement;
-        [[cellView textField] setStringValue:[NSString removeHTMLLabelAndWhitespace:description maxLength:200]];
-    }
-    return cellView;
-}
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return _numberOfRows;
+#pragma mark - FeedChannelDelegate
+- (RSSChannelElement *)getChannelElement {
+    return self.currentChannel;
 }
 @end
