@@ -14,9 +14,10 @@
 #import "AppDelegate.h"
 
 @interface ViewController ()
-
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
+@property (nonatomic, strong) NSArray *allFeedChannels;
+
 @property (weak) IBOutlet NSTableView *databaseTable;
 @property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
 @end
@@ -27,7 +28,7 @@
 - (void)loadView {
     [super loadView];
     
-    _numberOfRows = 0;
+    _numberOfItemsRows = 0;
 
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
@@ -40,6 +41,12 @@
     self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
 
     [self initFMDB];
+
+    self.databaseTable.delegate = self;
+    self.databaseTable.dataSource = self;
+    self.databaseTable.target = self;
+    // single click
+    [self.databaseTable setAction:@selector(selectRowAction:)];
 }
 
 - (void)initFMDB {
@@ -49,6 +56,7 @@
         for (NSString *category in categoryArray) {
             NSLog(@"userDB categoryArray : %@", category);
         };
+        _allFeedChannels = [self.userDB getAllFeedChannels];
     }
     [_userDB closeDB];
 }
@@ -74,19 +82,6 @@
     if ([urlString isEqualToString:@""]) {
         return;
     }
-
-    // TODO just for test ++++++
-    // check it in preset database.
-    if (self.presetDB != nil) {
-    }
-
-//    if (self.userDB != nil) {
-//        RSSChannelElement *result = [self.userDB getChannelFromURL:@"http://www.ithome.com/rss"];
-//        if (result != nil) {
-//            NSLog(@"query result %@", result.description);
-//        }
-//    }
-    // just for test ------
 
     NSURL *feedURL = [NSURL URLWithString:urlString];
     [self startParserWithURL:feedURL];
@@ -203,7 +198,7 @@
 
 - (void)removeAllObjectsOfTable {
 //    [_currentTrackPoints removeAllObjects];
-    _numberOfRows = 0;
+    _numberOfItemsRows = 0;
     [self.feedItemsTableView reloadData];
 }
 
@@ -271,8 +266,8 @@
         }
 
         _currentChannel = ((RSSChannelElement *) element);
-        _numberOfRows = _currentChannel.itemsOfChannel.count;
-        NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfRows);
+        _numberOfItemsRows = _currentChannel.itemsOfChannel.count;
+        NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfItemsRows);
 
         // add it in user database.
         // maybe it is stored in database already.
@@ -299,4 +294,27 @@
 - (RSSChannelElement *)getChannelElement {
     return self.currentChannel;
 }
+
+#pragma mark - NSTableViewDelegate
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSUInteger unsignedRow = (NSUInteger) row;
+    // Get a new ViewCell
+    NSTableCellView *cellView = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
+    if ([tableColumn.identifier isEqualToString:@"channelColumn"]) {
+        RSSChannelElement *element = self.allFeedChannels[unsignedRow];
+        [cellView.textField setStringValue:element.titleOfElement];
+    }
+    return cellView;
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    NSInteger count = self.allFeedChannels.count;
+    return count;
+}
+
+- (void)selectRowAction:(NSTableView *)sender {
+    NSInteger rowNumber = sender.clickedRow;
+    NSLog(@"selectRowAction %ld", rowNumber);
+}
+
 @end

@@ -468,20 +468,20 @@
                                             <action selector="stopParser:" target="-2" id="QTz-ei-cJn"/>
                                         </connections>
                                     </button>
-                                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="22" horizontalPageScroll="10" verticalLineScroll="22" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vgx-3S-U9i">
+                                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vgx-3S-U9i">
                                         <rect key="frame" x="-3" y="-3" width="167" height="367"/>
                                         <clipView key="contentView" id="Mfc-CP-Vgw">
                                             <rect key="frame" x="1" y="1" width="248" height="282"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" viewBased="YES" id="yRl-WS-lxC">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" id="yRl-WS-lxC">
                                                     <rect key="frame" x="0.0" y="0.0" width="248" height="282"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="BugColumn" width="164" minWidth="40" maxWidth="1000" id="v3W-OB-BzG" userLabel="channelColumn">
+                                                        <tableColumn identifier="channelColumn" width="164" minWidth="40" maxWidth="1000" id="v3W-OB-BzG" userLabel="channelColumn">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -495,24 +495,19 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="Kgb-2P-duw">
-                                                                    <rect key="frame" x="1" y="1" width="164" height="20"/>
+                                                                    <rect key="frame" x="1" y="1" width="164" height="18"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g8a-qI-Juw">
-                                                                            <rect key="frame" x="3" y="0.0" width="32" height="18"/>
-                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="cye-qb-KfZ"/>
-                                                                        </imageView>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mog-HX-wMj">
-                                                                            <rect key="frame" x="41" y="1" width="220" height="16"/>
+                                                                            <rect key="frame" x="1" y="1" width="162" height="16"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="JjH-j5-bWq">
-                                                                                <font key="font" metaFont="system"/>
+                                                                                <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </textField>
                                                                     </subviews>
                                                                     <connections>
-                                                                        <outlet property="imageView" destination="g8a-qI-Juw" id="Txe-c3-y4K"/>
                                                                         <outlet property="textField" destination="Mog-HX-wMj" id="E81-3N-wfV"/>
                                                                     </connections>
                                                                 </tableCellView>
@@ -564,7 +559,4 @@
             <point key="canvasLocation" x="755" y="415"/>
         </customView>
     </objects>
-    <resources>
-        <image name="NSActionTemplate" width="14" height="14"/>
-    </resources>
 </document>

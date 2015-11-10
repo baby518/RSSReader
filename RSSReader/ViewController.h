@@ -12,12 +12,12 @@
 
 @protocol OpenUrlSheetDelegate;
 
-@interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDelegate, FeedChannelDelegate>
+@interface ViewController : NSViewController <FeedParserDelegate, NSTableViewDelegate, FeedChannelDelegate, NSTableViewDataSource>
 
 @property (nonatomic, weak) id <OpenUrlSheetDelegate> urlSheetDelegate;
 @property (nonatomic, strong, readonly) NSData *data;
 @property (nonatomic, strong, readonly) FeedParser *feedParser;
-@property (nonatomic, assign, readonly) long numberOfRows;
+@property (nonatomic, assign, readonly) long numberOfItemsRows;
 @property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
 
 @property (weak) IBOutlet NSTextField *feedUrlTextField;
