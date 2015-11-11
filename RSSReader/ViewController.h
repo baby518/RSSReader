@@ -37,7 +37,9 @@
 @property (strong) IBOutlet NSButton *stopWebParserButton;
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
-- (IBAction)loadUrlButtonPressed:(NSButton *)sender;
+- (IBAction)addUrlButtonPressed:(NSButton *)sender;
+- (IBAction)removeButtonAction:(NSButton *)sender;
+- (IBAction)reloadButtonAction:(NSButton *)sender;
 - (IBAction)didChannelLinkClicked:(NSButton *)sender;
 - (void)startParse;
 - (IBAction)stopParser:(NSButton *)sender;

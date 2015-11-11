@@ -17,8 +17,10 @@
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
 @property (nonatomic, strong) NSArray *allFeedChannels;
+// maybe complete multi select later.
+@property (nonatomic, strong) NSMutableArray *selectedRowIndexOfChannels;
 
-@property (weak) IBOutlet NSTableView *databaseTable;
+@property (weak) IBOutlet NSTableView *databaseTableView;
 @property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
 @end
 
@@ -27,29 +29,28 @@
 /** use viewDidLoad on OSX 10.10 + */
 - (void)loadView {
     [super loadView];
-    
+
     _numberOfItemsRows = 0;
+    _selectedRowIndexOfChannels = [NSMutableArray array];
 
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
-
-    [self initTabContent];
 
     _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
     NSLog(@"----- initWithChannelElement : %@", self.currentChannel);
     self.feedItemsTableView.delegate = self.feedItemTableDelegate;
     self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
 
-    [self initFMDB];
+    [self reloadFMDB];
 
-    self.databaseTable.delegate = self;
-    self.databaseTable.dataSource = self;
-    self.databaseTable.target = self;
+    self.databaseTableView.delegate = self;
+    self.databaseTableView.dataSource = self;
+    self.databaseTableView.target = self;
     // single click
-    [self.databaseTable setAction:@selector(selectRowAction:)];
+    [self.databaseTableView setAction:@selector(selectRowAction:)];
 }
 
-- (void)initFMDB {
+- (void)reloadFMDB {
     _userDB = [UserFMDBUtil getInstance];
     if (self.userDB != nil) {
         NSArray *categoryArray = [self.userDB getAllCategories];
@@ -59,20 +60,13 @@
         _allFeedChannels = [self.userDB getAllFeedChannels];
     }
     [_userDB closeDB];
+    [self.databaseTableView reloadData];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
 
     // Update the view, if already loaded.
-}
-
-- (void)initTabContent {
-    // local tab
-    [self.openLocalFileButton setEnabled:YES];
-    
-    // web tab
-    [self.loadWebUrlButton setEnabled:YES];
 }
 
 - (void)startParserWithString:(NSString *)inputString {
@@ -111,7 +105,7 @@
     }];
 }
 
-- (IBAction)loadUrlButtonPressed:(NSButton *)sender {
+- (IBAction)addUrlButtonPressed:(NSButton *)sender {
     if (self.urlSheetDelegate != nil) {
         [self.urlSheetDelegate beginOpenUrlSheet:^(NSModalResponse returnCode, NSString *resultUrl) {
             NSLog(@"OpenUrlSheet return %ld, %@", returnCode, resultUrl);
@@ -122,15 +116,35 @@
     }
 }
 
+- (IBAction)removeButtonAction:(NSButton *)sender {
+    NSUInteger count = self.selectedRowIndexOfChannels.count;
+    if (count == 0) return;
+    _userDB = [UserFMDBUtil getInstance];
+    if (self.userDB != nil) {
+        for (NSNumber *row in self.selectedRowIndexOfChannels) {
+            NSUInteger selectRow = row.unsignedIntegerValue;
+            RSSChannelElement *element = self.allFeedChannels[selectRow];
+            [self.userDB deleteChannelFromURL:element.feedURL.absoluteString];
+        }
+    }
+    [_userDB closeDB];
+
+    [self reloadFMDB];
+}
+
+- (IBAction)reloadButtonAction:(NSButton *)sender {
+    [self reloadFMDB];
+}
+
 - (IBAction)openFileButtonPressed:(NSButton *)sender {
     NSLog(@"Button Clicked.");
-    
+
     NSString *path = [self getFilePathFromDialog];
     // show path in Text Field.
     [_feedUrlTextField setStringValue:(path != nil) ? path : @""];
-    
+
     if (path != nil) [self clearUIContents];
-    
+
     _data = [self loadDataFromFile:path];
     _feedParser = [[FeedParser alloc] initWithData:_data];
     _feedParser.delegate = self;
@@ -184,14 +198,14 @@
     [openPanel setCanChooseDirectories:NO];
     // set file type.
     [openPanel setAllowedFileTypes:@[@"xml"]];
-    
+
     NSURL *result = nil;
-    
+
     // single selection
     if ([openPanel runModal] == NSModalResponseOK) {
         result = [openPanel URLs][0];
     }
-    
+
     NSLog(@"getFilePathFromDialog Url: %@", result);
     return result.path;
 }
@@ -280,6 +294,7 @@
 
     }
     [self.feedItemsTableView reloadData];
+    [self reloadFMDB];
 }
 
 - (void)allElementsDidParsed {
@@ -313,8 +328,14 @@
 }
 
 - (void)selectRowAction:(NSTableView *)sender {
-    NSInteger rowNumber = sender.clickedRow;
-    NSLog(@"selectRowAction %ld", rowNumber);
+    NSNumber *rowNumber = @(sender.clickedRow);
+    NSLog(@"selectRowAction %ld", rowNumber.integerValue);
+    [self.selectedRowIndexOfChannels removeAllObjects];
+    if (rowNumber.integerValue >= 0) {
+        [self.selectedRowIndexOfChannels addObject:rowNumber];
+    } else {
+        // -1 means all items is not selected.
+    }
 }
 
 @end
