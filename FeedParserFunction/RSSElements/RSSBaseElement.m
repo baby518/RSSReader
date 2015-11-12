@@ -82,7 +82,7 @@
     [description appendFormat:@"  feedURL=%@", self.feedURL.absoluteString];
     [description appendFormat:@"  titleOfElement=%@", self.titleOfElement];
     [description appendFormat:@"  category=%@", self.categoryOfElement];
-    [description appendFormat:@"  starred=%ld", self.starred];
+    [description appendFormat:@"  starred=%d", self.starred];
     [description appendFormat:@", linkOfElement=%@", self.linkOfElement];
     [description appendFormat:@", pubDateOfElement=%@", self.pubDateOfElement];
     [description appendFormat:@", descriptionOfElement=%@", self.descriptionOfElement];

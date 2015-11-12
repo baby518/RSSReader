@@ -22,14 +22,14 @@
     self = [super self];
     if (self) {
         _delegate = aDelegate;
-        _respondsToSelectorGetChannelElement = [self.delegate respondsToSelector:@selector(getChannelElement)];
+        _respondsToSelectorGetChannelElement = [self.delegate respondsToSelector:@selector(getChannelElementToShow)];
     }
     return self;
 }
 
 -(RSSChannelElement *)currentChannel {
     if (self.delegate != nil && self.respondsToSelectorGetChannelElement) {
-        return [self.delegate getChannelElement];
+        return [self.delegate getChannelElementToShow];
     }
     return nil;
 }

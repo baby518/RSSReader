@@ -11,7 +11,7 @@
 #import "RSSChannelElement.h"
 
 @protocol FeedChannelDelegate <NSObject>
-- (RSSChannelElement *)getChannelElement;
+- (RSSChannelElement *)getChannelElementToShow;
 @end
 
 @interface FeedItemTableDelegate : NSObject <NSTableViewDelegate, NSTableViewDataSource>

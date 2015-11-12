@@ -11,6 +11,7 @@
 @interface RSSBaseElement : NSObject
 
 @property(nonatomic, strong) NSString *titleOfElement;
+/** channel's website url */
 @property(nonatomic, strong) NSString *linkOfElement;
 @property(nonatomic, strong) NSString *descriptionOfElement;
 @property(nonatomic, strong) NSString *pubDateStringOfElement;
@@ -19,7 +20,7 @@
 @property(nonatomic, strong) NSString *favIconURL;
 @property(nonatomic, strong) NSData *favIconData;
 @property(nonatomic, strong) NSMutableArray *imageUrlArray;
-// channel's feed url
+/** channel's feed url */
 @property(nonatomic, strong) NSURL *feedURL;
 @property(nonatomic, assign) BOOL starred;
 

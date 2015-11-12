@@ -18,6 +18,7 @@
     [description appendFormat:@", authorOfItem=%@", self.authorOfItem];
     [description appendFormat:@", authorLinkOfItem=%@", self.authorLinkOfItem];
     [description appendFormat:@", guidOfItem=%@", self.guidOfItem];
+    [description appendFormat:@", read=%d", self.read];
     [description appendFormat:@", has content : %d", (self.contentOfItem != nil && ![self.contentOfItem isEqualToString:@""])];
     [description appendString:@">"];
     return description;

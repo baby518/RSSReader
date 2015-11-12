@@ -22,6 +22,9 @@
 
 @property (weak) IBOutlet NSTableView *databaseTableView;
 @property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
+
+@property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
+@property (nonatomic, strong, readonly) RSSChannelElement *channelElementToShow;
 @end
 
 @implementation ViewController
@@ -37,11 +40,10 @@
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
 
     _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
-    NSLog(@"----- initWithChannelElement : %@", self.currentChannel);
     self.feedItemsTableView.delegate = self.feedItemTableDelegate;
     self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
 
-    [self reloadFMDB];
+    [self reloadUserFMDB];
 
     self.databaseTableView.delegate = self;
     self.databaseTableView.dataSource = self;
@@ -50,7 +52,7 @@
     [self.databaseTableView setAction:@selector(selectRowAction:)];
 }
 
-- (void)reloadFMDB {
+- (void)reloadUserFMDB {
     _userDB = [UserFMDBUtil getInstance];
     if (self.userDB != nil) {
         NSArray *categoryArray = [self.userDB getAllCategories];
@@ -61,6 +63,60 @@
     }
     [_userDB closeDB];
     [self.databaseTableView reloadData];
+}
+
+- (void)addChannelToUserFMDB:(RSSChannelElement *)element {
+    // add it in user database.
+    // maybe it is stored in database already.
+    _userDB = [UserFMDBUtil getInstance];
+    if (self.userDB != nil) {
+        [self.userDB updateChannelElement:element];
+    }
+    [_userDB closeDB];
+}
+
+- (void)showDatabaseChannelItemsAt:(NSUInteger)index {
+    _channelElementToShow = self.allFeedChannels[index];
+    if (self.channelElementToShow != nil) {
+        if (self.channelElementToShow.feedURL.absoluteString != nil) {
+            [_feedUrlTextField setStringValue:self.channelElementToShow.feedURL.absoluteString];
+        }
+        if (self.channelElementToShow.languageOfChannel != nil) {
+            [_channelLanguageTextField setStringValue:self.channelElementToShow.languageOfChannel];
+        }
+
+        NSImage *favicon = [[NSImage alloc] initWithData:self.channelElementToShow.favIconData];
+
+        // resize favicon
+        CGFloat scale = MIN(_channelFavIconImageView.bounds.size.width / favicon.size.width, _channelFavIconImageView.bounds.size.height / favicon.size.height);
+        favicon.size = NSMakeSize(favicon.size.width * scale, favicon.size.height * scale);
+
+        [_channelFavIconImageView.cell setImage:favicon];
+
+        if (_useHTMLLabelCheckBox.state == 0) {
+            [_channelTitleTextField setStringValue:self.channelElementToShow.titleOfElement];
+            [_channelDescriptionTextField setStringValue:self.channelElementToShow.descriptionOfElement];
+        } else {
+            NSAttributedString *attributedStringTitle = [[NSAttributedString alloc]
+                    initWithData:[self.channelElementToShow.titleOfElement dataUsingEncoding:NSUnicodeStringEncoding]
+                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+              documentAttributes:nil
+                           error:nil];
+            [_channelTitleTextField setAttributedStringValue:attributedStringTitle];
+            NSAttributedString *attributedStringDescription = [[NSAttributedString alloc]
+                    initWithData:[self.channelElementToShow.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
+                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+              documentAttributes:nil
+                           error:nil];
+            [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
+        }
+        NSString *dataString = [self.channelElementToShow.pubDateOfElement convertToString];
+        if (dataString != nil) {
+            [_channelPubDateTextField setStringValue:dataString];
+        }
+
+        [self.feedItemsTableView reloadData];
+    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -90,8 +146,6 @@
 //    _data = [_feedParser.xmlData copy];
 //
 //    [_startParseButton setEnabled:(_data != nil)];
-
-    [_feedUrlTextField setStringValue:(feedURL != nil) ? feedURL.absoluteString : @""];
 
     _feedParser = [[FeedParser alloc] initWithURL:feedURL];
     _feedParser.delegate = self;
@@ -129,11 +183,11 @@
     }
     [_userDB closeDB];
 
-    [self reloadFMDB];
+    [self reloadUserFMDB];
 }
 
 - (IBAction)reloadButtonAction:(NSButton *)sender {
-    [self reloadFMDB];
+    [self reloadUserFMDB];
 }
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender {
@@ -152,7 +206,8 @@
 }
 
 - (IBAction)didChannelLinkClicked:(NSButton *)sender {
-    NSString *urlString = self.currentChannel.linkOfElement;
+    NSString *urlString = self.channelElementToShow.linkOfElement;
+    NSLog(@"didChannelLinkClicked Url: %@", urlString);
     [self openURL:urlString];
 }
 
@@ -219,7 +274,6 @@
 - (void)clearUIContents {
     [self removeAllObjectsOfTable];
     [_channelTitleTextField setStringValue:@""];
-    [_channelLinkTextField setStringValue:@""];
     [_channelDescriptionTextField setStringValue:@""];
     [_channelPubDateTextField setStringValue:@""];
     [_channelLanguageTextField setStringValue:@""];
@@ -246,55 +300,16 @@
         }
         [_presetDB closeDB];
 
-        [_channelLinkTextField setStringValue:element.linkOfElement];
-        [_channelLanguageTextField setStringValue:((RSSChannelElement *) element).languageOfChannel];
-
-        NSImage *favicon = [[NSImage alloc] initWithData:element.favIconData];
-
-        // resize favicon
-        CGFloat scale = MIN(_channelFavIconImageView.bounds.size.width / favicon.size.width, _channelFavIconImageView.bounds.size.height / favicon.size.height);
-        favicon.size = NSMakeSize(favicon.size.width * scale, favicon.size.height * scale);
-
-        [_channelFavIconImageView.cell setImage:favicon];
-
-        if (_useHTMLLabelCheckBox.state == 0) {
-            [_channelTitleTextField setStringValue:element.titleOfElement];
-            [_channelDescriptionTextField setStringValue:element.descriptionOfElement];
-        } else {
-            NSAttributedString *attributedStringTitle = [[NSAttributedString alloc]
-                    initWithData:[element.titleOfElement dataUsingEncoding:NSUnicodeStringEncoding]
-                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-              documentAttributes:nil
-                           error:nil];
-            [_channelTitleTextField setAttributedStringValue:attributedStringTitle];
-            NSAttributedString *attributedStringDescription = [[NSAttributedString alloc]
-                    initWithData:[element.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
-                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-              documentAttributes:nil
-                           error:nil];
-            [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
-        }
-        NSString *dataString = [element.pubDateOfElement convertToString];
-        if (dataString != nil) {
-            [_channelPubDateTextField setStringValue:dataString];
-        }
-
         _currentChannel = ((RSSChannelElement *) element);
         _numberOfItemsRows = _currentChannel.itemsOfChannel.count;
         NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfItemsRows);
 
-        // add it in user database.
-        // maybe it is stored in database already.
-        _userDB = [UserFMDBUtil getInstance];
-        if (self.userDB != nil) {
-            [self.userDB updateChannelElement:self.currentChannel];
-        }
-        [_userDB closeDB];
+        [self addChannelToUserFMDB:self.currentChannel];
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
     }
-    [self.feedItemsTableView reloadData];
-    [self reloadFMDB];
+//    [self.feedItemsTableView reloadData];
+    [self reloadUserFMDB];
 }
 
 - (void)allElementsDidParsed {
@@ -306,8 +321,8 @@
 }
 
 #pragma mark - FeedChannelDelegate
-- (RSSChannelElement *)getChannelElement {
-    return self.currentChannel;
+- (RSSChannelElement *)getChannelElementToShow {
+    return self.channelElementToShow;
 }
 
 #pragma mark - NSTableViewDelegate
@@ -333,6 +348,7 @@
     [self.selectedRowIndexOfChannels removeAllObjects];
     if (rowNumber.integerValue >= 0) {
         [self.selectedRowIndexOfChannels addObject:rowNumber];
+        [self showDatabaseChannelItemsAt:rowNumber.unsignedIntegerValue];
     } else {
         // -1 means all items is not selected.
     }

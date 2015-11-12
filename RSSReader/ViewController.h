@@ -18,11 +18,9 @@
 @property (nonatomic, strong, readonly) NSData *data;
 @property (nonatomic, strong, readonly) FeedParser *feedParser;
 @property (nonatomic, assign, readonly) long numberOfItemsRows;
-@property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
 
 @property (weak) IBOutlet NSTextField *feedUrlTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
-@property (weak) IBOutlet NSTextField *channelLinkTextField;
 @property (weak) IBOutlet NSTextField *channelDescriptionTextField;
 @property (weak) IBOutlet NSTextField *channelLanguageTextField;
 @property (weak) IBOutlet NSTextField *channelPubDateTextField;
