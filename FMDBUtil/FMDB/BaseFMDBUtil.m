@@ -143,6 +143,8 @@
         for (NSString *key in keys) {
             if ([key isEqualToString:@"feedTitle"]) {
                 element.titleOfElement = dic[key];
+            } else if ([key isEqualToString:@"websiteURL"]) {
+                element.linkOfElement = dic[key];
             } else if ([key isEqualToString:@"description"]) {
                 element.descriptionOfElement = dic[key];
             } else if ([key isEqualToString:@"category"]) {

@@ -10,8 +10,8 @@
 
 @implementation RSSChannelElement
 
-- (instancetype)initWithTitle:(NSString *)title {
-    self = [super initWithTitle:title];
+- (instancetype)init {
+    self = [super init];
     if (self) {
         _itemsOfChannel = [NSMutableArray array];
         _languageOfChannel = @"";
@@ -21,7 +21,18 @@
 }
 
 - (void)addItem:(RSSItemElement *)item {
+    if (self.feedURL != nil) {
+        item.feedURL = self.feedURL;
+    }
     [_itemsOfChannel addObject:item];
+}
+
+- (void)setFeedURL:(NSURL *)aFeedUrl {
+    [super setFeedURL:aFeedUrl];
+    // let items' feedURL as same as Channel's.
+    for (RSSItemElement *item in self.itemsOfChannel) {
+        item.feedURL = aFeedUrl;
+    }
 }
 
 - (NSString *)description {

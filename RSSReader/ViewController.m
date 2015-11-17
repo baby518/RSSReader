@@ -8,18 +8,23 @@
 
 #import "ViewController.h"
 #import "NSDate+helper.h"
-#import "NSString+helper.h"
 #import "BaseFMDBUtil.h"
 #import "PresetFMDBUtil.h"
 #import "UserFMDBUtil.h"
-
-static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
+#import "AppDelegate.h"
 
 @interface ViewController ()
-
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
+@property (nonatomic, strong) NSArray *allFeedChannels;
+// maybe complete multi select later.
+@property (nonatomic, strong) NSMutableArray *selectedRowIndexOfChannels;
 
+@property (weak) IBOutlet NSTableView *databaseTableView;
+@property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
+
+@property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
+@property (nonatomic, strong, readonly) RSSChannelElement *channelElementToShow;
 @end
 
 @implementation ViewController
@@ -27,31 +32,91 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 /** use viewDidLoad on OSX 10.10 + */
 - (void)loadView {
     [super loadView];
-    
-    _numberOfRows = 0;
 
-    [_xmlSourcePopup addItemsWithTitles:XMLSourceArrays];
+    _numberOfItemsRows = 0;
+    _selectedRowIndexOfChannels = [NSMutableArray array];
+
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
-    // Do any additional setup after loading the view.
-    XMLSource source = (XMLSource) [_xmlSourcePopup indexOfSelectedItem];
-    [self checkXmlSourceChoose:source];
 
-    self.feedItemsTableView.delegate = self;
-    self.feedItemsTableView.dataSource = self;
-    
-    [self initFMDB];
+    _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
+    self.feedItemsTableView.delegate = self.feedItemTableDelegate;
+    self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
+
+    [self reloadUserFMDB];
+
+    self.databaseTableView.delegate = self;
+    self.databaseTableView.dataSource = self;
+    self.databaseTableView.target = self;
+    // single click
+    [self.databaseTableView setAction:@selector(selectRowAction:)];
 }
 
-- (void)initFMDB {
+- (void)reloadUserFMDB {
     _userDB = [UserFMDBUtil getInstance];
     if (self.userDB != nil) {
         NSArray *categoryArray = [self.userDB getAllCategories];
         for (NSString *category in categoryArray) {
             NSLog(@"userDB categoryArray : %@", category);
         };
+        _allFeedChannels = [self.userDB getAllFeedChannels];
     }
     [_userDB closeDB];
+    [self.databaseTableView reloadData];
+}
+
+- (void)addChannelToUserFMDB:(RSSChannelElement *)element {
+    // add it in user database.
+    // maybe it is stored in database already.
+    _userDB = [UserFMDBUtil getInstance];
+    if (self.userDB != nil) {
+        [self.userDB updateChannelElement:element];
+    }
+    [_userDB closeDB];
+}
+
+- (void)showDatabaseChannelItemsAt:(NSUInteger)index {
+    _channelElementToShow = self.allFeedChannels[index];
+    if (self.channelElementToShow != nil) {
+        if (self.channelElementToShow.feedURL.absoluteString != nil) {
+            [_feedUrlTextField setStringValue:self.channelElementToShow.feedURL.absoluteString];
+        }
+        if (self.channelElementToShow.languageOfChannel != nil) {
+            [_channelLanguageTextField setStringValue:self.channelElementToShow.languageOfChannel];
+        }
+
+        NSImage *favicon = [[NSImage alloc] initWithData:self.channelElementToShow.favIconData];
+
+        // resize favicon
+        CGFloat scale = MIN(_channelFavIconImageView.bounds.size.width / favicon.size.width, _channelFavIconImageView.bounds.size.height / favicon.size.height);
+        favicon.size = NSMakeSize(favicon.size.width * scale, favicon.size.height * scale);
+
+        [_channelFavIconImageView.cell setImage:favicon];
+
+        if (_useHTMLLabelCheckBox.state == 0) {
+            [_channelTitleTextField setStringValue:self.channelElementToShow.titleOfElement];
+            [_channelDescriptionTextField setStringValue:self.channelElementToShow.descriptionOfElement];
+        } else {
+            NSAttributedString *attributedStringTitle = [[NSAttributedString alloc]
+                    initWithData:[self.channelElementToShow.titleOfElement dataUsingEncoding:NSUnicodeStringEncoding]
+                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+              documentAttributes:nil
+                           error:nil];
+            [_channelTitleTextField setAttributedStringValue:attributedStringTitle];
+            NSAttributedString *attributedStringDescription = [[NSAttributedString alloc]
+                    initWithData:[self.channelElementToShow.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
+                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
+              documentAttributes:nil
+                           error:nil];
+            [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
+        }
+        NSString *dataString = [self.channelElementToShow.pubDateOfElement convertToString];
+        if (dataString != nil) {
+            [_channelPubDateTextField setStringValue:dataString];
+        }
+
+        [self.feedItemsTableView reloadData];
+    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -60,47 +125,19 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     // Update the view, if already loaded.
 }
 
-- (void)checkXmlSourceChoose:(XMLSource)source {
-    NSLog(@"checkXmlSourceChoose index : %d", (int) [_xmlSourcePopup indexOfSelectedItem]);
-    if (source == XMLSourceLocalFile) {
-        // disable sth.
-        [self.loadUrlButton setEnabled:NO];
-        [self.openLocalFileButton setEnabled:YES];
-        [self.filePathTextField setEditable:NO];
-        [self.filePathTextField setStringValue:@""];
-    } else if (source == XMLSourceURL) {
-        // disable sth.
-        [self.openLocalFileButton setEnabled:NO];
-        [self.loadUrlButton setEnabled:YES];
-        [self.filePathTextField setEditable:YES];
-        [self.filePathTextField setStringValue:defaultFeedURL];
-    }
-}
-
-- (IBAction)loadUrlButtonPressed:(NSButton *)sender {
-    // TODO load Feed data and save data in self.data
+- (void)startParserWithString:(NSString *)inputString {
     // delete whiteSpace and new line.
-    NSString *urlString = [self.filePathTextField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *urlString = [inputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-    // TODO just for test ++++++
-    // check it in preset database.
-    if (self.presetDB != nil) {
+    if ([urlString isEqualToString:@""]) {
+        return;
     }
 
-//    if (self.userDB != nil) {
-//        RSSChannelElement *result = [self.userDB getChannelFromURL:@"http://www.ithome.com/rss"];
-//        if (result != nil) {
-//            NSLog(@"query result %@", result.description);
-//        }
-//    }
-    // just for test ------
-
-    [self startParserWithURL:urlString];
+    NSURL *feedURL = [NSURL URLWithString:urlString];
+    [self startParserWithURL:feedURL];
 }
 
-- (void)startParserWithURL:(NSString *)urlString {
-    NSURL *feedURL = [NSURL URLWithString:urlString];
-
+- (void)startParserWithURL:(NSURL *)feedURL {
 //    NSError *urlError = nil;
 //    _feedParser = [[FeedParser alloc] initWithURL:feedURL];
 //    [_feedParser startRequestSync:&urlError];
@@ -122,19 +159,46 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     }];
 }
 
-- (IBAction)didXmlSourceChoose:(NSPopUpButton *)sender {
-    XMLSource source = (XMLSource) [_xmlSourcePopup indexOfSelectedItem];
-    [self checkXmlSourceChoose:source];
+- (IBAction)addUrlButtonPressed:(NSButton *)sender {
+    if (self.urlSheetDelegate != nil) {
+        [self.urlSheetDelegate beginOpenUrlSheet:^(NSModalResponse returnCode, NSString *resultUrl) {
+            NSLog(@"OpenUrlSheet return %ld, %@", returnCode, resultUrl);
+            if (returnCode == NSModalResponseOK) {
+                [self startParserWithString:resultUrl];
+            }
+        }];
+    }
+}
+
+- (IBAction)removeButtonAction:(NSButton *)sender {
+    NSUInteger count = self.selectedRowIndexOfChannels.count;
+    if (count == 0) return;
+    _userDB = [UserFMDBUtil getInstance];
+    if (self.userDB != nil) {
+        for (NSNumber *row in self.selectedRowIndexOfChannels) {
+            NSUInteger selectRow = row.unsignedIntegerValue;
+            RSSChannelElement *element = self.allFeedChannels[selectRow];
+            [self.userDB deleteChannelFromURL:element.feedURL.absoluteString];
+        }
+    }
+    [_userDB closeDB];
+
+    [self reloadUserFMDB];
+}
+
+- (IBAction)reloadButtonAction:(NSButton *)sender {
+    [self reloadUserFMDB];
 }
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender {
-    NSLog(@"Button CLicked.");
-    
+    NSLog(@"Button Clicked.");
+
     NSString *path = [self getFilePathFromDialog];
     // show path in Text Field.
-    [_filePathTextField setStringValue:(path != nil) ? path : @""];
+    [_feedUrlTextField setStringValue:(path != nil) ? path : @""];
+
     if (path != nil) [self clearUIContents];
-    
+
     _data = [self loadDataFromFile:path];
     _feedParser = [[FeedParser alloc] initWithData:_data];
     _feedParser.delegate = self;
@@ -142,7 +206,8 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
 }
 
 - (IBAction)didChannelLinkClicked:(NSButton *)sender {
-    NSString *urlString = self.currentChannel.linkOfElement;
+    NSString *urlString = self.channelElementToShow.linkOfElement;
+    NSLog(@"didChannelLinkClicked Url: %@", urlString);
     [self openURL:urlString];
 }
 
@@ -188,28 +253,27 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     [openPanel setCanChooseDirectories:NO];
     // set file type.
     [openPanel setAllowedFileTypes:@[@"xml"]];
-    
+
     NSURL *result = nil;
-    
+
     // single selection
     if ([openPanel runModal] == NSModalResponseOK) {
         result = [openPanel URLs][0];
     }
-    
+
     NSLog(@"getFilePathFromDialog Url: %@", result);
     return result.path;
 }
 
 - (void)removeAllObjectsOfTable {
 //    [_currentTrackPoints removeAllObjects];
-    _numberOfRows = 0;
+    _numberOfItemsRows = 0;
     [self.feedItemsTableView reloadData];
 }
 
 - (void)clearUIContents {
     [self removeAllObjectsOfTable];
     [_channelTitleTextField setStringValue:@""];
-    [_channelLinkTextField setStringValue:@""];
     [_channelDescriptionTextField setStringValue:@""];
     [_channelPubDateTextField setStringValue:@""];
     [_channelLanguageTextField setStringValue:@""];
@@ -236,47 +300,16 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
         }
         [_presetDB closeDB];
 
-        [_channelLinkTextField setStringValue:element.linkOfElement];
-        [_channelLanguageTextField setStringValue:((RSSChannelElement *) element).languageOfChannel];
-        [_channelFavIconImageView setImage:[[NSImage alloc] initWithData:element.favIconData]];
-
-        if (_useHTMLLabelCheckBox.state == 0) {
-            [_channelTitleTextField setStringValue:element.titleOfElement];
-            [_channelDescriptionTextField setStringValue:element.descriptionOfElement];
-        } else {
-            NSAttributedString *attributedStringTitle = [[NSAttributedString alloc]
-                    initWithData:[element.titleOfElement dataUsingEncoding:NSUnicodeStringEncoding]
-                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-              documentAttributes:nil
-                           error:nil];
-            [_channelTitleTextField setAttributedStringValue:attributedStringTitle];
-            NSAttributedString *attributedStringDescription = [[NSAttributedString alloc]
-                    initWithData:[element.descriptionOfElement dataUsingEncoding:NSUnicodeStringEncoding]
-                         options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType}
-              documentAttributes:nil
-                           error:nil];
-            [_channelDescriptionTextField setAttributedStringValue:attributedStringDescription];
-        }
-        NSString *dataString = [element.pubDateOfElement convertToString];
-        if (dataString != nil) {
-            [_channelPubDateTextField setStringValue:dataString];
-        }
-
         _currentChannel = ((RSSChannelElement *) element);
-        _numberOfRows = _currentChannel.itemsOfChannel.count;
-        NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfRows);
+        _numberOfItemsRows = _currentChannel.itemsOfChannel.count;
+        NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfItemsRows);
 
-        // add it in user database.
-        // maybe it is stored in database already.
-        _userDB = [UserFMDBUtil getInstance];
-        if (self.userDB != nil) {
-            [self.userDB updateChannelElement:self.currentChannel];
-        }
-        [_userDB closeDB];
+        [self addChannelToUserFMDB:self.currentChannel];
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
     }
-    [self.feedItemsTableView reloadData];
+//    [self.feedItemsTableView reloadData];
+    [self reloadUserFMDB];
 }
 
 - (void)allElementsDidParsed {
@@ -287,32 +320,38 @@ static NSString *defaultFeedURL = @"http://rss.cnbeta.com/rss";
     NSLog(@"parseCompleted %ld", completed);
 }
 
+#pragma mark - FeedChannelDelegate
+- (RSSChannelElement *)getChannelElementToShow {
+    return self.channelElementToShow;
+}
 
 #pragma mark - NSTableViewDelegate
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSUInteger unsignedRow = (NSUInteger) row;
     // Get a new ViewCell
     NSTableCellView *cellView = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
-
-    if ([tableColumn.identifier isEqualToString:@"ItemID"]) {
-        [[cellView textField] setStringValue:[NSString stringWithFormat:@"%ld", unsignedRow + 1]];
-    } else if ([tableColumn.identifier isEqualToString:@"ItemDate"]) {
-        NSDate *pubDate = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).pubDateOfElement;
-        NSString *dateString = [pubDate convertToString];
-        if (dateString != nil) {
-            [[cellView textField] setStringValue:dateString];
-        }
-    } else if ([tableColumn.identifier isEqualToString:@"ItemTitle"]) {
-        NSString *title = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).titleOfElement;
-        [[cellView textField] setStringValue:title];
-    } else if ([tableColumn.identifier isEqualToString:@"ItemDescription"]) {
-        NSString *description = ((RSSItemElement *) (_currentChannel.itemsOfChannel[unsignedRow])).descriptionOfElement;
-        [[cellView textField] setStringValue:[NSString removeHTMLLabelAndWhitespace:description maxLength:200]];
+    if ([tableColumn.identifier isEqualToString:@"channelColumn"]) {
+        RSSChannelElement *element = self.allFeedChannels[unsignedRow];
+        [cellView.textField setStringValue:element.titleOfElement];
     }
     return cellView;
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return _numberOfRows;
+    NSInteger count = self.allFeedChannels.count;
+    return count;
 }
+
+- (void)selectRowAction:(NSTableView *)sender {
+    NSNumber *rowNumber = @(sender.clickedRow);
+    NSLog(@"selectRowAction %ld", rowNumber.integerValue);
+    [self.selectedRowIndexOfChannels removeAllObjects];
+    if (rowNumber.integerValue >= 0) {
+        [self.selectedRowIndexOfChannels addObject:rowNumber];
+        [self showDatabaseChannelItemsAt:rowNumber.unsignedIntegerValue];
+    } else {
+        // -1 means all items is not selected.
+    }
+}
+
 @end

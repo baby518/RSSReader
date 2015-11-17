@@ -13,6 +13,7 @@
 
 //add
 - (BOOL)addChannelElement:(RSSChannelElement *)element;
+- (BOOL)addChannelElementItems:(RSSItemElement *)item;
 
 //delete
 - (BOOL)deleteChannelFromURL:(NSString *)url;
