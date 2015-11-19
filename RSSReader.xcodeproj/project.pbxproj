@@ -145,6 +145,7 @@
 		A296EB70013019E3B0B897B3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4CEC7191A827AB300D0A87A /* libxml2.dylib */,
 				8E1EDD2364FC75E9437DFEA2 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -302,7 +303,6 @@
 				D44905061B7BB56D00B3F58E /* FMDBUtil */,
 				D4309AE71B5427BB00AF2E93 /* References */,
 				D4DA8B6A1B3471B1000DC0E8 /* FeedParserFunction */,
-				D4CEC7191A827AB300D0A87A /* libxml2.dylib */,
 				D4FA672F1A8133A900265869 /* RSSReader */,
 				D4FA672E1A8133A900265869 /* Products */,
 				417C656FF10D67F80C1C5E9F /* Pods */,
