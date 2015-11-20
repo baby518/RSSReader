@@ -124,9 +124,9 @@
     NSMutableArray *channelArray = [NSMutableArray array];
     while ([resultSet next]) {
         NSDictionary *dic = [resultSet resultDictionary];
-        RSSChannelElement *element = [self getChannelFromDictionary:dic];
-        if (element != nil) {
-            [channelArray addObject:element];
+        RSSChannelElement *channelElement = [self getChannelFromDictionary:dic];
+        if (channelElement != nil) {
+            [channelArray addObject:channelElement];
         }
     }
     return channelArray;

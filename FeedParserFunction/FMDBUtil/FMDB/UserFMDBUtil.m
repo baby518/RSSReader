@@ -128,24 +128,24 @@ static UserFMDBUtil *userDBUtil = nil;
 /** override */
 - (RSSChannelElement *)getChannelFromDictionary:(NSDictionary *)dic {
     NSArray *keys = [dic allKeys];
-    RSSChannelElement *element = [super getChannelFromDictionary:dic];
+    RSSChannelElement *channelElement = [super getChannelFromDictionary:dic];
 
-    if (element != nil) {
+    if (channelElement != nil) {
         for (NSString *key in keys) {
             if ([key isEqualToString:@"lastUpdate"]) {
                 NSInteger intValue = [dic[key] integerValue];
-                element.pubDateOfElement = [self decodeDate:intValue];
+                channelElement.pubDateOfElement = [self decodeDate:intValue];
             } else if ([key isEqualToString:@"language"]) {
-                element.languageOfChannel = dic[key];
+                channelElement.languageOfChannel = dic[key];
             }
         }
         // add channel's items.
-        NSArray *items = [self getAllItemsOfChannel:element.feedURL];
+        NSArray *items = [self getAllItemsOfChannel:channelElement.feedURL];
         for (RSSItemElement *item in items) {
-            [element addItem:item];
+            [channelElement addItem:item];
         }
     }
-    return element;
+    return channelElement;
 }
 
 /** override */
@@ -286,8 +286,10 @@ static UserFMDBUtil *userDBUtil = nil;
     if (!databaseIsReady) {
         return nil;
     }
-    NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE channelURL='%@'",
-                                               [self getFeedItemsTableName], feedUrl.absoluteString];
+    // TODO maybe use more judgment
+    NSString *orderString = @" ORDER BY pubDate DESC";
+    NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE channelURL='%@' %@",
+                                               [self getFeedItemsTableName], feedUrl.absoluteString, orderString];
     FMResultSet *resultSet = [dataBase executeQuery:sql];
     NSMutableArray *itemsArray = [NSMutableArray array];
     while ([resultSet next]) {
