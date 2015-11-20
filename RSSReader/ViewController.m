@@ -187,7 +187,25 @@
 }
 
 - (IBAction)reloadButtonAction:(NSButton *)sender {
+    // 1. show current content
     [self reloadUserFMDB];
+    // 2. parse current feed, get newest content
+    NSUInteger count = self.selectedRowIndexOfChannels.count;
+    if (count > 0) {
+        // reload selected channels
+        for (NSNumber *row in self.selectedRowIndexOfChannels) {
+            NSUInteger selectRow = row.unsignedIntegerValue;
+            RSSChannelElement *element = self.allFeedChannels[selectRow];
+            [self startParserWithURL:element.feedURL];
+            // reloadUserFMDB will called parse completed.
+        }
+    } else {
+        // reload all if select none.
+        for (RSSChannelElement *element in self.allFeedChannels) {
+            [self startParserWithURL:element.feedURL];
+            // reloadUserFMDB will called parse completed.
+        }
+    }
 }
 
 - (IBAction)openFileButtonPressed:(NSButton *)sender {
