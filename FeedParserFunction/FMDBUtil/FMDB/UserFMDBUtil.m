@@ -39,6 +39,9 @@ static UserFMDBUtil *userDBUtil = nil;
 - (instancetype)initWithUserDBPath:(NSString *)path {
     self = [super initWithDBPath:path];
     if (self) {
+        // open foreign key support
+        [dataBase executeUpdate:@"PRAGMA foreign_keys=ON"];
+
         // create tables if not exist.
         if (![self isTableExist:[self getFeedCategoryTableName]]) {
             NSString *sql = [NSString stringWithFormat:
@@ -49,30 +52,20 @@ static UserFMDBUtil *userDBUtil = nil;
 
         if (![self isTableExist:[self getFeedTableName]]) {
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TABLE %@ (feedURL TEXT UNIQUE, websiteURL TEXT, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN DEFAULT(0), lastUpdate INTEGER DEFAULT(0), language TEXT, favicon TEXT)",
+                    @"CREATE TABLE %@ (feedURL TEXT PRIMARY KEY, websiteURL TEXT, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN DEFAULT(0), lastUpdate INTEGER DEFAULT(0), language TEXT, favicon TEXT)",
                     [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
 
+        // create feed items table, !has a foreign key!.
         if (![self isTableExist:[self getFeedItemsTableName]]) {
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TABLE %@ (title TEXT, channelURL TEXT, websiteURL TEXT, starred BOOLEAN DEFAULT(0), read BOOLEAN DEFAULT(0), pubDate INTEGER DEFAULT(0), author TEXT, description TEXT, content TEXT)",
-                    [self getFeedItemsTableName]];
+                    @"CREATE TABLE %@ (title TEXT, channelURL TEXT, websiteURL TEXT, starred BOOLEAN DEFAULT(0), read BOOLEAN DEFAULT(0), pubDate INTEGER DEFAULT(0), author TEXT, description TEXT, content TEXT, PRIMARY KEY (channelURL, websiteURL), FOREIGN KEY (channelURL) REFERENCES %@ (feedURL) ON DELETE CASCADE ON UPDATE CASCADE)",
+                    [self getFeedItemsTableName], [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
 
         // create Triggers
-        if (![self isTriggerExist:@"remove_channel_items"]) {
-            // When delete a channel, remove it's items.
-            NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TRIGGER remove_channel_items BEFORE DELETE ON %@ \n"
-                            "BEGIN \n"
-                            "DELETE FROM %@ WHERE channelURL = old.feedURL;\n"
-                            "END;",
-                    [self getFeedTableName], [self getFeedItemsTableName]];
-            [dataBase executeUpdate:sql];
-        }
-
         if (![self isTriggerExist:@"add_feed_category"]) {
             // When insert or update a new channel, add its category into "feed_category"
             NSString *sql = [NSString stringWithFormat:
@@ -190,6 +183,7 @@ static UserFMDBUtil *userDBUtil = nil;
         return NO;
     }
 
+    // don't use REPLACE, because replace is remove old --> add new, will trig it's trigger and foreign keys.
     NSInteger lastUpdate = [self encodeDate:element.pubDateOfElement];
     NSString *faviconBase64 = [self encodeBase64:element.favIconData];
     NSString *sql;
@@ -277,7 +271,7 @@ static UserFMDBUtil *userDBUtil = nil;
     NSInteger pubDate = [self encodeDate:item.pubDateOfElement];
 
     NSString *sql = [NSString stringWithFormat:
-            @"INSERT INTO %@ "
+            @"REPLACE INTO %@ "
                     "(title, channelURL, websiteURL, starred, read, pubDate, author, description, content) "
                     "VALUES ('%@', '%@', '%@', '%d', '%d', '%ld', '%@', '%@', '%@')",
             [self getFeedItemsTableName],

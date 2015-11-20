@@ -57,7 +57,9 @@
         [[cellView textField] setStringValue:title];
     } else if ([tableColumn.identifier isEqualToString:@"ItemDescription"]) {
         NSString *description = ((RSSItemElement *) (self.currentChannel.itemsOfChannel[unsignedRow])).descriptionOfElement;
-        [[cellView textField] setStringValue:[NSString removeHTMLLabelAndWhitespace:description maxLength:200]];
+        if (description != nil) {
+            [[cellView textField] setStringValue:[NSString removeHTMLLabelAndWhitespace:description maxLength:200]];
+        }
     }
     return cellView;
 }

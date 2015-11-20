@@ -53,6 +53,7 @@
 }
 
 + (NSString *)removeHTMLLabelAndWhitespace:(NSString *)html maxLength:(NSUInteger)maxLength {
+    if (html == nil || [html isEqual:[NSNull null]] || [html isEqualToString:@""]) return @"";
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     // delete whitespace and newLine of head and foot;
     NSString *result = [[NSString removeHTMLLabel:html maxLength:maxLength] stringByTrimmingCharactersInSet:whitespace];
