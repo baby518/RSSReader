@@ -23,7 +23,6 @@
 @property (weak) IBOutlet NSTableView *databaseTableView;
 @property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
 
-@property (nonatomic, strong, readonly) RSSChannelElement *currentChannel;
 @property (nonatomic, strong, readonly) RSSChannelElement *channelElementToShow;
 @end
 
@@ -33,7 +32,6 @@
 - (void)loadView {
     [super loadView];
 
-    _numberOfItemsRows = 0;
     _selectedRowIndexOfChannels = [NSMutableArray array];
 
     [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
@@ -76,7 +74,11 @@
 }
 
 - (void)showDatabaseChannelItemsAt:(NSUInteger)index {
-    _channelElementToShow = self.allFeedChannels[index];
+    [self showChannelElementOnTableView:self.allFeedChannels[index]];
+}
+
+- (void)showChannelElementOnTableView:(RSSChannelElement *)element {
+    _channelElementToShow = element;
     if (self.channelElementToShow != nil) {
         if (self.channelElementToShow.feedURL.absoluteString != nil) {
             [_feedUrlTextField setStringValue:self.channelElementToShow.feedURL.absoluteString];
@@ -193,18 +195,22 @@
     NSUInteger count = self.selectedRowIndexOfChannels.count;
     if (count > 0) {
         // reload selected channels
-        for (NSNumber *row in self.selectedRowIndexOfChannels) {
-            NSUInteger selectRow = row.unsignedIntegerValue;
-            RSSChannelElement *element = self.allFeedChannels[selectRow];
-            [self startParserWithURL:element.feedURL];
-            // reloadUserFMDB will called parse completed.
-        }
+//        for (NSNumber *row in self.selectedRowIndexOfChannels) {
+//            NSUInteger selectRow = row.unsignedIntegerValue;
+//            RSSChannelElement *element = self.allFeedChannels[selectRow];
+//            [self startParserWithURL:element.feedURL];
+//            // reloadUserFMDB will called parse completed.
+//        }
+        NSUInteger selectRow = ((NSNumber *) self.selectedRowIndexOfChannels[0]).unsignedIntegerValue;
+        RSSChannelElement *element = self.allFeedChannels[selectRow];
+        [self startParserWithURL:element.feedURL];
+        // reloadUserFMDB will called parse completed.
     } else {
-        // reload all if select none.
-        for (RSSChannelElement *element in self.allFeedChannels) {
-            [self startParserWithURL:element.feedURL];
-            // reloadUserFMDB will called parse completed.
-        }
+//        // reload all if select none.
+//        for (RSSChannelElement *element in self.allFeedChannels) {
+//            [self startParserWithURL:element.feedURL];
+//            // reloadUserFMDB will called parse completed.
+//        }
     }
 }
 
@@ -285,7 +291,6 @@
 
 - (void)removeAllObjectsOfTable {
 //    [_currentTrackPoints removeAllObjects];
-    _numberOfItemsRows = 0;
     [self.feedItemsTableView reloadData];
 }
 
@@ -318,16 +323,17 @@
         }
         [_presetDB closeDB];
 
-        _currentChannel = ((RSSChannelElement *) element);
-        _numberOfItemsRows = _currentChannel.itemsOfChannel.count;
-        NSLog(@"elementDidParsed receive RSSChannelElement. has %ld items", _numberOfItemsRows);
-
-        [self addChannelToUserFMDB:self.currentChannel];
+        // local xml file's feedURL is nil.
+        BOOL isLocalFile = (element.feedURL == nil);
+        if (isLocalFile) {
+            [self showChannelElementOnTableView:((RSSChannelElement *) element)];
+        } else {
+            [self addChannelToUserFMDB:((RSSChannelElement *) element)];
+            [self reloadUserFMDB];
+        }
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
     }
-//    [self.feedItemsTableView reloadData];
-    [self reloadUserFMDB];
 }
 
 - (void)allElementsDidParsed {

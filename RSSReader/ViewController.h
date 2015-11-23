@@ -17,7 +17,6 @@
 @property (nonatomic, weak) id <OpenUrlSheetDelegate> urlSheetDelegate;
 @property (nonatomic, strong, readonly) NSData *data;
 @property (nonatomic, strong, readonly) FeedParser *feedParser;
-@property (nonatomic, assign, readonly) long numberOfItemsRows;
 
 @property (weak) IBOutlet NSTextField *feedUrlTextField;
 @property (weak) IBOutlet NSTextField *channelTitleTextField;
