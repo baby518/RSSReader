@@ -56,4 +56,8 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle;
 - (void)startParserWithStyle:(XMLElementStringStyle)elementStringStyle parseEngine:(XMLParseEngine)engine;
 - (void)stopParser;
+
+// URL is Requesting or data is parsing
+- (BOOL)isWorking;
+
 @end

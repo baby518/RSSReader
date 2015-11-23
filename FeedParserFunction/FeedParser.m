@@ -237,6 +237,22 @@
     });
 }
 
+- (BOOL)isWorking {
+    if (self.URLSessionDataTask != nil) {
+        NSLog(@"isWorking URLSessionDataTask state : %d", [self.URLSessionDataTask state]);
+        if ([self.URLSessionDataTask state] == NSURLSessionTaskStateRunning) {
+            return YES;
+        }
+    }
+    if (self.parser != nil) {
+        NSLog(@"isWorking parser state : %d", [self.parser isParsing]);
+        if ([self.parser isParsing]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 #pragma mark FeedParser (private)
 
 - (void)initializeData:(NSData *)data {

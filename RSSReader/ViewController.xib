@@ -18,6 +18,7 @@
                 <outlet property="feedUrlTextField" destination="OLj-9S-AJY" id="6hq-M5-a9r"/>
                 <outlet property="openLocalFileButton" destination="GiH-0X-Mnx" id="IoY-i1-qoI"/>
                 <outlet property="parseEnginePopup" destination="IIH-m3-WjI" id="DlD-pQ-noy"/>
+                <outlet property="reloadFeedButton" destination="xeP-kA-xwH" id="FkM-Bc-ZOT"/>
                 <outlet property="stopLocalParserButton" destination="zfD-aY-FOO" id="FY4-9W-WAf"/>
                 <outlet property="useHTMLLabelCheckBox" destination="Dsv-ML-Yaz" id="2OZ-Gt-TkL"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="4lk-f6-PF1"/>

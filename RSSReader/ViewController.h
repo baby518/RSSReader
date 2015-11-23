@@ -18,21 +18,6 @@
 @property (nonatomic, strong, readonly) NSData *data;
 @property (nonatomic, strong, readonly) FeedParser *feedParser;
 
-@property (weak) IBOutlet NSTextField *feedUrlTextField;
-@property (weak) IBOutlet NSTextField *channelTitleTextField;
-@property (weak) IBOutlet NSTextField *channelDescriptionTextField;
-@property (weak) IBOutlet NSTextField *channelLanguageTextField;
-@property (weak) IBOutlet NSTextField *channelPubDateTextField;
-@property (weak) IBOutlet NSButton *channelFavIconImageView;
-@property (weak) IBOutlet NSPopUpButton *elementStringStylePopUp;
-@property (weak) IBOutlet NSPopUpButton *parseEnginePopup;
-@property (weak) IBOutlet NSButton *useHTMLLabelCheckBox;
-@property (weak) IBOutlet NSButton *openLocalFileButton;
-@property (weak) IBOutlet NSButton *loadWebUrlButton;
-@property (weak) IBOutlet NSTableView *feedItemsTableView;
-@property (strong) IBOutlet NSButton *stopLocalParserButton;
-@property (strong) IBOutlet NSButton *stopWebParserButton;
-
 - (IBAction)openFileButtonPressed:(NSButton *)sender;
 - (IBAction)addUrlButtonPressed:(NSButton *)sender;
 - (IBAction)removeButtonAction:(NSButton *)sender;

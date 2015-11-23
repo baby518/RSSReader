@@ -13,6 +13,9 @@
 #import "UserFMDBUtil.h"
 #import "AppDelegate.h"
 
+NSString *const RELOAD_START_LABEL = @"reload";
+NSString *const RELOAD_STOP_LABEL  = @"stop";
+
 @interface ViewController ()
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
@@ -20,8 +23,25 @@
 // maybe complete multi select later.
 @property (nonatomic, strong) NSMutableArray *selectedRowIndexOfChannels;
 
-@property (weak) IBOutlet NSTableView *databaseTableView;
+// Channel's info and Items
+@property (weak) IBOutlet NSTableView *feedItemsTableView;
+@property (weak) IBOutlet NSTextField *feedUrlTextField;
+@property (weak) IBOutlet NSTextField *channelTitleTextField;
+@property (weak) IBOutlet NSTextField *channelDescriptionTextField;
+@property (weak) IBOutlet NSTextField *channelLanguageTextField;
+@property (weak) IBOutlet NSTextField *channelPubDateTextField;
+@property (weak) IBOutlet NSButton *channelFavIconImageView;
+
+// Local tab
+@property (weak) IBOutlet NSPopUpButton *elementStringStylePopUp;
+@property (weak) IBOutlet NSPopUpButton *parseEnginePopup;
+@property (weak) IBOutlet NSButton *useHTMLLabelCheckBox;
+@property (weak) IBOutlet NSButton *openLocalFileButton;
+@property (weak) IBOutlet NSButton *stopLocalParserButton;
+// Web tab
 @property (nonatomic, strong) FeedItemTableDelegate *feedItemTableDelegate;
+@property (weak) IBOutlet NSTableView *databaseTableView;
+@property (weak) IBOutlet NSButton *reloadFeedButton;
 
 @property (nonatomic, strong, readonly) RSSChannelElement *channelElementToShow;
 @end
@@ -32,14 +52,17 @@
 - (void)loadView {
     [super loadView];
 
-    _selectedRowIndexOfChannels = [NSMutableArray array];
-
-    [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
-    [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
-
     _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
     self.feedItemsTableView.delegate = self.feedItemTableDelegate;
     self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
+
+    // Local tab
+    [_elementStringStylePopUp addItemsWithTitles:XMLElementStringStyleArrays];
+    [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
+
+    // Web tab
+    _selectedRowIndexOfChannels = [NSMutableArray array];
+    self.reloadFeedButton.title = RELOAD_START_LABEL;
 
     [self reloadUserFMDB];
 
@@ -152,6 +175,7 @@
     _feedParser = [[FeedParser alloc] initWithURL:feedURL];
     _feedParser.delegate = self;
     __weak FeedParser *weakSelf = self.feedParser;
+    self.reloadFeedButton.title = RELOAD_STOP_LABEL;
     [self.feedParser startRequestAsync:^(NSError *error) {
         if (error == nil) {
             [weakSelf startParser];
@@ -189,28 +213,33 @@
 }
 
 - (IBAction)reloadButtonAction:(NSButton *)sender {
-    // 1. show current content
-    [self reloadUserFMDB];
-    // 2. parse current feed, get newest content
-    NSUInteger count = self.selectedRowIndexOfChannels.count;
-    if (count > 0) {
-        // reload selected channels
-//        for (NSNumber *row in self.selectedRowIndexOfChannels) {
-//            NSUInteger selectRow = row.unsignedIntegerValue;
-//            RSSChannelElement *element = self.allFeedChannels[selectRow];
-//            [self startParserWithURL:element.feedURL];
-//            // reloadUserFMDB will called parse completed.
-//        }
-        NSUInteger selectRow = ((NSNumber *) self.selectedRowIndexOfChannels[0]).unsignedIntegerValue;
-        RSSChannelElement *element = self.allFeedChannels[selectRow];
-        [self startParserWithURL:element.feedURL];
-        // reloadUserFMDB will called parse completed.
+    BOOL isReloading = [self.feedParser isWorking];
+    if (isReloading) {
+        [self stopParser];
     } else {
-//        // reload all if select none.
-//        for (RSSChannelElement *element in self.allFeedChannels) {
-//            [self startParserWithURL:element.feedURL];
-//            // reloadUserFMDB will called parse completed.
-//        }
+        // 1. show current content
+        [self reloadUserFMDB];
+        // 2. parse current feed, get newest content
+        NSUInteger count = self.selectedRowIndexOfChannels.count;
+        if (count > 0) {
+            // reload selected channels
+//            for (NSNumber *row in self.selectedRowIndexOfChannels) {
+//                NSUInteger selectRow = row.unsignedIntegerValue;
+//                RSSChannelElement *element = self.allFeedChannels[selectRow];
+//                [self startParserWithURL:element.feedURL];
+//                // reloadUserFMDB will called parse completed.
+//            }
+            NSUInteger selectRow = ((NSNumber *) self.selectedRowIndexOfChannels[0]).unsignedIntegerValue;
+            RSSChannelElement *element = self.allFeedChannels[selectRow];
+            [self startParserWithURL:element.feedURL];
+            // reloadUserFMDB will called parse completed.
+        } else {
+//            // reload all if select none.
+//            for (RSSChannelElement *element in self.allFeedChannels) {
+//                [self startParserWithURL:element.feedURL];
+//                // reloadUserFMDB will called parse completed.
+//            }
+        }
     }
 }
 
@@ -251,9 +280,14 @@
 }
 
 - (IBAction)stopParser:(NSButton *)sender {
+    [self stopParser];
+}
+
+- (void)stopParser {
     if (_feedParser != nil) {
         [_feedParser stopParser];
     }
+    self.reloadFeedButton.title = RELOAD_START_LABEL;
 }
 
 - (NSData *)loadDataFromFile:(NSString *)path {
@@ -341,7 +375,8 @@
 }
 
 - (void)parseCompleted:(BOOL)completed {
-    NSLog(@"parseCompleted %ld", completed);
+    NSLog(@"parseCompleted %d", completed);
+    self.reloadFeedButton.title = RELOAD_START_LABEL;
 }
 
 #pragma mark - FeedChannelDelegate
@@ -374,7 +409,7 @@
         [self.selectedRowIndexOfChannels addObject:rowNumber];
         [self showDatabaseChannelItemsAt:rowNumber.unsignedIntegerValue];
     } else {
-        // -1 means all items is not selected.
+        // -1 means all items are not selected.
     }
 }
 
