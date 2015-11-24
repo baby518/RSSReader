@@ -14,23 +14,25 @@
     if (imageData == nil) return nil;
     NSString *base64String;
     if ([imageData respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
-        base64String = [NSString stringWithFormat:@"data:image/x-icon;base64,%@", [imageData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed]];
+        base64String = [imageData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
     } else {
-        base64String = [NSString stringWithFormat:@"data:image/x-icon;base64,%@", [imageData base64Encoding]];
+        base64String = [imageData base64Encoding];
     }
     return base64String;
 }
 
 + (NSData *)decodeBase64:(NSString *)base64String {
-    // replace whitespace and \n \r if use option NSDataBase64Encoding64CharacterLineLength
-//    base64String = [base64String stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-//    base64String = [base64String stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    NSURL *url = [NSURL URLWithString:base64String];
-    NSData *imageData = [NSData dataWithContentsOfURL:url];
-
-    // need filter base64String's schema, like "data:image/x-icon;base64," before decode it.
-//    NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String options:NSDataBase64DecodingIgnoreUnknownCharacters];
-
-    return imageData;
+    if ([base64String hasPrefix:@"data:image/"]) {
+        // replace whitespace and \n \r first
+        base64String = [base64String stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+        base64String = [base64String stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        NSURL *url = [NSURL URLWithString:base64String];
+        NSData *imageData = [NSData dataWithContentsOfURL:url];
+        return imageData;
+    } else {
+        NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String
+                                                                options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        return imageData;
+    }
 }
 @end
