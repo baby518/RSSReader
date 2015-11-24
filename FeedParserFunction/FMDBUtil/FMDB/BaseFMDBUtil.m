@@ -155,7 +155,9 @@
             } else if ([key isEqualToString:@"favicon"]) {
                 // base64 string.
                 NSString *base64String = [NSString stringWithFormat:@"%@", dic[key]];
-                element.favIconData = [ImageBase64 decodeBase64:base64String];
+                if (base64String != nil && ![base64String isEqualToString:@"null"]) {
+                    element.favIconData = [ImageBase64 decodeBase64:base64String];
+                }
             }
         }
     }
@@ -163,6 +165,17 @@
     return element;
 }
 
+- (NSData *)getFavIconFromURL:(NSString *)url {
+    NSString *sql = [NSString stringWithFormat:@"SELECT favicon FROM %@ WHERE feedURL='%@'", [self getFeedTableName], url];
+    FMResultSet *resultSet = [dataBase executeQuery:sql];
+    while ([resultSet next]) {
+        NSString *str = [resultSet stringForColumn:@"favicon"];
+        if (str != nil && ![str isEqualToString:@"null"]) {
+            return [self decodeBase64:str];
+        }
+    }
+    return nil;
+}
 
 // other util functions
 - (NSString *)encodeBase64:(NSData *)imageData {

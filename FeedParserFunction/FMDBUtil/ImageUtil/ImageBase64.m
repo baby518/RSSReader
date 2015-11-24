@@ -22,17 +22,17 @@
 }
 
 + (NSData *)decodeBase64:(NSString *)base64String {
+    NSData *imageData;
     if ([base64String hasPrefix:@"data:image/"]) {
         // replace whitespace and \n \r first
         base64String = [base64String stringByReplacingOccurrencesOfString:@"\r" withString:@""];
         base64String = [base64String stringByReplacingOccurrencesOfString:@"\n" withString:@""];
         NSURL *url = [NSURL URLWithString:base64String];
-        NSData *imageData = [NSData dataWithContentsOfURL:url];
-        return imageData;
+        imageData = [NSData dataWithContentsOfURL:url];
     } else {
-        NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String
-                                                                options:NSDataBase64DecodingIgnoreUnknownCharacters];
-        return imageData;
+        imageData = [[NSData alloc] initWithBase64EncodedString:base64String
+                                                        options:NSDataBase64DecodingIgnoreUnknownCharacters];
     }
+    return imageData.length > 0 ? imageData : nil;
 }
 @end

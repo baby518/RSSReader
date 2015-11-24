@@ -36,6 +36,7 @@
 - (NSArray *)getAllCategories;
 - (NSArray *)getChannelsInCategory:(NSString *)category;
 - (RSSChannelElement *)getChannelFromURL:(NSString *)url;
+- (NSData *)getFavIconFromURL:(NSString *)url;
 
 - (RSSChannelElement *)getChannelFromDictionary:(NSDictionary *)dic;
 
