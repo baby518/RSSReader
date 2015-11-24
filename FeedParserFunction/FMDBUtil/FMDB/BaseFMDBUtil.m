@@ -155,7 +155,7 @@
             } else if ([key isEqualToString:@"favicon"]) {
                 // base64 string.
                 NSString *base64String = [NSString stringWithFormat:@"%@", dic[key]];
-                if (base64String != nil && ![base64String isEqualToString:@"null"]) {
+                if (base64String != nil && ![base64String isEqualToString:@"(null)"]) {
                     element.favIconData = [ImageBase64 decodeBase64:base64String];
                 }
             }
