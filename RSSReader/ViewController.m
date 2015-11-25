@@ -20,8 +20,6 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 @property (nonatomic, strong) PresetFMDBUtil *presetDB;
 @property (nonatomic, strong) UserFMDBUtil *userDB;
 @property (nonatomic, strong) NSArray *allFeedChannels;
-// maybe complete multi select later.
-@property (nonatomic, strong) NSMutableArray *selectedRowIndexOfChannels;
 
 // Channel's info and Items
 @property (weak) IBOutlet NSTableView *feedItemsTableView;
@@ -61,16 +59,16 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     [_parseEnginePopup addItemsWithTitles:XMLParseEngineArrays];
 
     // Web tab
-    _selectedRowIndexOfChannels = [NSMutableArray array];
     self.reloadFeedButton.title = RELOAD_START_LABEL;
 
     [self reloadUserFMDB];
+    [self.databaseTableView reloadData];
 
     self.databaseTableView.delegate = self;
     self.databaseTableView.dataSource = self;
     self.databaseTableView.target = self;
     // single click
-    [self.databaseTableView setAction:@selector(selectRowAction:)];
+    [self.databaseTableView setAction:@selector(selectChannelRowAction:)];
 }
 
 - (void)reloadUserFMDB {
@@ -83,7 +81,7 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
         _allFeedChannels = [self.userDB getAllFeedChannels];
     }
     [_userDB closeDB];
-    [self.databaseTableView reloadData];
+//    [self.databaseTableView reloadData];
 }
 
 - (void)addChannelToUserFMDB:(RSSChannelElement *)element {
@@ -197,19 +195,27 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 }
 
 - (IBAction)removeButtonAction:(NSButton *)sender {
-    NSUInteger count = self.selectedRowIndexOfChannels.count;
+    // remove current selected
+    NSIndexSet *set = [self.databaseTableView selectedRowIndexes];
+    NSUInteger count = set.count;
+    NSUInteger selectRow = [set firstIndex];
     if (count == 0) return;
     _userDB = [UserFMDBUtil getInstance];
     if (self.userDB != nil) {
-        for (NSNumber *row in self.selectedRowIndexOfChannels) {
-            NSUInteger selectRow = row.unsignedIntegerValue;
+        while (selectRow != NSNotFound) {
             RSSChannelElement *element = self.allFeedChannels[selectRow];
             [self.userDB deleteChannelFromURL:element.feedURL.absoluteString];
+            selectRow = [set indexGreaterThanIndex:selectRow];
         }
     }
     [_userDB closeDB];
 
     [self reloadUserFMDB];
+    [self.databaseTableView reloadData];
+
+    if ([self.allFeedChannels count] == 0) return;
+    // selected first item
+    [self selectChannelRowAt:0];
 }
 
 - (IBAction)reloadButtonAction:(NSButton *)sender {
@@ -217,24 +223,18 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     if (isReloading) {
         [self stopParser];
     } else {
-        // 1. show current content
-        [self reloadUserFMDB];
-        // 2. parse current feed, get newest content
-        NSUInteger count = self.selectedRowIndexOfChannels.count;
+        // parse current feed, get newest content
+        NSIndexSet *set = [self.databaseTableView selectedRowIndexes];
+        NSUInteger count = set.count;
         if (count > 0) {
-            // reload selected channels
-//            for (NSNumber *row in self.selectedRowIndexOfChannels) {
-//                NSUInteger selectRow = row.unsignedIntegerValue;
-//                RSSChannelElement *element = self.allFeedChannels[selectRow];
-//                [self startParserWithURL:element.feedURL];
-//                // reloadUserFMDB will called parse completed.
-//            }
-            NSUInteger selectRow = ((NSNumber *) self.selectedRowIndexOfChannels[0]).unsignedIntegerValue;
+            // reload first channel
+            NSUInteger selectRow = [set firstIndex];
             RSSChannelElement *element = self.allFeedChannels[selectRow];
             [self startParserWithURL:element.feedURL];
+            // TODO reload all selected channels
             // reloadUserFMDB will called parse completed.
         } else {
-//            // reload all if select none.
+            // TODO reload all if select none.
 //            for (RSSChannelElement *element in self.allFeedChannels) {
 //                [self startParserWithURL:element.feedURL];
 //                // reloadUserFMDB will called parse completed.
@@ -324,7 +324,6 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 }
 
 - (void)removeAllObjectsOfTable {
-//    [_currentTrackPoints removeAllObjects];
     [self.feedItemsTableView reloadData];
 }
 
@@ -362,8 +361,15 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
         if (isLocalFile) {
             [self showChannelElementOnTableView:((RSSChannelElement *) element)];
         } else {
+            NSInteger count = [self allFeedChannels].count;
             [self addChannelToUserFMDB:((RSSChannelElement *) element)];
             [self reloadUserFMDB];
+            if (count != [self allFeedChannels].count) {
+                [self.databaseTableView reloadData];
+                [self selectChannelRowAt:[self allFeedChannels].count - 1];
+            } else {
+                [self showSelectedDatabaseChannel];
+            }
         }
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
 
@@ -401,12 +407,25 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     return count;
 }
 
-- (void)selectRowAction:(NSTableView *)sender {
+- (void)showSelectedDatabaseChannel {
+    NSIndexSet *set = [self.databaseTableView selectedRowIndexes];
+    NSUInteger selectRow = [set firstIndex];
+    if (selectRow != NSNotFound) {
+        [self showDatabaseChannelItemsAt:selectRow];
+    } else {
+        //TODO means all items are not selected.
+    }
+}
+
+- (void)selectChannelRowAt:(NSUInteger)index {
+    [self.databaseTableView selectRowIndexes:[[NSIndexSet alloc] initWithIndex:index] byExtendingSelection:NO];
+    [self showDatabaseChannelItemsAt:index];
+}
+
+- (void)selectChannelRowAction:(NSTableView *)sender {
     NSNumber *rowNumber = @(sender.clickedRow);
     NSLog(@"selectRowAction %ld", rowNumber.integerValue);
-    [self.selectedRowIndexOfChannels removeAllObjects];
     if (rowNumber.integerValue >= 0) {
-        [self.selectedRowIndexOfChannels addObject:rowNumber];
         [self showDatabaseChannelItemsAt:rowNumber.unsignedIntegerValue];
     } else {
         // -1 means all items are not selected.
