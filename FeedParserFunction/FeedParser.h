@@ -39,6 +39,8 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 @property (nonatomic, strong, readonly) NSData* xmlData;
 /** parser will ignore item whose title contain blackList's key string. */
 @property (nonatomic, strong) NSMutableArray* blackList;
+/** save channel's parse result into a database. default is YES. set it NO if you want use other database.*/
+@property(nonatomic, assign, readonly) BOOL useDatabase;
 
 - (id)initWithData:(NSData *)data;
 /* init with NSURL, must start request before parse.*/
@@ -59,5 +61,4 @@ typedef NS_ENUM(NSInteger, XMLParseEngine) {
 
 // URL is Requesting or data is parsing
 - (BOOL)isWorking;
-
 @end

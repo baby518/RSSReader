@@ -8,18 +8,15 @@
 
 #import "ViewController.h"
 #import "NSDate+helper.h"
-#import "BaseFMDBUtil.h"
-#import "PresetFMDBUtil.h"
-#import "UserFMDBUtil.h"
 #import "AppDelegate.h"
+#import "DBUtil.h"
 
 NSString *const RELOAD_START_LABEL = @"reload";
 NSString *const RELOAD_STOP_LABEL  = @"stop";
 
 @interface ViewController ()
-@property (nonatomic, strong) PresetFMDBUtil *presetDB;
-@property (nonatomic, strong) UserFMDBUtil *userDB;
 @property (nonatomic, strong) NSArray *allFeedChannels;
+@property (nonatomic, strong) DBUtil *dbUtil;
 
 // Channel's info and Items
 @property (weak) IBOutlet NSTableView *feedItemsTableView;
@@ -50,6 +47,8 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 - (void)loadView {
     [super loadView];
 
+    _dbUtil = [[DBUtil alloc] init];
+
     _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
     self.feedItemsTableView.delegate = self.feedItemTableDelegate;
     self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
@@ -61,7 +60,7 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     // Web tab
     self.reloadFeedButton.title = RELOAD_START_LABEL;
 
-    [self reloadUserFMDB];
+    [self reloadChannelsListFromDB];
     [self.databaseTableView reloadData];
 
     self.databaseTableView.delegate = self;
@@ -71,27 +70,17 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     [self.databaseTableView setAction:@selector(selectChannelRowAction:)];
 }
 
-- (void)reloadUserFMDB {
-    _userDB = [UserFMDBUtil getInstance];
-    if (self.userDB != nil) {
-        NSArray *categoryArray = [self.userDB getAllCategories];
-        for (NSString *category in categoryArray) {
-            NSLog(@"userDB categoryArray : %@", category);
-        };
-        _allFeedChannels = [self.userDB getAllFeedChannels];
-    }
-    [_userDB closeDB];
+- (void)reloadChannelsListFromDB {
+    _allFeedChannels = [self.dbUtil getAllChannelsOfUserDB];
 //    [self.databaseTableView reloadData];
 }
 
-- (void)addChannelToUserFMDB:(RSSChannelElement *)element {
-    // add it in user database.
-    // maybe it is stored in database already.
-    _userDB = [UserFMDBUtil getInstance];
-    if (self.userDB != nil) {
-        [self.userDB updateChannelElement:element];
+- (void)reloadChannelInfoFromDB:(RSSChannelElement *)element {
+    RSSChannelElement *temp = [self.dbUtil getChannelFromUserDB:element.feedURL.absoluteString];
+    if (temp != nil) {
+        element = temp;
     }
-    [_userDB closeDB];
+    [self showChannelElementOnTableView:element];
 }
 
 - (void)showDatabaseChannelItemsAt:(NSUInteger)index {
@@ -200,17 +189,13 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     NSUInteger count = set.count;
     NSUInteger selectRow = [set firstIndex];
     if (count == 0) return;
-    _userDB = [UserFMDBUtil getInstance];
-    if (self.userDB != nil) {
-        while (selectRow != NSNotFound) {
-            RSSChannelElement *element = self.allFeedChannels[selectRow];
-            [self.userDB deleteChannelFromURL:element.feedURL.absoluteString];
-            selectRow = [set indexGreaterThanIndex:selectRow];
-        }
+    while (selectRow != NSNotFound) {
+        RSSChannelElement *element = self.allFeedChannels[selectRow];
+        [self.dbUtil deleteChannelOfUserDB:element];
+        selectRow = [set indexGreaterThanIndex:selectRow];
     }
-    [_userDB closeDB];
 
-    [self reloadUserFMDB];
+    [self reloadChannelsListFromDB];
     [self.databaseTableView reloadData];
 
     if ([self.allFeedChannels count] == 0) return;
@@ -232,12 +217,12 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
             RSSChannelElement *element = self.allFeedChannels[selectRow];
             [self startParserWithURL:element.feedURL];
             // TODO reload all selected channels
-            // reloadUserFMDB will called parse completed.
+            // reloadChannelsListFromDB will called parse completed.
         } else {
             // TODO reload all if select none.
 //            for (RSSChannelElement *element in self.allFeedChannels) {
 //                [self startParserWithURL:element.feedURL];
-//                // reloadUserFMDB will called parse completed.
+//                // reloadChannelsListFromDB will called parse completed.
 //            }
         }
     }
@@ -343,32 +328,18 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
         return;
     }
     if ([element isKindOfClass:[RSSChannelElement class]]) {
-        // search it in preset database first
-        _presetDB = [PresetFMDBUtil getInstance];
-        if (self.presetDB != nil) {
-            RSSChannelElement *temp = [self.presetDB getChannelFromURL:element.feedURL.absoluteString];
-            if (temp != nil) {
-                element.categoryOfElement = temp.categoryOfElement;
-                if (temp.favIconData != nil) {
-                    element.favIconData = temp.favIconData;
-                }
-            }
-        }
-        [_presetDB closeDB];
-
         // local xml file's feedURL is nil.
         BOOL isLocalFile = (element.feedURL == nil);
         if (isLocalFile) {
             [self showChannelElementOnTableView:((RSSChannelElement *) element)];
         } else {
             NSInteger count = [self allFeedChannels].count;
-            [self addChannelToUserFMDB:((RSSChannelElement *) element)];
-            [self reloadUserFMDB];
+            [self reloadChannelsListFromDB];
             if (count != [self allFeedChannels].count) {
                 [self.databaseTableView reloadData];
                 [self selectChannelRowAt:[self allFeedChannels].count - 1];
             } else {
-                [self showSelectedDatabaseChannel];
+                [self reloadChannelInfoFromDB:(RSSChannelElement *) element];
             }
         }
     } else if ([element isKindOfClass:[RSSItemElement class]]) {
@@ -405,16 +376,6 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     NSInteger count = self.allFeedChannels.count;
     return count;
-}
-
-- (void)showSelectedDatabaseChannel {
-    NSIndexSet *set = [self.databaseTableView selectedRowIndexes];
-    NSUInteger selectRow = [set firstIndex];
-    if (selectRow != NSNotFound) {
-        [self showDatabaseChannelItemsAt:selectRow];
-    } else {
-        //TODO means all items are not selected.
-    }
 }
 
 - (void)selectChannelRowAt:(NSUInteger)index {

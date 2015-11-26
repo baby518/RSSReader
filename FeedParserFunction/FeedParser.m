@@ -12,6 +12,8 @@
 #import "AtomSchema.h"
 #import "HTMLSchema.h"
 #import "TFHpple.h"
+#import "PresetFMDBUtil.h"
+#import "UserFMDBUtil.h"
 
 #pragma mark FeedParser (private)
 @interface FeedParser ()
@@ -20,6 +22,9 @@
 @property(nonatomic, strong) NSURLSessionDataTask *URLSessionDataTask;
 
 @property(nonatomic, assign, readonly) BOOL needHTMLParse;
+
+@property(nonatomic, strong) PresetFMDBUtil *presetDB;
+@property(nonatomic, strong) UserFMDBUtil *userDB;
 - (void)initializeData:(NSData *)data;
 @end
 
@@ -30,7 +35,8 @@
     self = [super self];
     if (self) {
         _blackList = [NSMutableArray array];
-        _needHTMLParse = true;
+        _needHTMLParse = YES;
+        _useDatabase = YES;
     }
     return self;
 }
@@ -253,6 +259,35 @@
     return NO;
 }
 
+#pragma mark Database function
+- (void)findPresetInfoIfNeed:(RSSChannelElement *)element {
+    // search it in preset database first
+    _presetDB = [PresetFMDBUtil getInstance];
+    if (self.presetDB != nil) {
+        RSSChannelElement *temp = [self.presetDB getChannelFromURL:element.feedURL.absoluteString];
+        if (temp != nil) {
+            if (temp.categoryOfElement != nil) {
+                element.categoryOfElement = temp.categoryOfElement;
+            }
+            if (temp.favIconData != nil) {
+                element.favIconData = temp.favIconData;
+            }
+        }
+    }
+    [_presetDB closeDB];
+}
+
+- (void)addChannelToUserDB:(RSSChannelElement *)element {
+    if (!self.useDatabase) return;
+    // add it in user database.
+    // maybe it is stored in database already.
+    _userDB = [UserFMDBUtil getInstance];
+    if (self.userDB != nil) {
+        [self.userDB updateChannelElement:element];
+    }
+    [_userDB closeDB];
+}
+
 #pragma mark FeedParser (private)
 
 - (void)initializeData:(NSData *)data {
@@ -272,6 +307,13 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
             element.feedURL = self.feedURL;
+            if ([element isKindOfClass:[RSSChannelElement class]]) {
+                //TODO find info in preset database.
+                [self findPresetInfoIfNeed:(RSSChannelElement *) element];
+                //TODO save it in user database.
+                [self addChannelToUserDB:((RSSChannelElement *) element)];
+            }
+
             [self.delegate elementDidParsed:element];
         }
     });

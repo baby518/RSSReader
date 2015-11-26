@@ -8,7 +8,6 @@
 
 #import "BaseFMDBUtil.h"
 #import "FMDatabase.h"
-#import "FMDatabaseAdditions.h"
 #import "ImageBase64.h"
 
 @interface BaseFMDBUtil ()
