@@ -187,7 +187,8 @@
 
 - (NSInteger)encodeDate:(NSDate *)date {
     NSTimeInterval interval = [date timeIntervalSince1970];
-    return (NSInteger) interval;
+    NSInteger time = interval;
+    return time;
 }
 
 - (NSDate *)decodeDate:(NSInteger)dateValue {

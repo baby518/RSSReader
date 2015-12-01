@@ -186,36 +186,44 @@ static UserFMDBUtil *userDBUtil = nil;
     // don't use REPLACE, because replace is remove old --> add new, will trig it's trigger and foreign keys.
     NSInteger lastUpdate = [self encodeDate:element.pubDateOfElement];
     NSString *faviconBase64 = [self encodeBase64:element.favIconData];
-    NSString *sql;
+    BOOL result;
     if ([self getChannelFromURL:element.feedURL.absoluteString] == nil) {
         NSLog(@"add element because it is not exist. %@", element.feedURL.absoluteString);
-        sql = [NSString stringWithFormat:
-                @"INSERT INTO %@ "
-                        "(feedURL, websiteURL, feedTitle, description, category, language, starred, favicon, lastUpdate) "
-                        "VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%d', '%@', '%ld')",
-                [self getFeedTableName], element.feedURL.absoluteString, element.linkOfElement,
-                element.titleOfElement, element.descriptionOfElement, element.categoryOfElement,
-                element.languageOfChannel, element.starred ? 1 : 0, faviconBase64, lastUpdate];
+        NSString *sql = [NSString stringWithFormat:
+                         @"INSERT INTO %@ "
+                         "(feedURL, websiteURL, feedTitle, description, category, language, starred, favicon, lastUpdate) "
+                         "VALUES (?,?,?,?,?,?,?,?,?)",
+                         [self getFeedTableName]];
+        
+        result = [dataBase executeUpdate:sql,
+                  element.feedURL.absoluteString, element.linkOfElement,
+                  element.titleOfElement, element.descriptionOfElement, element.categoryOfElement,
+                  element.languageOfChannel,
+                  element.starred ? [NSNumber numberWithInt:1] : [NSNumber numberWithInt:0],
+                  faviconBase64, [NSNumber numberWithLong:lastUpdate]];
     } else {
         NSLog(@"update element which already exist. %@", element.feedURL.absoluteString);
-        sql = [NSString stringWithFormat:
-                @"UPDATE %@ SET "
-                        "websiteURL = '%@', "
-                        "feedTitle = '%@', "
-                        "description = '%@', "
-                        "starred = '%d', "
-                        "category = '%@', "
-                        "language = '%@', "
-                        "favicon = '%@', "
-                        "lastUpdate = '%ld' "
-                        "WHERE feedURL = '%@'",
-                [self getFeedTableName], element.linkOfElement, element.titleOfElement,
-                element.descriptionOfElement, element.starred ? 1 : 0,
-                element.categoryOfElement, element.languageOfChannel,
-                faviconBase64, lastUpdate, element.feedURL.absoluteString];
-    }
+        NSString *sql = [NSString stringWithFormat:
+                         @"UPDATE %@ SET "
+                         "websiteURL = ?, "
+                         "feedTitle = ?, "
+                         "description = ?, "
+                         "starred = ?, "
+                         "category = ?, "
+                         "language = ?, "
+                         "favicon = ?, "
+                         "lastUpdate = ? "
+                         "WHERE feedURL = '%@'",
+                         [self getFeedTableName], element.feedURL.absoluteString];
+        
+        result = [dataBase executeUpdate:sql,
+                  element.linkOfElement, element.titleOfElement,
+                  element.descriptionOfElement,
+                  element.starred ? [NSNumber numberWithInt:1] : [NSNumber numberWithInt:0],
+                  element.categoryOfElement, element.languageOfChannel,
+                  faviconBase64, [NSNumber numberWithLong:lastUpdate]];
 
-    BOOL result = [dataBase executeUpdate:sql];
+    }
 
     if (result) {
         // update channel's items
@@ -271,14 +279,18 @@ static UserFMDBUtil *userDBUtil = nil;
     NSInteger pubDate = [self encodeDate:item.pubDateOfElement];
 
     NSString *sql = [NSString stringWithFormat:
-            @"REPLACE INTO %@ "
-                    "(title, channelURL, websiteURL, starred, read, pubDate, author, description, content) "
-                    "VALUES ('%@', '%@', '%@', '%d', '%d', '%ld', '%@', '%@', '%@')",
-            [self getFeedItemsTableName],
-            item.titleOfElement, item.feedURL.absoluteString, item.linkOfElement,
-            item.starred ? 1 : 0, item.read, pubDate,
-            item.authorOfItem, item.descriptionOfElement, item.contentOfItem];
-    BOOL result = [dataBase executeUpdate:sql];
+                     @"REPLACE INTO %@ "
+                     "(title, channelURL, websiteURL, starred, read, pubDate, author, description, content) "
+                     "VALUES (?,?,?,?,?,?,?,?,?)",
+                     [self getFeedItemsTableName]];
+    
+    BOOL result = [dataBase executeUpdate:sql,
+                   item.titleOfElement, item.feedURL.absoluteString, item.linkOfElement,
+                   item.starred ? [NSNumber numberWithInt:1] : [NSNumber numberWithInt:0],
+                   item.read ? [NSNumber numberWithInt:1] : [NSNumber numberWithInt:0],
+                   [NSNumber numberWithLong:pubDate],
+                   item.authorOfItem, item.descriptionOfElement, item.contentOfItem];
+    
     return result;
 }
 

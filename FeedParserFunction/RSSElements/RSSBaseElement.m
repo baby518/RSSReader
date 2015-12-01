@@ -49,12 +49,17 @@
 - (NSData *)favIconData {
     if (_favIconData == nil) {
         if (self.favIconURL != nil) {
+            // 1. load it from favIconURL
             _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.favIconURL]];
         } else {
+            // 2. get favIconURL from url of channel, then load favIcon.
             NSURL *url = [NSURL URLWithString:self.linkOfElement];
             NSString *imageUrlString = [NSString stringWithFormat:@"%@://%@/favicon.ico", url.scheme, url.host];
-            _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrlString]];
-            if (_favIconData != nil) {
+            NSError *error = nil;
+            _favIconData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrlString] options:NSDataReadingMappedIfSafe error:&error];
+            if (error != nil) {
+                NSLog(@"favIconData dataWithContentsOfURL error : %@", error);
+            } else if (_favIconData != nil) {
                 _favIconURL = imageUrlString;
             }
         }
