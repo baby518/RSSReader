@@ -9,14 +9,13 @@
 #import "ViewController.h"
 #import "NSDate+helper.h"
 #import "AppDelegate.h"
-#import "DBUtil.h"
+#import "UserFMDBUtil.h"
 
 NSString *const RELOAD_START_LABEL = @"reload";
 NSString *const RELOAD_STOP_LABEL  = @"stop";
 
 @interface ViewController ()
 @property (nonatomic, strong) NSArray *allFeedChannels;
-@property (nonatomic, strong) DBUtil *dbUtil;
 
 // Channel's info and Items
 @property (weak) IBOutlet NSTableView *feedItemsTableView;
@@ -47,8 +46,6 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 - (void)loadView {
     [super loadView];
 
-    _dbUtil = [[DBUtil alloc] init];
-
     _feedItemTableDelegate = [[FeedItemTableDelegate alloc] initWithChannelDelegate:self];
     self.feedItemsTableView.delegate = self.feedItemTableDelegate;
     self.feedItemsTableView.dataSource = self.feedItemTableDelegate;
@@ -71,12 +68,12 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
 }
 
 - (void)reloadChannelsListFromDB {
-    _allFeedChannels = [self.dbUtil getAllChannelsOfUserDB];
+    _allFeedChannels = [[UserFMDBUtil getInstance] getAllFeedChannels];
 //    [self.databaseTableView reloadData];
 }
 
 - (void)reloadChannelInfoFromDB:(RSSChannelElement *)element {
-    RSSChannelElement *temp = [self.dbUtil getChannelFromUserDB:element.feedURL.absoluteString];
+    RSSChannelElement *temp = [[UserFMDBUtil getInstance] getChannelFromURL:element.feedURL.absoluteString];
     if (temp != nil) {
         element = temp;
     }
@@ -191,7 +188,7 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
     if (count == 0) return;
     while (selectRow != NSNotFound) {
         RSSChannelElement *element = self.allFeedChannels[selectRow];
-        [self.dbUtil deleteChannelOfUserDB:element];
+        [[UserFMDBUtil getInstance] deleteChannelFromURL:element.feedURL.absoluteString];
         selectRow = [set indexGreaterThanIndex:selectRow];
     }
 
@@ -334,7 +331,7 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
             [self showChannelElementOnTableView:((RSSChannelElement *) element)];
         } else {
             NSInteger count = [self allFeedChannels].count;
-            [self.dbUtil addChannelToUserDB:((RSSChannelElement *) element)];
+            [[UserFMDBUtil getInstance] addChannelElement:((RSSChannelElement *) element)];
             [self reloadChannelsListFromDB];
             if (count != [self allFeedChannels].count) {
                 [self.databaseTableView reloadData];
