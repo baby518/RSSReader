@@ -24,7 +24,6 @@
 @property(nonatomic, assign, readonly) BOOL needHTMLParse;
 
 @property(nonatomic, strong) PresetFMDBUtil *presetDB;
-@property(nonatomic, strong) UserFMDBUtil *userDB;
 - (void)initializeData:(NSData *)data;
 @end
 
@@ -36,7 +35,6 @@
     if (self) {
         _blackList = [NSMutableArray array];
         _needHTMLParse = YES;
-        _useDatabase = YES;
     }
     return self;
 }
@@ -277,17 +275,6 @@
     [_presetDB closeDB];
 }
 
-- (void)addChannelToUserDB:(RSSChannelElement *)element {
-    if (!self.useDatabase) return;
-    // add it in user database.
-    // maybe it is stored in database already.
-    _userDB = [UserFMDBUtil getInstance];
-    if (self.userDB != nil) {
-        [self.userDB updateChannelElement:element];
-    }
-    [_userDB closeDB];
-}
-
 #pragma mark FeedParser (private)
 
 - (void)initializeData:(NSData *)data {
@@ -308,10 +295,8 @@
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(elementDidParsed:)]) {
             element.feedURL = self.feedURL;
             if ([element isKindOfClass:[RSSChannelElement class]]) {
-                //TODO find info in preset database.
+                // find info in preset database.
                 [self findPresetInfoIfNeed:(RSSChannelElement *) element];
-                //TODO save it in user database.
-                [self addChannelToUserDB:((RSSChannelElement *) element)];
             }
 
             [self.delegate elementDidParsed:element];

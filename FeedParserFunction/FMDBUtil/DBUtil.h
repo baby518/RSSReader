@@ -10,6 +10,7 @@
 @interface DBUtil : NSObject
 - (instancetype)init;
 
+- (void)addChannelToUserDB:(RSSChannelElement *)element;
 - (void)deleteChannelOfUserDB:(RSSChannelElement *)element;
 - (NSArray *)getAllChannelsOfUserDB;
 - (RSSChannelElement *)getChannelFromUserDB:(NSString *)urlString;

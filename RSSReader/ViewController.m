@@ -334,6 +334,7 @@ NSString *const RELOAD_STOP_LABEL  = @"stop";
             [self showChannelElementOnTableView:((RSSChannelElement *) element)];
         } else {
             NSInteger count = [self allFeedChannels].count;
+            [self.dbUtil addChannelToUserDB:((RSSChannelElement *) element)];
             [self reloadChannelsListFromDB];
             if (count != [self allFeedChannels].count) {
                 [self.databaseTableView reloadData];

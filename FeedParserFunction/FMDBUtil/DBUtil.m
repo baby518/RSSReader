@@ -23,6 +23,14 @@
     return self;
 }
 
+- (void)addChannelToUserDB:(RSSChannelElement *)element {
+    _userDB = [UserFMDBUtil getInstance];
+    if (self.userDB != nil) {
+        [self.userDB addChannelElement:element];
+    }
+    [_userDB closeDB];
+}
+
 - (void)deleteChannelOfUserDB:(RSSChannelElement *)element {
     _userDB = [UserFMDBUtil getInstance];
     if (self.userDB != nil) {
