@@ -45,14 +45,14 @@ static UserFMDBUtil *userDBUtil = nil;
         // create tables if not exist.
         if (![self isTableExist:[self getFeedCategoryTableName]]) {
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TABLE %@ (category TEXT PRIMARY KEY)",
+                    @"CREATE TABLE %@ (category TEXT PRIMARY KEY NOT NULL)",
                     [self getFeedCategoryTableName]];
             [dataBase executeUpdate:sql];
         }
 
         if (![self isTableExist:[self getFeedTableName]]) {
             NSString *sql = [NSString stringWithFormat:
-                    @"CREATE TABLE %@ (feedURL TEXT PRIMARY KEY, websiteURL TEXT, feedTitle TEXT, description TEXT, category TEXT, starred BOOLEAN DEFAULT(0), lastUpdate INTEGER DEFAULT(0), language TEXT, favicon TEXT)",
+                    @"CREATE TABLE %@ (feedURL TEXT PRIMARY KEY, websiteURL TEXT, feedTitle TEXT, description TEXT, category TEXT NOT NULL DEFAULT('Default'), starred BOOLEAN DEFAULT(0), lastUpdate INTEGER DEFAULT(0), language TEXT, favicon TEXT)",
                     [self getFeedTableName]];
             [dataBase executeUpdate:sql];
         }
@@ -157,8 +157,12 @@ static UserFMDBUtil *userDBUtil = nil;
     FMResultSet *resultSet = [dataBase executeQuery:sql];
     NSMutableArray *categoryArray = [NSMutableArray array];
     while ([resultSet next]) {
-        NSString *str  = [resultSet stringForColumn:@"category"];
-        [categoryArray addObject:str];
+        NSString *str = [resultSet stringForColumn:@"category"];
+        if (str == nil) {
+            //            [categoryArray addObject:@"NULL"];
+        } else {
+            [categoryArray addObject:str];
+        }
     }
     return categoryArray;
 }
