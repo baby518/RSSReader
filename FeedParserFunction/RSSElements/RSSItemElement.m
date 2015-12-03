@@ -23,4 +23,32 @@
     [description appendString:@">"];
     return description;
 }
+
+- (NSString *)authorOfItem {
+    if (_authorOfItem == nil || [_authorOfItem isEqual:[NSNull null]]) {
+        _authorOfItem = @"";
+    }
+    return _authorOfItem;
+}
+
+- (NSString *)authorLinkOfItem {
+    if (_authorLinkOfItem == nil || [_authorLinkOfItem isEqual:[NSNull null]]) {
+        _authorLinkOfItem = @"";
+    }
+    return _authorLinkOfItem;
+}
+
+- (NSString *)guidOfItem {
+    if (_guidOfItem == nil || [_guidOfItem isEqual:[NSNull null]]) {
+        _guidOfItem = @"";
+    }
+    return _guidOfItem;
+}
+
+- (NSString *)contentOfItem {
+    if (_contentOfItem == nil || [_contentOfItem isEqual:[NSNull null]]) {
+        _contentOfItem = @"";
+    }
+    return _contentOfItem;
+}
 @end
